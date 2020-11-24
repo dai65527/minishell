@@ -6,12 +6,14 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/24 18:47:25 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/11/24 23:10:15 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
+
+# include "libft.h"
 
 /*
 ** return values of main function.
@@ -57,5 +59,26 @@ typedef struct  s_keyval
 	char        *key;
 	char        *val;
 }               t_keyval;
+
+/*
+** minishell core
+*/
+
+int		msh_exit_by_err(t_mshinfo *mshinfo);
+
+/*
+** utils for t_mshinfo
+** t_mshinfo用便利関数
+*/
+
+void	msh_mshinfo_init(t_mshinfo *mshinfo);
+void	msh_mshinfo_free(t_mshinfo *mshinfo);
+
+/*
+** utils for t_keyval
+** t_keyval用便利関数
+*/
+
+void	msh_keyval_free(t_keyval *keyval);
 
 #endif
