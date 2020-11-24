@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/24 18:24:02 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/11/24 18:47:25 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,8 @@
 ** return values of msh_exec_command function.
 */
 
-# define MSH_RESCMD_SUCCESS	0
-# define MSH_RESCMD_FAILURE	1
-# define MSH_RESCMD_EXIT	2
+# define MSH_RESCMD_NORMAL	0
+# define MSH_RESCMD_EXIT	1
 
 /*
 ** t_mshinfo (= struct s_mshinfo)
