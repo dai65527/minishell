@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/24 15:59:01 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/25 22:22:55 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/11/25 22:37:44 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,19 +49,20 @@ int		msh_loop(t_mshinfo *mshinfo)
 {
 	int		ret;
 	char	*cmd;
+	char	*save;
 
+	save = NULL;
 	while (1)
 	{
-		ret = (msh_get_next_cmd(mshinfo, &cmd));
-		if (ret == MSH_EXIT_BY_CMD)
-			return (msh_exit_by_cmd(mshinfo));
-		else if (ret == MSH_EXIT_BY_ERR)
-			return (msh_exit_by_err(mshinfo));
+		if ((ret = (msh_get_next_cmd(mshinfo, &cmd, &save)) != MSH_CONTINUE))
+			break ;
 		ret = msh_exec_cmd(mshinfo, cmd, FD_STDIN);
 		free(cmd);
-		if (ret == MSH_EXIT_BY_CMD)
-			return (msh_exit_by_cmd(mshinfo));
-		else if (ret == MSH_EXIT_BY_ERR)
-			return (msh_exit_by_err(mshinfo));
+		if (ret != MSH_CONTINUE)
+			break ;
 	}
+	free(save);
+	if (ret == MSH_EXIT_BY_ERR)
+		return (msh_exit_by_err(mshinfo));
+	return (msh_exit_by_cmd(mshinfo));
 }
