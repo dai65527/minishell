@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/24 23:10:15 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/11/25 09:26:27 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,13 @@
 # include "libft.h"
 
 /*
-** return values of main function.
-*/
-
-# define MSH_EXITSUCCESS
-
-/*
+** return values of msh_exec_command function.
 ** return values of msh_exec_command function.
 */
 
-# define MSH_RESCMD_NORMAL	0
-# define MSH_RESCMD_EXIT	1
+# define MSH_CONTINUE		0
+# define MSH_EXIT_BY_CMD	1
+# define MSH_EXIT_BY_ERR	2
 
 /*
 ** t_mshinfo (= struct s_mshinfo)
@@ -64,21 +60,34 @@ typedef struct  s_keyval
 ** minishell core
 */
 
-int		msh_exit_by_err(t_mshinfo *mshinfo);
+int			msh_loop(t_mshinfo *mshinfo);
+int			msh_get_next_cmd(t_mshinfo *mshinfo, char **cmd);
+int			msh_exec_cmd(t_mshinfo *mshinfo, char *cmd);
 
 /*
-** utils for t_mshinfo
-** t_mshinfo用便利関数
+** minishell utils
 */
 
-void	msh_mshinfo_init(t_mshinfo *mshinfo);
-void	msh_mshinfo_free(t_mshinfo *mshinfo);
+t_list		*msh_parse_envp(char **envp);
+void		*msh_put_errmsg(t_mshinfo *mshinfo);
+void		msh_mshinfo_init(t_mshinfo *mshinfo);
+void		msh_mshinfo_free(t_mshinfo *mshinfo);
 
 /*
-** utils for t_keyval
+** minishell 終了時用の関数
+** MEMO
+** 	msh_ext_by_cmd : comanndからの指令により終了する(エラ〜メッセージ等は出力しない)
+** 	msh_ext_by_err : mallocの失敗等、プログラム実行中のエラーにより終了する（エラ〜メッセージを出力する）
+*/
+
+int			msh_exit_by_cmd(t_mshinfo *mshinfo);
+int			msh_exit_by_err(t_mshinfo *mshinfo);
+
+/*
+** t_keyval utils
 ** t_keyval用便利関数
 */
 
-void	msh_keyval_free(t_keyval *keyval);
+void		msh_keyval_free(t_keyval *keyval);
 
 #endif
