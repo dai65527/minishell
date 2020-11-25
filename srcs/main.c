@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:37:15 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/25 11:19:15 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/11/25 11:23:52 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,11 @@
 **				詳細はminishell.h参照
 **
 ** 関数
-** 	- msh_perse_envp:	envpの内容を解析してmshinfo.envlstに格納する
+** 	- msh_perse_envp: envpの内容を解析してmshinfo.envlstに格納する
 ** 	- msh_ext_by_err:
-** 		- mallocの失敗等、プログラム実行中のエラーにより終了する（エラ-メッセージを出力する）
+** 		- mallocの失敗等、プログラム実行中のエラーにより終了する（エラーメッセージを出力する）
 ** 		- mshinfoの内容を適切に開放する。
-**  - msh_loop:		minishellのメインループ
+**  - msh_loop:	minishellのメインループ
 */
 
 int		main(int argc, char **argv, char **envp)

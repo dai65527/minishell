@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/25 10:54:08 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/11/25 22:19:44 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ typedef struct	s_keyval
 
 int				msh_loop(t_mshinfo *mshinfo);
 int				msh_get_next_cmd(t_mshinfo *mshinfo, char **cmd);
-int				msh_exec_cmd(t_mshinfo *mshinfo, char *cmd);
+int				msh_exec_cmd(t_mshinfo *mshinfo, char *cmd, int fd_input);
 
 /*
 ** minishell utils
@@ -88,49 +88,57 @@ int				msh_exit_by_err(t_mshinfo *mshinfo);
 ** echo
 */
 
-int				msh_echo(int argc, char **argv, t_mshinfo *mshinfo);
+int				msh_echo(int argc, char **argv, t_mshinfo *mshinfo,
+							int ft_input);
 
 /*
 ** cd
 */
 
-int				msh_cd(int argc, char **argv, t_mshinfo *mshinfo);
+int				msh_cd(int argc, char **argv, t_mshinfo *mshinfo,
+							int ft_input);
 
 /*
 ** pwd
 */
 
-int				msh_pwd(int argc, char **argv, t_mshinfo *mshinfo);
+int				msh_pwd(int argc, char **argv, t_mshinfo *mshinfo,
+							int ft_input);
 
 /*
 ** export
 */
 
-int				msh_export(int argc, char **argv, t_mshinfo *mshinfo);
+int				msh_export(int argc, char **argv, t_mshinfo *mshinfo,
+							int ft_input);
 
 /*
 ** unset
 */
 
-int				msh_unset(int argc, char **argv, t_mshinfo *mshinfo);
+int				msh_unset(int argc, char **argv, t_mshinfo *mshinfo,
+							int ft_input);
 
 /*
 ** env
 */
 
-int				msh_env(int argc, char **argv, t_mshinfo *mshinfo);
+int				msh_env(int argc, char **argv, t_mshinfo *mshinfo,
+							int ft_input);
 
 /*
 ** exit
 */
 
-int				msh_exit(int argc, char **argv, t_mshinfo *mshinfo);
+int				msh_exit(int argc, char **argv, t_mshinfo *mshinfo,
+							int ft_input);
 
 /*
 ** exec_exceutable
 */
 
-int				msh_executable(int argc, char **argv, t_mshinfo *mshinfo);
+int				msh_executable(int argc, char **argv, t_mshinfo *mshinfo,
+							int ft_input);
 
 /*
 ** t_keyval utils
