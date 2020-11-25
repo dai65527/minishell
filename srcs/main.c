@@ -6,12 +6,27 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:37:15 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/24 23:10:35 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/11/25 11:19:15 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <fcntl.h>
 #include "minishell.h"
+
+/*
+**	main
+**
+** 変数
+** 	- mshinfo:	minishellの情報を詰め込んだ構造体変数以下の関数で共有する
+**				詳細はminishell.h参照
+**
+** 関数
+** 	- msh_perse_envp:	envpの内容を解析してmshinfo.envlstに格納する
+** 	- msh_ext_by_err:
+** 		- mallocの失敗等、プログラム実行中のエラーにより終了する（エラ-メッセージを出力する）
+** 		- mshinfoの内容を適切に開放する。
+**  - msh_loop:		minishellのメインループ
+*/
 
 int		main(int argc, char **argv, char **envp)
 {
