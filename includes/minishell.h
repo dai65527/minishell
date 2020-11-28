@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/26 15:08:47 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/11/28 11:33:13 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,9 @@ int				msh_exec_cmd(t_mshinfo *mshinfo, char *cmd, int fd_input);
 
 int				msh_get_next_cmd(t_mshinfo *mshinfo, char **cmd, char **save);
 int				msh_gnc_find_cmd_from_save(char **cmd, char **save);
+int				msh_gnc_expand_env(t_mshinfo *mshinfo, char **cmd);
+void			msh_expand_env_to_str(char *str_new, char *str, t_list *envlst);
+int				msh_isenv(char *s, char *envkey, size_t slen);
 
 /*
 ** minishell utils

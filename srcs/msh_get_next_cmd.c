@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/26 08:19:31 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/26 15:08:06 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/11/28 09:54:35 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,9 @@ static int	gnc_joinbuf(char **save, char *buf, ssize_t len)
 
 static int	gnc_continue(t_mshinfo *mshinfo, char **cmd)
 {
-	(void)mshinfo;
-	(void)cmd;
-	return (0);
+	if (msh_gnc_expand_env(mshinfo, cmd) != MSH_CONTINUE)
+		return (MSH_EXIT_BY_ERR);
+	return (MSH_CONTINUE);
 }
 
 int			msh_get_next_cmd(t_mshinfo *mshinfo, char **cmd, char **save)
