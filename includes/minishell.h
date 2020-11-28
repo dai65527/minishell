@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/27 11:50:35 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/11/28 17:08:48 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,22 @@
 
 /*
 ** return values of msh_exec_command function.
-** return values of msh_exec_command function.
 */
 
 # define MSH_CONTINUE		0
 # define MSH_EXIT_BY_CMD	1
 # define MSH_EXIT_BY_ERR	2
+
+/*
+** used in msh_get_next_cmd
+**
+** MSH_PROMPT_NORMAL: waiting for input from stdin
+** MSH_PROMPT_NEWLINE: waiting for newline from stdin
+** MSH_PROMPT_QUOTE: waiting for single quotation
+** MSH_PROMPT_DQUOTE: waiting for double quotation
+*/
+
+# define MSH_PROMPT	"minishell $ "
 
 /*
 ** t_mshinfo (= struct s_mshinfo)
@@ -65,8 +75,17 @@ typedef struct	s_keyval
 */
 
 int				msh_loop(t_mshinfo *mshinfo);
-int				msh_get_next_cmd(t_mshinfo *mshinfo, char **cmd, char **save);
 int				msh_exec_cmd(t_mshinfo *mshinfo, char *cmd, int fd_input);
+
+/*
+** msh_get_next_cmd
+*/
+
+int				msh_get_next_cmd(t_mshinfo *mshinfo, char **cmd, char **save);
+int				msh_gnc_find_cmd_from_save(char **cmd, char **save);
+int				msh_gnc_expand_env(t_mshinfo *mshinfo, char **cmd);
+void			msh_expand_env_to_str(char *str_new, char *str, t_list *envlst);
+int				msh_isenv(char *s, char *envkey, size_t slen);
 
 /*
 ** minishell utils
