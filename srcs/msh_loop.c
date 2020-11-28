@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/24 15:59:01 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/25 22:37:44 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/11/28 17:55:37 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,12 +52,13 @@ int		msh_loop(t_mshinfo *mshinfo)
 	char	*save;
 
 	save = NULL;
+	cmd = NULL;
 	while (1)
 	{
 		if ((ret = (msh_get_next_cmd(mshinfo, &cmd, &save)) != MSH_CONTINUE))
 			break ;
 		ret = msh_exec_cmd(mshinfo, cmd, FD_STDIN);
-		free(cmd);
+		msh_free_setnull((void *)&cmd);
 		if (ret != MSH_CONTINUE)
 			break ;
 	}

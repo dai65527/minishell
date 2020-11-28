@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/28 11:33:13 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/11/28 17:08:48 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,5 +165,10 @@ int				msh_executable(int argc, char **argv, t_mshinfo *mshinfo,
 */
 
 void			msh_keyval_free(void *keyval);
+
+/*
+** *ptrをfreeして、*ptr=NULLする便利関数
+*/
+void			msh_free_setnull(void **ptr);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 09:54:41 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/28 15:44:08 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/11/28 16:39:20 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,17 @@ static size_t	gncee_cmd_len_with_env(char *cmd, t_list *envlst)
 		cmd++;
 	}
 }
+
+/*
+** cmd内の環境変数を展開する関数
+**
+** To: 長谷川さん
+** get_next_cmd内でこれを使用するのはやめて、split_cmd_to_argvで環境変数を展開して
+** いただきたいです.
+**
+** 再利用やヒントになる可能性を考えて未実装の関数も含めてPullRequest出しますが、
+** 不必要であれば削除いたします。
+*/
 
 int				msh_gnc_expand_env(t_mshinfo *mshinfo, char **cmd)
 {
