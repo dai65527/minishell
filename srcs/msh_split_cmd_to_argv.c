@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/26 09:45:25 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/11/27 11:49:25 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/11/29 02:04:57 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,41 @@ int			msh_is_space(char c)
 	return (0);
 }
 
+// static char	*ft_substr_skip_bslash(char const *s, t_uint start, size_t len, char quate)
+// {
+// 	size_t	i;
+// 	size_t	s_len;
+// 	char	*substr;
+
+// 	s_len = (quate == -1) ? 0 : ft_strlen(s);
+// 	if (!s_len)
+// 		while (*s)
+// 			s_len += (*s++ != '\\') ? 1 : 0;
+// 	if (s_len < start)
+// 		len = 0;
+// 	else if (len > s_len - start)
+// 		len = s_len - start;
+// 	substr = (char *)malloc(len + 1);
+// 	if (!substr)
+// 		return (NULL);
+// 	i = 0;
+// 	while (i < len)
+// 	{
+// 		if (quate == -1 && s[i + start] != '\\')
+// 			substr[i] = s[i + start];
+// 		else if (quate != -1)
+// 			substr[i] = s[i + start];
+// 		i++;
+// 	}
+// 	substr[len] = 0;
+// 	return (substr);
+// }
+
 /*
 ** check existence of file or dir by opening their path
 */
 
-static int	check_existence_file_dir(char *begin, char *cmd)
+static int	check_existence_file_dir(char *begin, char *cmd, char quate)
 {
 	char	*path;
 	int		fd;
@@ -62,7 +92,7 @@ static int	handle_quate(t_mshinfo *mshinfo, char **cmd)
 	begin = *cmd;
 	while (**cmd && **cmd != quate)
 		(*cmd)++;
-	if (!check_existence_file_dir(begin, *cmd))
+	if (!check_existence_file_dir(begin, *cmd, quate))
 		return (1);
 	return (0);
 }
@@ -91,7 +121,7 @@ static int	check_stdin_redirect(t_mshinfo *mshinfo, char *cmd)
 			}
 			while (*cmd && !msh_is_space(*cmd) && *cmd != '>' && *cmd != '|')
 				cmd++;
-			if (!check_existence_file_dir(begin, cmd))
+			if (!check_existence_file_dir(begin, cmd, -1))
 				return (1);
 		}
 		if (*cmd)
@@ -108,6 +138,7 @@ static int	check_stdin_redirect(t_mshinfo *mshinfo, char *cmd)
 static void	count_argc(char *cmd, int *argc)
 {
 	char	quate;
+	char	*stop;
 
 	*argc = 0;
 	while (*cmd)
@@ -119,12 +150,16 @@ static void	count_argc(char *cmd, int *argc)
 		if (*cmd == '\'' || *cmd == '\"')
 		{
 			quate = *cmd++;
-			while (*cmd != quate)
+			while (*cmd && *cmd != quate)
 				cmd++;
-		}
-		while (*cmd && !msh_is_space(*cmd))
 			cmd++;
-		if (*cmd)
+			continue ;
+		}
+		while (*cmd && !(stop = ft_strchr("<>|\t\n\v\f\r \'\"", *cmd)))
+			cmd++;
+		if (stop && (ft_strchr("<>|", *stop)))
+			(*argc)++;
+		if (*cmd && stop && !ft_strchr("\'\"", *stop))
 			cmd++;
 	}
 }
@@ -138,6 +173,7 @@ static int	store_argv(char **ret, char **cmd, int *i)
 {
 	char *begin;
 	char quate;
+	char *stop;
 
 	while (**cmd)
 	{
@@ -150,14 +186,21 @@ static int	store_argv(char **ret, char **cmd, int *i)
 			quate = **cmd;
 			(*cmd)++;
 			begin++;
-			while (**cmd != quate)
+			while (**cmd && **cmd != quate)
 				(*cmd)++;
+			if (!(ret[++(*i)] = ft_substr(begin, 0, *cmd - begin)))
+				return (1);
+			if (**cmd)
+				(*cmd)++;
+			continue ;
 		}
-		while (**cmd && !msh_is_space(**cmd) && quate == -1)
+		while (**cmd && !(stop = ft_strchr("<>|\t\n\v\f\r \'\"", **cmd)) && quate == -1)
 			(*cmd)++;
 		if (!(ret[++(*i)] = ft_substr(begin, 0, *cmd - begin)))
 			return (1);
-		if (**cmd)
+		if (stop && (ft_strchr("<>|", *stop)) && !(ret[++(*i)] = ft_substr(stop, 0, 1)))
+			return (1);
+		if (**cmd && stop && !ft_strchr("\'\"", *stop))
 			(*cmd)++;
 	}
 	return (0);
@@ -191,7 +234,7 @@ char		**msh_split_cmd_to_argv(t_mshinfo *mshinfo, char *cmd, int *argc)
 
 /*
 ** main for test
-** gcc msh_split_cmd_to_argv.c msh_free_setnull.c ../libft/libft.a -D test
+** gcc msh_split_cmd_to_argv.c msh_free_setnull.c ../libft/libft.a -D TEST
 **  (W options are not available due to an unused var: msinfo for error message)
 ** usage:
 **	./a.out './a.out < msh_free_setnull.c aaa' <- correct filepath
@@ -215,7 +258,7 @@ char		**msh_split_cmd_to_argv(t_mshinfo *mshinfo, char *cmd, int *argc)
 **	argv[2]: ../
 */
 
-#ifdef test
+#ifdef TEST
 # include <stdio.h>
 
 int			main(int num, char **var)
