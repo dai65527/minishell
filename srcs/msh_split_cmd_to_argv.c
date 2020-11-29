@@ -6,11 +6,11 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/26 09:45:25 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/11/29 02:04:57 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/11/29 23:08:53 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "minishell.h"
 
 /*
 ** should be global func in utils.c ?
@@ -164,41 +164,51 @@ static void	count_argc(char *cmd, int *argc)
 	}
 }
 
+static int	store_argv_quate(char **ret, char **cmd, int *i, char *head)
+{
+	char *begin;
+	char quate;
+
+	if ((**cmd == '\'' || **cmd == '\"'))
+	{
+		quate = **cmd;
+		(*cmd)++;
+		begin = *cmd;
+		while (**cmd && **cmd != quate)
+			(*cmd)++;
+		if (!(ret[++(*i)] = ft_substr(begin, 0, *cmd - begin)))
+			ft_putendl_fd("msh_exit_by_err", 2);//msh_exit_by_err(mshinfo);
+		if (**cmd)
+			(*cmd)++;
+		return (1);
+	}
+	return (0);
+}
+
 /*
 ** splits char *cmd by space and single/double quatation
 ** and store them to char **argv
 */
 
-static int	store_argv(char **ret, char **cmd, int *i)
+static int	store_argv(char **ret, char **cmd, int *i, char *head)
 {
 	char *begin;
-	char quate;
 	char *stop;
 
 	while (**cmd)
 	{
-		quate = -1;
 		while (**cmd && msh_is_space(**cmd))
 			(*cmd)++;
-		begin = *cmd;
-		if (**cmd == '\'' || **cmd == '\"')
-		{
-			quate = **cmd;
-			(*cmd)++;
-			begin++;
-			while (**cmd && **cmd != quate)
-				(*cmd)++;
-			if (!(ret[++(*i)] = ft_substr(begin, 0, *cmd - begin)))
-				return (1);
-			if (**cmd)
-				(*cmd)++;
+		if (store_argv_quate(ret, cmd, i, head))
 			continue ;
-		}
-		while (**cmd && !(stop = ft_strchr("<>|\t\n\v\f\r \'\"", **cmd)) && quate == -1)
+		begin = *cmd;
+		while (**cmd && !msh_is_space(**cmd)
+			&& !(stop = ft_strchr("<>|\'\"", **cmd)))
 			(*cmd)++;
 		if (!(ret[++(*i)] = ft_substr(begin, 0, *cmd - begin)))
 			return (1);
-		if (stop && (ft_strchr("<>|", *stop)) && !(ret[++(*i)] = ft_substr(stop, 0, 1)))
+		if (stop && ft_strchr("<>|", *stop)
+			&& !(ret[++(*i)] = ft_substr(stop, 0, 1)))
 			return (1);
 		if (**cmd && stop && !ft_strchr("\'\"", *stop))
 			(*cmd)++;
@@ -218,23 +228,23 @@ static int	store_argv(char **ret, char **cmd, int *i)
 char		**msh_split_cmd_to_argv(t_mshinfo *mshinfo, char *cmd, int *argc)
 {
 	char	**argv;
-	char	*begin;
-	char	quate;
+	char	*head;
 	int		i;
 
-	i = -1;
 	if (check_stdin_redirect(mshinfo, cmd))
 		ft_putendl_fd("msh_put_errmsg", 2);//msh_put_errmsg(mshinfo);
 	count_argc(cmd, argc);
 	argv = ft_calloc(sizeof(char *), (size_t)(*argc) + 1);
-	if (store_argv(argv, &cmd, &i))
+	head = cmd;
+	i = -1;
+	if (store_argv(argv, &cmd, &i, head))
 		ft_putendl_fd("msh_exit_by_err", 2);//msh_exit_by_err(mshinfo);
 	return (argv);
 }
 
 /*
 ** main for test
-** gcc msh_split_cmd_to_argv.c msh_free_setnull.c ../libft/libft.a -D TEST
+** gcc msh_split_cmd_to_argv.c msh_free_setnull.c ../libft/libft.a -D TEST_SPLIT
 **  (W options are not available due to an unused var: msinfo for error message)
 ** usage:
 **	./a.out './a.out < msh_free_setnull.c aaa' <- correct filepath
@@ -258,7 +268,7 @@ char		**msh_split_cmd_to_argv(t_mshinfo *mshinfo, char *cmd, int *argc)
 **	argv[2]: ../
 */
 
-#ifdef TEST
+#ifdef TEST_SPLIT
 # include <stdio.h>
 
 int			main(int num, char **var)
@@ -270,6 +280,7 @@ int			main(int num, char **var)
 
 	if (num != 2)
 		return (1);
+	// argv = msh_split_cmd_to_argv(&mshinfo, "a\>a", &argc);
 	argv = msh_split_cmd_to_argv(&mshinfo, var[1], &argc);
 	printf("argc: %d\n", argc);
 	i = -1;

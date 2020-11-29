@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/28 17:08:48 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/11/29 22:12:45 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,5 +175,10 @@ void			msh_keyval_free(void *keyval);
 ** *ptrをfreeして、*ptr=NULLする便利関数
 */
 void			msh_free_setnull(void **ptr);
+
+/*
+** '\'によりエスケープされているかを判定する関数。
+*/
+int			msh_isescaped(char *s, size_t len_from_start);
 
 #endif
