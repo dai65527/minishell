@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 08:49:16 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/29 11:25:27 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/11/29 11:26:21 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ static t_keyval	*get_env(char *envstr)
 	size_t		keylen;
 	t_keyval	*env;
 
-	ft_printf("%s\n", envstr);
 	if (!(env = (t_keyval *)malloc(sizeof(t_keyval))))
 		return (NULL);
 	keylen = 0;
