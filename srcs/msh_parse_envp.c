@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 08:49:16 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/29 11:20:58 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/11/29 11:25:27 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,8 @@ static t_keyval	*get_env(char *envstr)
 		return (get_env_errend(env));
 	if (!(env->key = ft_substr(envstr, 0, keylen)))
 		return (get_env_errend(env));
-	if (!(env->val = ft_substr(envstr, keylen + 1, ft_strlen(envstr) - keylen - 1)))
+	env->val = ft_substr(envstr, keylen + 1, ft_strlen(envstr) - keylen - 1);
+	if (!(env->val))
 	{
 		free(env->key);
 		return (get_env_errend(env));
@@ -71,7 +72,7 @@ t_list			*msh_parse_envp(char **envp)
 
 #ifdef TEST
 
-int		main(int argc, char **argv, char **envp)
+int				main(int argc, char **argv, char **envp)
 {
 	t_mshinfo	mshinfo;
 	t_list		*envlst;
@@ -84,7 +85,9 @@ int		main(int argc, char **argv, char **envp)
 	envlst = mshinfo.envlst;
 	while (envlst)
 	{
-		ft_printf("key = \"%s\", val = \"%s\"\n", ((t_keyval *)(envlst->content))->key, ((t_keyval *)(envlst->content))->val);
+		ft_printf("key = \"%s\", val = \"%s\"\n",
+			((t_keyval *)(envlst->content))->key,
+			((t_keyval *)(envlst->content))->val);
 		envlst = envlst->next;
 	}
 	msh_mshinfo_free(&mshinfo);
