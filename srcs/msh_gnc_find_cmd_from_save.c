@@ -6,10 +6,11 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 16:44:56 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/28 18:36:58 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/11/30 09:56:40 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include "minishell.h"
 
@@ -18,12 +19,19 @@ static size_t	gnc_cmdlen(char *save, int *flg_continue)
 	size_t	len;
 
 	len = 0;
-	while (save[len] != ';' && save[len] != '\n')
+	while (save[len] != '\n')
 	{
 		if (save[len] == '\0')
 		{
 			*flg_continue = 1;
-			return (0);
+			break ;
+		}
+		if (save[len] == ';')
+		{
+			if (!msh_isescaped(save + len, len))
+				break ;
+			ft_memmove(save + len - 1, save + len, ft_strlen(save + len) + 1);
+			continue ;
 		}
 		len++;
 	}
