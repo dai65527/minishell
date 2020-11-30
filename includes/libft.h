@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/05 12:01:52 by dnakano           #+#    #+#             */
-/*   Updated: 2020/10/31 09:50:46 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/11/30 08:40:32 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,10 @@ t_list				*ft_lstmap(t_list *lst, void *(*f)(void *),
 						void (*del)(void *));
 
 int					get_next_line(int fd, char **line);
-int					ft_printf(const char *format, ...);
+
+/*
+** Cannot use ft_printf in minishell (va_*** is not allowed)
+** int					ft_printf(const char *format, ...);
+*/
 
 #endif
