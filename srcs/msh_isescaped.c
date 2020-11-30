@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh_char_isescaped.c                               :+:      :+:    :+:   */
+/*   msh_isescaped.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 11:54:12 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/28 18:14:01 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/11/30 09:05:47 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 
 int			msh_isescaped(char *s, size_t len_from_start)
 {
-	int		i;
+	size_t	i;
 	int		flg_isescaped;
 
 	flg_isescaped = 0;
