@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/29 22:12:45 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/02 21:17:59 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ int				msh_gnc_find_cmd_from_save(char **cmd, char **save);
 int				msh_gnc_expand_env(t_mshinfo *mshinfo, char **cmd);
 void			msh_expand_env_to_str(char *str_new, char *str, t_list *envlst);
 int				msh_isenv(char *s, char *envkey, size_t slen);
+int				msh_isescaped(char *s, size_t len_from_start);
 
 /*
 ** minishell utils

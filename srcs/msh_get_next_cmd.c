@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/26 08:19:31 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/28 18:34:51 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/11/30 09:53:24 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ int			msh_get_next_cmd(t_mshinfo *mshinfo, char **cmd, char **save)
 			return (gnc_exit(MSH_EXIT_BY_ERR, cmd, save));
 		if (msh_gnc_find_cmd_from_save(cmd, save) != MSH_CONTINUE)
 			return (*save ? MSH_CONTINUE : MSH_EXIT_BY_ERR);
-		if (len == 0)
+		if (len < GNC_BUFSIZE)
 		{
 			if (ft_strlen(*save) == 0)
 				return (gnc_exit(MSH_EXIT_BY_CMD, cmd, save));
