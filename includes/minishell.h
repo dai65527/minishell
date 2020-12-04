@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/30 09:52:55 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/04 12:58:13 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ int				msh_isescaped(char *s, size_t len_from_start);
 */
 
 t_list			*msh_parse_envp(char **envp);
+char			**msh_make_envp(t_list *envlst);
 char			**mrt_split_cmd_to_argv(char *cmd, int *argc);
 void			*msh_put_errmsg(t_mshinfo *mshinfo);
 void			msh_mshinfo_init(t_mshinfo *mshinfo);
