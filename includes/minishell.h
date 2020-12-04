@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/04 12:58:13 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/05 08:06:49 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,56 +110,56 @@ int				msh_exit_by_err(t_mshinfo *mshinfo);
 */
 
 int				msh_echo(int argc, char **argv, t_mshinfo *mshinfo,
-							int ft_input);
+							int fd_input);
 
 /*
 ** cd
 */
 
 int				msh_cd(int argc, char **argv, t_mshinfo *mshinfo,
-							int ft_input);
+							int fd_input);
 
 /*
 ** pwd
 */
 
 int				msh_pwd(int argc, char **argv, t_mshinfo *mshinfo,
-							int ft_input);
+							int fd_input);
 
 /*
 ** export
 */
 
 int				msh_export(int argc, char **argv, t_mshinfo *mshinfo,
-							int ft_input);
+							int fd_input);
 
 /*
 ** unset
 */
 
 int				msh_unset(int argc, char **argv, t_mshinfo *mshinfo,
-							int ft_input);
+							int fd_input);
 
 /*
 ** env
 */
 
 int				msh_env(int argc, char **argv, t_mshinfo *mshinfo,
-							int ft_input);
+							int fd_input);
 
 /*
 ** exit
 */
 
 int				msh_exit(int argc, char **argv, t_mshinfo *mshinfo,
-							int ft_input);
+							int fd_input);
 
 /*
 ** exec_exceutable
 */
 
 int				msh_executable(int argc, char **argv, t_mshinfo *mshinfo,
-							int ft_input);
+							int fd_input);
 
 /*
 ** t_keyval utils
