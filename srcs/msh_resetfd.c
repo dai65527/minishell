@@ -1,0 +1,32 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   msh_resetfd.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/12/08 14:12:28 by dnakano           #+#    #+#             */
+/*   Updated: 2020/12/08 21:52:28 by dnakano          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include <unistd.h>
+#include "minishell.h"
+
+/*
+** msh_resetfd
+**
+**	reset standard file discriptors which were backuped to stdfd_backup[3] in
+**	msh_backupfd function. Must close stdfd_backup after they were duplicated.
+*/
+
+int			msh_resetfd(int *stdfd_backup)
+{
+	dup2(FD_STDIN, stdfd_backup[0]);
+	dup2(FD_STDOUT, stdfd_backup[1]);
+	dup2(FD_STDERR, stdfd_backup[2]);
+	close(stdfd_backup[0]);
+	close(stdfd_backup[1]);
+	close(stdfd_backup[2]);
+	return (0);
+}

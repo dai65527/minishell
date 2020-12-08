@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/05 08:06:49 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/08 14:23:53 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,13 @@ char			**mrt_split_cmd_to_argv(char *cmd, int *argc);
 void			*msh_put_errmsg(t_mshinfo *mshinfo);
 void			msh_mshinfo_init(t_mshinfo *mshinfo);
 void			msh_mshinfo_free(t_mshinfo *mshinfo);
+
+/*
+** file discripter utils
+*/
+
+int				msh_backupfd(int *stdfd_backup);
+int				msh_resetfd(int *stdfd_backup);
 
 /*
 ** minishell 終了時用の関数
