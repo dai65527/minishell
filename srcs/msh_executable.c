@@ -6,51 +6,43 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 20:13:33 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/05 08:43:54 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/08 21:43:02 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <fcntl.h>
 #include <unistd.h>
 #include <sys/wait.h>
 #include <stdlib.h>
 #include "minishell.h"
 
-#       include <stdio.h>
-
-/*
-**	pipe_locate: location of pipe
-*/
-
-int			execute_child(int argc, char **argv, t_mshinfo *mshinfo, int fd_input)
-{
-	char	**envp;
-
-	(void)argc;
-	(void)fd_input;
-	if (!(envp = msh_make_envp(mshinfo->envlst)))
-		return (MSH_EXIT_BY_ERR);
-	execve(argv[0], argv, envp);
-	return (MSH_EXIT_BY_ERR);
-}
+pid_t		fork_and_execute(char **argv, t_mshinfo *mshinfo);
 
 int			msh_executable(int argc, char **argv, t_mshinfo *mshinfo, int fd_input)
 {
+	int		pid;
 	int		status;
-	pid_t	pid;
+	int		stdfd_backup[3];
+	int		n_ps;
+	int		msh_haspipe;
 
-	(void)argc;
-	if ((pid = fork()) < 0)
+	(void)fd_input;
+	if (msh_backupfd(stdfd_backup))
 		return (MSH_EXIT_BY_ERR);
-	else if (pid == 0) /*child process*/
+	if ((msh_haspipe = msh_handle_redirect_and_pipe(argv, mshinfo) < 0))
+		return (MSH_EXIT_BY_ERR);
+	pid = fork_and_execute(argv, mshinfo);
+	n_ps = (msh_haspipe == 1) ? 2 : 1;
+	while (n_ps--)
 	{
-		if (execute_child(argc, argv, mshinfo, fd_input))
-			exit (MSH_EXIT_BY_ERR);
+		if (pid == wait(&status))
+			mshinfo->ret_last_cmd = status;
 	}
-	waitpid(pid, &status, 0);
-	return (status);
+	if (msh_resetfd(stdfd_backup))
+		return (MSH_EXIT_BY_ERR);
+	return (MSH_CONTINUE);
 }
 
-# define TEST_MSH_EXECUTABLE
 #ifdef TEST_MSH_EXECUTABLE
 
 int		main(int argc, char **argv, char **envp)
