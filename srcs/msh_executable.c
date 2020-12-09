@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 20:13:33 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/08 22:39:32 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/09 18:07:14 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,17 +23,16 @@ int			msh_executable(int argc, char **argv, t_mshinfo *mshinfo, int fd_input)
 	int		pid;
 	int		status;
 	int		stdfd_backup[3];
-	int		n_ps;
-	int		flg_haspipe;
+	int		n_pipe_redirect;
 
 	(void)fd_input;
 	if (msh_backupfd(stdfd_backup))
 		return (MSH_EXIT_BY_ERR);
-	if ((flg_haspipe = msh_handle_redirect_and_pipe(argv, mshinfo) < 0))
+	if ((n_pipe_redirect = msh_handle_redirect_and_pipe(argv, mshinfo)) < 0)
 		return (MSH_EXIT_BY_ERR);
-	pid = fork_and_execute(argv, mshinfo);
-	n_ps = (flg_haspipe == 1) ? 2 : 1;
-	while (n_ps--)
+	if ((pid = fork_and_execute(argv, mshinfo)) < -1)
+		return (MSH_EXIT_BY_ERR);
+	while (n_pipe_redirect-- + 1)
 	{
 		if (pid == wait(&status))
 			mshinfo->ret_last_cmd = status;

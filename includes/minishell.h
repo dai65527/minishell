@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/08 14:23:53 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/09 19:37:43 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,7 @@ void			msh_mshinfo_free(t_mshinfo *mshinfo);
 
 int				msh_backupfd(int *stdfd_backup);
 int				msh_resetfd(int *stdfd_backup);
+void			msh_closefds(int fd, int *pipe_fd);
 
 /*
 ** minishell 終了時用の関数
