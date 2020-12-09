@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/26 09:45:25 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/09 10:48:55 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/09 12:12:09 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,27 @@ int			msh_is_space(char c)
 	if (c == ' ' || ('\t' <= c && c <= '\r'))
 		return (1);
 	return (0);
+}
+
+
+static char	*get_value_from_envlst(t_mshinfo *mshinfo, char *key)
+{
+	t_list		*head;
+	t_keyval	*env;
+
+	// if (!*key)
+	// 	return ("");
+	head = mshinfo->envlst;
+	while (head)
+	{
+		env = head->content;
+		// if (env->key[0] == '\0' && key[0] == '\0')
+		// 	return ("");
+		if (!ft_strncmp(env->key, key, ft_strlen(env->key)))
+			return (env->val);
+		head = head->next;
+	}
+	return ("");
 }
 
 static char	*ft_substr_skip_bslash(char *s, t_uint start, size_t len)
@@ -59,24 +80,38 @@ static char	*ft_substr_skip_bslash(char *s, t_uint start, size_t len)
 	return (substr);
 }
 
-static char	*get_value_from_envlst(t_mshinfo *mshinfo, char *key)
+static char	*ft_sutdup_skip_bslash(char *s)
 {
-	t_list		*head;
-	t_keyval	*env;
+	size_t	i;
+	size_t	j;
+	size_t	s_len;
+	size_t	len;
+	char	*substr;
+	char 	*head;
 
-	// if (!*key)
-	// 	return ("");
-	head = mshinfo->envlst;
-	while (head)
+	s_len = ft_strlen(s);
+	len = s_len;
+	head = s;
+	while (*s)
 	{
-		env = head->content;
-		// if (env->key[0] == '\0' && key[0] == '\0')
-		// 	return ("");
-		if (!ft_strncmp(env->key, key, ft_strlen(env->key)))
-			return (env->val);
-		head = head->next;
+		if (*s == '\\' && !msh_isescaped(s, head - s))
+			len--;
+		s++;
 	}
-	return ("");
+	substr = (char *)malloc(len + 1);
+	if (!substr)
+		return (NULL);
+	i = 0;
+	j = 0;
+	s = head;
+	while (i < len && j < s_len)
+	{
+		if (s[j] != '\\' || (s[j] == '\\' && msh_isescaped(s + j, j)))
+			substr[i++] = s[j];
+		j++;
+	}
+	substr[len] = 0;
+	return (substr);
 }
 
 static void	free_set(char **dest, char *src)
@@ -110,7 +145,7 @@ static char *unfold_env(t_mshinfo *mshinfo, char **path)
 	i = -1;
 	while (str[++i])
 	{
-		if(str[i] == '$' && !msh_isescaped(&str[i], i))
+		if (str[i] == '$' && !msh_isescaped(&str[i], i))
 		{
 			if (!(ret = ft_substr(str, 0, i)))
 				ft_putendl_fd("malloc error", 2);
@@ -370,10 +405,13 @@ static int	store_argv(t_mshinfo *mshinfo, char **ret, char **cmd, char *head)
 			&& !((stop = ft_strchr("<>|\'\"$", **cmd))
 			&& !msh_isescaped(*cmd, *cmd - head)))
 			(*cmd)++;
-		if (*begin && !(*ret = ft_substr_skip_bslash(begin, 0, *cmd - begin)))
+		if (*begin && !(*ret = ft_substr(begin, 0, *cmd - begin)))
 			return (1);
+		// if (*begin && !(*ret = ft_substr_skip_bslash(begin, 0, *cmd - begin)))
+		// 	return (1);
 		if (is_dollar_in(*ret))
 			free_set(ret, unfold_env(mshinfo, ret));
+		free_set(ret, ft_sutdup_skip_bslash(*ret));
 		ret++;
 		if ((**cmd && stop && ft_strchr("<>|", *stop)
 			&& !msh_isescaped(*cmd, *cmd - head))
@@ -454,7 +492,7 @@ int			main(int num, char **var, char **envp)
 	// return (msh_loop(&mshinfo));
 	// if (num != 2)
 	// 	return (1);
-	argv = msh_split_cmd_to_argv(&mshinfo, "\\\\\\$USER", &argc);
+	argv = msh_split_cmd_to_argv(&mshinfo, "\\$USER\\$USER", &argc);
 	// argv = msh_split_cmd_to_argv(&mshinfo, var[1], &argc);
 	printf("argc: %d\n", argc);
 	i = -1;
