@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/26 09:45:25 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/02 21:11:50 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/09 10:48:55 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,11 +59,103 @@ static char	*ft_substr_skip_bslash(char *s, t_uint start, size_t len)
 	return (substr);
 }
 
+static char	*get_value_from_envlst(t_mshinfo *mshinfo, char *key)
+{
+	t_list		*head;
+	t_keyval	*env;
+
+	// if (!*key)
+	// 	return ("");
+	head = mshinfo->envlst;
+	while (head)
+	{
+		env = head->content;
+		// if (env->key[0] == '\0' && key[0] == '\0')
+		// 	return ("");
+		if (!ft_strncmp(env->key, key, ft_strlen(env->key)))
+			return (env->val);
+		head = head->next;
+	}
+	return ("");
+}
+
+static void	free_set(char **dest, char *src)
+{
+	free(*dest);
+	*dest = src;
+}
+
+static int	get_end_env(char *str)
+{
+	int i;
+
+	i = -1;
+	while (str[++i])
+	{
+		if (msh_is_space(str[i]) || (ft_strchr("<>|\'\"$", str[i]) && !msh_isescaped(str, i)))
+			return (i);
+	}
+	return (i);
+}
+
+static char *unfold_env(t_mshinfo *mshinfo, char **path)
+{
+	char *ret;
+	char *tmp;
+	char *str;
+	int i;
+	int end;
+
+	str = *path;
+	i = -1;
+	while (str[++i])
+	{
+		if(str[i] == '$' && !msh_isescaped(&str[i], i))
+		{
+			if (!(ret = ft_substr(str, 0, i)))
+				ft_putendl_fd("malloc error", 2);
+			end = get_end_env(&(str[++i]));
+			if (!(tmp = ft_substr(&str[i], 0, end)))
+				ft_putendl_fd("malloc error", 2);
+			// if (!get_value_from_envlst(mshinfo, tmp))
+			// {
+			// 	msh_free_setnull((void**)&tmp);
+			// 	msh_free_setnull((void**)&ret);
+			// 	break ;
+			// }
+			if (*ret)
+				free_set(&ret, ft_strjoin(ret, get_value_from_envlst(mshinfo, tmp)));
+			else
+				ret = ft_strdup(get_value_from_envlst(mshinfo, tmp));
+			free_set(&tmp, ft_strdup(&str[i + end]));
+			free_set(&ret, ft_strjoin(ret, tmp));
+			msh_free_setnull((void**)&tmp);
+			msh_free_setnull((void**)path);
+			return (ret);
+		}
+	}
+	return (*path);
+}
+
+static int	is_dollar_in(char *s)
+{
+	int i;
+
+	i = -1;
+	if (!s)
+		return (0);
+	while (s[++i])
+	{
+		if (s[i] == '$' && !msh_isescaped(&s[i], i))
+			return (1);
+	}
+	return (0);
+}
 /*
 ** check existence of file or dir by opening their path
 */
 
-static int	check_existence_file_dir(char *begin, char *cmd, char quate)
+static int	check_existence_file_dir(t_mshinfo *mshinfo, char *begin, char *cmd, char quate)
 {
 	char	*path;
 	int		fd;
@@ -71,6 +163,8 @@ static int	check_existence_file_dir(char *begin, char *cmd, char quate)
 
 	if (!(path = ft_substr_skip_bslash(begin, 0, cmd - begin)))
 		ft_putendl_fd("msh_exit_by_err", 2);//msh_exit_by_err(mshinfo);
+	if ((quate == '\"' || quate == -1) && is_dollar_in(path))
+		free_set(&path, unfold_env(mshinfo, &path));
 	fd = open(path, O_RDONLY);
 	dir_fd = opendir(path);
 	msh_free_setnull((void **)&path);
@@ -98,7 +192,9 @@ static int	handle_quate(t_mshinfo *mshinfo, char **cmd, char *head)
 	begin = *cmd;
 	while (**cmd && !(**cmd == quate && !msh_isescaped(*cmd, *cmd - head)))
 		(*cmd)++;
-	if (!check_existence_file_dir(begin, *cmd, quate))
+	if (!**cmd)
+		ft_putendl_fd("no closing quatation", 2);//error message which tells no closing quatation.
+	if (!check_existence_file_dir(mshinfo, begin, *cmd, quate))
 		return (1);
 	return (0);
 }
@@ -125,9 +221,9 @@ static int	check_stdin_redirect(t_mshinfo *mshinfo, char *cmd, char *head)
 					return (1);
 				continue ;
 			}
-			while (*cmd && !msh_is_space(*cmd) && !(ft_strchr("<>|", *cmd) && !msh_isescaped(cmd, cmd - head)))
+			while (*cmd && !msh_is_space(*cmd) && !(ft_strchr("<>|$", *cmd) && !msh_isescaped(cmd, cmd - head)))
 				cmd++;
-			if (!check_existence_file_dir(begin, cmd, -1))
+			if (!check_existence_file_dir(mshinfo, begin, cmd, -1))
 				return (1);
 		}
 		if (*cmd)
@@ -152,6 +248,18 @@ static void	count_argc(char *cmd, int *argc, char *head)
 		quate = -1;
 		while (*cmd && msh_is_space(*cmd))
 			cmd++;
+		if (!ft_strncmp("$?", cmd, 2) && !msh_isescaped(cmd, cmd - head))
+		{
+			(*argc)++;
+			cmd += 2;
+			continue ;
+		}
+		if (!ft_strncmp("$$", cmd, 2) && !msh_isescaped(cmd, cmd - head))
+		{
+			(*argc)++;
+			cmd += 2;
+			continue ;
+		}
 		if (*cmd)
 			(*argc)++;
 		if (*cmd == '\'' || *cmd == '\"')
@@ -159,19 +267,24 @@ static void	count_argc(char *cmd, int *argc, char *head)
 			quate = *cmd++;
 			while (*cmd && *cmd != quate)
 				cmd++;
-			cmd++;
+			if (*cmd)
+				cmd++;
+			else
+				ft_putendl_fd("no closing quatation", 2);//error message tells there is no closing quatation.
 			continue ;
 		}
-		while (*cmd && !((stop = ft_strchr("<>|\t\n\v\f\r \'\"", *cmd)) && !msh_isescaped(cmd, cmd - head)))
+		if (*cmd && ft_strchr("\'\"$", *cmd) && !msh_isescaped(cmd, cmd - head))
+			cmd++;
+		while (*cmd && !msh_is_space(*cmd) && !((stop = ft_strchr("<>|\'\"$", *cmd)) && !msh_isescaped(cmd, cmd - head)))
 			cmd++;
 		if (*cmd && stop && (ft_strchr("<>|", *stop)) && !msh_isescaped(cmd, cmd - head))
 			(*argc)++;
-		if (*cmd && !(stop && ft_strchr("\'\"", *stop) && !msh_isescaped(cmd, cmd - head)))
+		if (*cmd && !(stop && ft_strchr("\'\"$", *stop) && !msh_isescaped(cmd, cmd - head)))
 			cmd++;
 	}
 }
 
-static int	store_argv_quate(char **ret, char **cmd, int *i, char *head)
+static int	store_argv_quate(t_mshinfo *mshinfo, char ***ret, char **cmd, char *head)
 {
 	char *begin;
 	char quate;
@@ -183,8 +296,13 @@ static int	store_argv_quate(char **ret, char **cmd, int *i, char *head)
 		begin = *cmd;
 		while (**cmd && **cmd != quate)
 			(*cmd)++;
-		if (!(ret[++(*i)] = ft_substr(begin, 0, *cmd - begin)))
+		if (!**cmd)
+			ft_putendl_fd("no closing quatation", 2);
+		if (!(**ret = ft_substr(begin, 0, *cmd - begin)))
 			ft_putendl_fd("msh_exit_by_err", 2);//msh_exit_by_err(mshinfo);
+		(*ret)++;
+		if (quate == '\"' && is_dollar_in(**ret))
+			free_set(*ret, unfold_env(mshinfo, *ret));
 		if (**cmd)
 			(*cmd)++;
 		return (1);
@@ -197,29 +315,71 @@ static int	store_argv_quate(char **ret, char **cmd, int *i, char *head)
 ** and store them to char **argv
 */
 
-static int	store_argv(char **ret, char **cmd, int *i, char *head)
+static int	check_dollar_question(char *str)
 {
-	char *begin;
-	char *stop;
+	if (ft_strncmp("$?", str, 2))
+		return (1);
+	return (0);
+}
+
+static int	check_dollar_space(char *str)
+{
+	if (ft_strncmp("$ ", str, 2) || ft_strncmp("$\t", str, 2))
+		return (1);
+	return (0);
+}
+
+static int	store_argv(t_mshinfo *mshinfo, char **ret, char **cmd, char *head)
+{
+	char	*begin;
+	char	*stop;
 
 	while (**cmd)
 	{
 		while (**cmd && msh_is_space(**cmd))
 			(*cmd)++;
-		if (store_argv_quate(ret, &(*cmd), i, head))
+		if (!ft_strncmp("$?", *cmd, 2) && !msh_isescaped(*cmd, *cmd - head))
+		{
+			*ret++ = ft_strdup(ft_itoa(mshinfo->ret_last_cmd));
+			*cmd += 2;
+			continue ;
+		}
+		if ((!ft_strncmp("$ ", *cmd, 2) || !ft_strncmp("$\t", *cmd, 2)) && !msh_isescaped(*cmd, *cmd - head))
+		{
+			*ret++ = ft_strdup("$");
+			*cmd += 2;
+			continue ;
+		}
+		if (!ft_strncmp("$$", *cmd, 2)&& !msh_isescaped(*cmd, *cmd - head))
+		{
+			*ret++ = ft_strdup("");
+			*cmd += 2;
+			continue ;
+		}
+		if (!ft_strncmp("$", *cmd, 2)&& !msh_isescaped(*cmd, *cmd - head))
+		{
+			*ret++ = ft_strdup("$");
+			return (0);
+		}
+		if (store_argv_quate(mshinfo, &ret, &(*cmd), head))
 			continue ;
 		begin = *cmd;
+		if (**cmd && ft_strchr("\'\"$", **cmd) && !msh_isescaped(*cmd, *cmd - head))
+			(*cmd)++;
 		while (**cmd && !msh_is_space(**cmd)
-			&& !((stop = ft_strchr("<>|\'\"", **cmd))
+			&& !((stop = ft_strchr("<>|\'\"$", **cmd))
 			&& !msh_isescaped(*cmd, *cmd - head)))
 			(*cmd)++;
-		if (*begin && !(ret[++(*i)] = ft_substr_skip_bslash(begin, 0, *cmd - begin)))
+		if (*begin && !(*ret = ft_substr_skip_bslash(begin, 0, *cmd - begin)))
 			return (1);
+		if (is_dollar_in(*ret))
+			free_set(ret, unfold_env(mshinfo, ret));
+		ret++;
 		if ((**cmd && stop && ft_strchr("<>|", *stop)
 			&& !msh_isescaped(*cmd, *cmd - head))
-			&& !(ret[++(*i)] = ft_substr_skip_bslash(stop, 0, 1)))
+			&& !(*ret++ = ft_substr_skip_bslash(stop, 0, 1)))
 			return (1);
-		if (**cmd && !(stop && ft_strchr("\'\"", *stop) && !msh_isescaped(*cmd, *cmd - head)))
+		if (**cmd && !(stop && ft_strchr("\'\"$", *stop) && !msh_isescaped(*cmd, *cmd - head)))
 			(*cmd)++;
 	}
 	return (0);
@@ -238,22 +398,20 @@ char		**msh_split_cmd_to_argv(t_mshinfo *mshinfo, char *cmd, int *argc)
 {
 	char	**argv;
 	char	*head;
-	int		i;
 
 	head = cmd;
 	if (check_stdin_redirect(mshinfo, cmd, head))
 		ft_putendl_fd("msh_put_errmsg", 2);//msh_put_errmsg(mshinfo);
 	count_argc(cmd, argc, head);
 	argv = ft_calloc(sizeof(char *), (size_t)(*argc) + 1);
-	i = -1;
-	if (store_argv(argv, &cmd, &i, head))
+	if (store_argv(mshinfo, argv, &cmd, head))
 		ft_putendl_fd("msh_exit_by_err", 2);//msh_exit_by_err(mshinfo);
 	return (argv);
 }
 
 /*
 ** main for test
-** gcc -g msh_split_cmd_to_argv.c msh_free_setnull.c msh_char_isescaped.c -I../includes ../libft/libft.a -D TEST_SPLIT
+** gcc -g msh_split_cmd_to_argv.c msh_free_setnull.c msh_isescaped.c msh_mshinfo_init.c msh_parse_envp.c msh_keyval_free.c -I../includes ../libft/libft.a -D TEST_SPLIT 
 **  (W options are not available due to an unused var: msinfo for error message)
 ** usage:
 **	./a.out './a.out < msh_free_setnull.c aaa' <- correct filepath
@@ -280,17 +438,24 @@ char		**msh_split_cmd_to_argv(t_mshinfo *mshinfo, char *cmd, int *argc)
 #ifdef TEST_SPLIT
 # include <stdio.h>
 
-int			main(int num, char **var)
+int			main(int num, char **var, char **envp)
 {
 	int			argc;
 	t_mshinfo	mshinfo;
 	char		**argv;
 	int			i;
 
+	msh_mshinfo_init(&mshinfo);
+	mshinfo.envlst = msh_parse_envp(envp);
+	// if (argc <= 1)
+	// 	mshinfo.fd_cmdsrc = FD_STDIN;
+	// else if ((mshinfo.fd_cmdsrc = open(argv[1], O_RDONLY)) < 0)
+	// 	return (msh_exit_by_err(&mshinfo));
+	// return (msh_loop(&mshinfo));
 	// if (num != 2)
 	// 	return (1);
-	// argv = msh_split_cmd_to_argv(&mshinfo, "a\>a", &argc);
-	argv = msh_split_cmd_to_argv(&mshinfo, var[1], &argc);
+	argv = msh_split_cmd_to_argv(&mshinfo, "\\\\\\$USER", &argc);
+	// argv = msh_split_cmd_to_argv(&mshinfo, var[1], &argc);
 	printf("argc: %d\n", argc);
 	i = -1;
 	while (argv[++i])
