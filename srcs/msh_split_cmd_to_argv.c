@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/26 09:45:25 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/09 12:12:09 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/09 14:59:45 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ static char	*ft_substr_skip_bslash(char *s, t_uint start, size_t len)
 	return (substr);
 }
 
-static char	*ft_sutdup_skip_bslash(char *s)
+static char	*ft_strdup_skip_bslash(char *s)
 {
 	size_t	i;
 	size_t	j;
@@ -186,6 +186,7 @@ static int	is_dollar_in(char *s)
 	}
 	return (0);
 }
+
 /*
 ** check existence of file or dir by opening their path
 */
@@ -196,10 +197,11 @@ static int	check_existence_file_dir(t_mshinfo *mshinfo, char *begin, char *cmd, 
 	int		fd;
 	DIR		*dir_fd;
 
-	if (!(path = ft_substr_skip_bslash(begin, 0, cmd - begin)))
+	if (!(path = ft_substr(begin, 0, cmd - begin)))
 		ft_putendl_fd("msh_exit_by_err", 2);//msh_exit_by_err(mshinfo);
 	if ((quate == '\"' || quate == -1) && is_dollar_in(path))
 		free_set(&path, unfold_env(mshinfo, &path));
+	free_set(&path, ft_strdup_skip_bslash(path));
 	fd = open(path, O_RDONLY);
 	dir_fd = opendir(path);
 	msh_free_setnull((void **)&path);
@@ -328,6 +330,8 @@ static int	store_argv_quate(t_mshinfo *mshinfo, char ***ret, char **cmd, char *h
 	{
 		quate = **cmd;
 		(*cmd)++;
+		if (quate == "\"" && hundle_dollars(mshinfo, &ret, cmd, head))
+			return (1);
 		begin = *cmd;
 		while (**cmd && **cmd != quate)
 			(*cmd)++;
@@ -335,9 +339,10 @@ static int	store_argv_quate(t_mshinfo *mshinfo, char ***ret, char **cmd, char *h
 			ft_putendl_fd("no closing quatation", 2);
 		if (!(**ret = ft_substr(begin, 0, *cmd - begin)))
 			ft_putendl_fd("msh_exit_by_err", 2);//msh_exit_by_err(mshinfo);
-		(*ret)++;
 		if (quate == '\"' && is_dollar_in(**ret))
 			free_set(*ret, unfold_env(mshinfo, *ret));
+		free_set(*ret, ft_strdup_skip_bslash(**ret));
+		(*ret)++;
 		if (**cmd)
 			(*cmd)++;
 		return (1);
@@ -350,19 +355,43 @@ static int	store_argv_quate(t_mshinfo *mshinfo, char ***ret, char **cmd, char *h
 ** and store them to char **argv
 */
 
-static int	check_dollar_question(char *str)
+static int	hundle_dollars(t_mshinfo *mshinfo, char ***ret, char **cmd, char *head)
 {
-	if (ft_strncmp("$?", str, 2))
-		return (1);
+		if (!ft_strncmp("$?", *cmd, 2) && !msh_isescaped(*cmd, *cmd - head))
+		{
+			if (!(**ret = ft_strdup(ft_itoa(mshinfo->ret_last_cmd))))
+				ft_putendl_fd("msh_put_errmsg", 2);//msh_put_errmsg(mshinfo);
+			(*ret)++;
+			*cmd += 2;
+			return (1);
+		}
+		if ((!ft_strncmp("$ ", *cmd, 2) || !ft_strncmp("$\t", *cmd, 2)) && !msh_isescaped(*cmd, *cmd - head))
+		{
+			if (!(**ret = ft_strdup("$")))
+				ft_putendl_fd("msh_put_errmsg", 2);//msh_put_errmsg(mshinfo);
+			(*ret)++;
+			*cmd += 2;
+			return (1);
+		}
+		if (!ft_strncmp("$$", *cmd, 2)&& !msh_isescaped(*cmd, *cmd - head))
+		{
+			if (!(**ret = ft_strdup("")))
+				ft_putendl_fd("msh_put_errmsg", 2);//msh_put_errmsg(mshinfo);
+			(*ret)++;
+			*cmd += 2;
+			return (1);
+		}
+		if (!ft_strncmp("$", *cmd, 2)&& !msh_isescaped(*cmd, *cmd - head))
+		{
+			if (!(**ret = ft_strdup("$")))
+				ft_putendl_fd("msh_put_errmsg", 2);//msh_put_errmsg(mshinfo);
+			(*ret)++;
+			*cmd += 1;
+			return (1);
+		}
 	return (0);
 }
 
-static int	check_dollar_space(char *str)
-{
-	if (ft_strncmp("$ ", str, 2) || ft_strncmp("$\t", str, 2))
-		return (1);
-	return (0);
-}
 
 static int	store_argv(t_mshinfo *mshinfo, char **ret, char **cmd, char *head)
 {
@@ -373,29 +402,31 @@ static int	store_argv(t_mshinfo *mshinfo, char **ret, char **cmd, char *head)
 	{
 		while (**cmd && msh_is_space(**cmd))
 			(*cmd)++;
-		if (!ft_strncmp("$?", *cmd, 2) && !msh_isescaped(*cmd, *cmd - head))
-		{
-			*ret++ = ft_strdup(ft_itoa(mshinfo->ret_last_cmd));
-			*cmd += 2;
+		if (hundle_dollars(mshinfo, &ret, cmd, head))
 			continue ;
-		}
-		if ((!ft_strncmp("$ ", *cmd, 2) || !ft_strncmp("$\t", *cmd, 2)) && !msh_isescaped(*cmd, *cmd - head))
-		{
-			*ret++ = ft_strdup("$");
-			*cmd += 2;
-			continue ;
-		}
-		if (!ft_strncmp("$$", *cmd, 2)&& !msh_isescaped(*cmd, *cmd - head))
-		{
-			*ret++ = ft_strdup("");
-			*cmd += 2;
-			continue ;
-		}
-		if (!ft_strncmp("$", *cmd, 2)&& !msh_isescaped(*cmd, *cmd - head))
-		{
-			*ret++ = ft_strdup("$");
-			return (0);
-		}
+		// if (!ft_strncmp("$?", *cmd, 2) && !msh_isescaped(*cmd, *cmd - head))
+		// {
+		// 	*ret++ = ft_strdup(ft_itoa(mshinfo->ret_last_cmd));
+		// 	*cmd += 2;
+		// 	continue ;
+		// }
+		// if ((!ft_strncmp("$ ", *cmd, 2) || !ft_strncmp("$\t", *cmd, 2)) && !msh_isescaped(*cmd, *cmd - head))
+		// {
+		// 	*ret++ = ft_strdup("$");
+		// 	*cmd += 2;
+		// 	continue ;
+		// }
+		// if (!ft_strncmp("$$", *cmd, 2)&& !msh_isescaped(*cmd, *cmd - head))
+		// {
+		// 	*ret++ = ft_strdup("");
+		// 	*cmd += 2;
+		// 	continue ;
+		// }
+		// if (!ft_strncmp("$", *cmd, 2)&& !msh_isescaped(*cmd, *cmd - head))
+		// {
+		// 	*ret++ = ft_strdup("$");
+		// 	return (0);
+		// }
 		if (store_argv_quate(mshinfo, &ret, &(*cmd), head))
 			continue ;
 		begin = *cmd;
@@ -411,7 +442,7 @@ static int	store_argv(t_mshinfo *mshinfo, char **ret, char **cmd, char *head)
 		// 	return (1);
 		if (is_dollar_in(*ret))
 			free_set(ret, unfold_env(mshinfo, ret));
-		free_set(ret, ft_sutdup_skip_bslash(*ret));
+		free_set(ret, ft_strdup_skip_bslash(*ret));
 		ret++;
 		if ((**cmd && stop && ft_strchr("<>|", *stop)
 			&& !msh_isescaped(*cmd, *cmd - head))
@@ -492,7 +523,7 @@ int			main(int num, char **var, char **envp)
 	// return (msh_loop(&mshinfo));
 	// if (num != 2)
 	// 	return (1);
-	argv = msh_split_cmd_to_argv(&mshinfo, "\\$USER\\$USER", &argc);
+	argv = msh_split_cmd_to_argv(&mshinfo, "\'<\'\"$USER\"", &argc);
 	// argv = msh_split_cmd_to_argv(&mshinfo, var[1], &argc);
 	printf("argc: %d\n", argc);
 	i = -1;
