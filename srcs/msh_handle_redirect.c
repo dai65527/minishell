@@ -6,21 +6,15 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/08 14:29:20 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/09 17:55:16 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/10 10:11:45 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <fcntl.h>
 #include "minishell.h"
-#include <errno.h>
 
 #define BUFSIZE 1024
-
-/*
-** filediscriptor が有効な範囲かのチェックが未実装
-** 現在は3以上は何もせずスルーする。
-*/
 
 static int	get_redirect_fd(const char **arg)
 {
@@ -44,12 +38,29 @@ static int	get_open_option(char *arg)
 	int		open_option;
 
 	if (!ft_strncmp(arg, "<", 2))
-		return (O_WRONLY | O_CREAT);
-	else if (!ft_strncmp(arg, ">", 2))
-		return (O_WRONLY | O_CREAT | O_APPEND);
-	else if	(!ft_strncmp(arg, ">>", 3))
 		return (O_RDONLY);
+	else if (!ft_strncmp(arg, ">", 2))
+		return (O_WRONLY | O_CREAT);
+	else if	(!ft_strncmp(arg, ">>", 3))
+		return (O_WRONLY | O_CREAT | O_APPEND);
 	return (-1);
+}
+
+static int	remove_redirect_from_argv(char **argv)
+{
+	int		i;
+
+	i = 0;
+	while (1)
+	{
+		free(argv[i]);
+		argv[i] = argv[i + 2];
+		if (argv[i] == NULL)
+			break;
+	}
+	argv[i + 1] = NULL;
+	argv[i + 2] = NULL;
+	return (0);
 }
 
 int			msh_handle_redirect(const char **argv)
@@ -58,6 +69,8 @@ int			msh_handle_redirect(const char **argv)
 	int		redirect_fd;
 	int		file_fd;
 
+	if (*(argv + 1) == NULL)
+		return (0);
 	if ((redirect_fd = get_redirect_fd(argv)) < 0)
 		return (0);
 	if ((open_option = get_open_option(*argv)) < 0)
