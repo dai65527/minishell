@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/02 21:17:59 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/11 00:20:35 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,15 @@
 **					コンソールからの入力(STDIN) -> fd_cmdsrc = 0
 **					シェルスクリプト(ファイル)からの入力 -> fd_cmdsrc >= 3
 ** 	envlst:			環境変数のリスト（環境変数(t_keyval型)を格納するt_list）
+** 	arglst:			argvのリスト
 ** 	ret_last_cmd:	最後に実行したコマンドの返り値。（=$?）
 */
 
 typedef struct	s_mshinfo
 {
 	t_list		*envlst;
+	t_list		*arglst;
+	int			num_process;
 	int			fd_cmdsrc;
 	int			ret_last_cmd;
 }				t_mshinfo;
@@ -81,8 +84,8 @@ int				msh_exec_cmd(t_mshinfo *mshinfo, char *cmd, int fd_input);
 ** msh_get_next_cmd
 */
 
-int				msh_get_next_cmd(t_mshinfo *mshinfo, char **cmd, char **save);
-int				msh_gnc_find_cmd_from_save(char **cmd, char **save);
+int				msh_get_next_argv(t_mshinfo *mshinfo, char **cmd, char **save);
+int				msh_gnc_find_argv_from_save(t_mshinfo *mshinfo, char **save);
 int				msh_gnc_expand_env(t_mshinfo *mshinfo, char **cmd);
 void			msh_expand_env_to_str(char *str_new, char *str, t_list *envlst);
 int				msh_isenv(char *s, char *envkey, size_t slen);
@@ -181,5 +184,6 @@ void			msh_free_setnull(void **ptr);
 ** '\'によりエスケープされているかを判定する関数。
 */
 int			msh_isescaped(char *s, size_t len_from_start);
+int			msh_is_space(char c);
 
 #endif

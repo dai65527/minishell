@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msh_mshinfo_init.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/24 19:38:44 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/24 19:45:44 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/10 21:48:33 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
 void	msh_mshinfo_init(t_mshinfo *mshinfo)
 {
 	mshinfo->envlst = NULL;
+	mshinfo->arglst = NULL;
+	mshinfo->num_process = 0;
 	mshinfo->fd_cmdsrc = 0;
 	mshinfo->ret_last_cmd = 0;
 }
