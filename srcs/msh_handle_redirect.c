@@ -6,17 +6,18 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/08 14:29:20 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/10 10:11:45 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/10 20:34:40 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
+#include <stdlib.h>
 #include <fcntl.h>
 #include "minishell.h"
 
 #define BUFSIZE 1024
 
-static int	get_redirect_fd(const char **arg)
+static int	get_redirect_fd(char **arg)
 {
 	int		fd;
 
@@ -35,8 +36,6 @@ static int	get_redirect_fd(const char **arg)
 
 static int	get_open_option(char *arg)
 {
-	int		open_option;
-
 	if (!ft_strncmp(arg, "<", 2))
 		return (O_RDONLY);
 	else if (!ft_strncmp(arg, ">", 2))
@@ -63,11 +62,10 @@ static int	remove_redirect_from_argv(char **argv)
 	return (0);
 }
 
-int			msh_handle_redirect(const char **argv)
+int			msh_handle_redirect(char **argv)
 {
 	int		open_option;
 	int		redirect_fd;
-	int		file_fd;
 
 	if (*(argv + 1) == NULL)
 		return (0);

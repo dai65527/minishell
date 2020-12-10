@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/25 09:42:10 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/05 08:06:49 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/10 13:40:25 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 ** 引数
 ** 	mshinfo: minishellの情報
 ** 	cmd: 実行するコマンド
-** 	fd_input: 実行コマンドが標準入力として読み取るファイルディスクリプタ
 **
 ** 変数
 ** 	argc:	argvの個数（コマンド自体（"echo"など）も含む）
@@ -32,27 +31,22 @@
 ** 	msh_executable:			実行可能ファイル（executable）or shell scriptを実行する。
 */
 
-int			msh_exec_cmd(t_mshinfo *mshinfo, char *cmd, int fd_input)
+int			msh_exec_cmd(t_mshinfo *mshinfo, char **argv)
 {
-	int		argc;
-	char	**argv;
-
-	if (!(argv = mrt_split_cmd_to_argv(cmd, &argc)))
-		return (MSH_EXIT_BY_ERR);
 	if (!ft_strncmp(argv[0], "echo", ft_strlen("echo") + 1))
-		return (msh_echo(argc, argv, mshinfo, fd_input));
+		return (msh_echo(argv, mshinfo));
 	else if (!ft_strncmp(argv[0], "cd", ft_strlen("cd") + 1))
-		return (msh_cd(argc, argv, mshinfo, fd_input));
+		return (msh_cd(argv, mshinfo));
 	else if (!ft_strncmp(argv[0], "pwd", ft_strlen("pwd") + 1))
-		return (msh_pwd(argc, argv, mshinfo, fd_input));
+		return (msh_pwd(argv, mshinfo));
 	else if (!ft_strncmp(argv[0], "export", ft_strlen("export") + 1))
-		return (msh_export(argc, argv, mshinfo, fd_input));
+		return (msh_export(argv, mshinfo));
 	else if (!ft_strncmp(argv[0], "unset", ft_strlen("unset") + 1))
-		return (msh_unset(argc, argv, mshinfo, fd_input));
+		return (msh_unset(argv, mshinfo));
 	else if (!ft_strncmp(argv[0], "env", ft_strlen("env") + 1))
-		return (msh_env(argc, argv, mshinfo, fd_input));
+		return (msh_env(argv, mshinfo));
 	else if (!ft_strncmp(argv[0], "exit", ft_strlen("exit") + 1))
-		return (msh_exit(argc, argv, mshinfo, fd_input));
+		return (msh_exit(argv, mshinfo));
 	else
-		return (msh_executable(argc, argv, mshinfo, fd_input));
+		return (msh_executable(argv, mshinfo));
 }

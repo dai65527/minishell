@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/09 19:37:43 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/10 20:31:49 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ typedef struct	s_keyval
 */
 
 int				msh_loop(t_mshinfo *mshinfo);
-int				msh_exec_cmd(t_mshinfo *mshinfo, char *cmd, int fd_input);
+int				msh_exec_cmd(t_mshinfo *mshinfo, char **argv);
 
 /*
 ** msh_get_next_cmd
@@ -114,60 +114,64 @@ int				msh_exit_by_cmd(t_mshinfo *mshinfo);
 int				msh_exit_by_err(t_mshinfo *mshinfo);
 
 /*
+** redirect and pipe
+*/
+
+int				msh_handle_redirect_and_pipe(char **argv, t_mshinfo *mshinfo);
+int				msh_handle_redirect(char **argv);
+int				msh_create_redirect_process(char *fname,
+								int redirect_fd, int open_option);
+int				msh_handle_pipe(char **argv, t_mshinfo *mshinfo);
+
+/*
 ** echo
 */
 
-int				msh_echo(int argc, char **argv, t_mshinfo *mshinfo,
-							int fd_input);
+int				msh_echo(char **argv, t_mshinfo *mshinfo);
 
 /*
 ** cd
 */
 
-int				msh_cd(int argc, char **argv, t_mshinfo *mshinfo,
-							int fd_input);
+int				msh_cd(char **argv, t_mshinfo *mshinfo);
 
 /*
 ** pwd
 */
 
-int				msh_pwd(int argc, char **argv, t_mshinfo *mshinfo,
-							int fd_input);
+int				msh_pwd(char **argv, t_mshinfo *mshinfo);
 
 /*
 ** export
 */
 
-int				msh_export(int argc, char **argv, t_mshinfo *mshinfo,
-							int fd_input);
+int				msh_export(char **argv, t_mshinfo *mshinfo);
 
 /*
 ** unset
 */
 
-int				msh_unset(int argc, char **argv, t_mshinfo *mshinfo,
-							int fd_input);
+int				msh_unset(char **argv, t_mshinfo *mshinfo);
 
 /*
 ** env
 */
 
-int				msh_env(int argc, char **argv, t_mshinfo *mshinfo,
-							int fd_input);
+int				msh_env(char **argv, t_mshinfo *mshinfo);
 
 /*
 ** exit
 */
 
-int				msh_exit(int argc, char **argv, t_mshinfo *mshinfo,
-							int fd_input);
+int				msh_exit(char **argv, t_mshinfo *mshinfo);
 
 /*
 ** exec_exceutable
 */
 
-int				msh_executable(int argc, char **argv, t_mshinfo *mshinfo,
-							int fd_input);
+int				msh_executable(char **argv, t_mshinfo *mshinfo);
+int				msh_find_and_copy_path(char **argv, t_mshinfo *mshinfo,
+																char *path);
 
 /*
 ** t_keyval utils
@@ -179,6 +183,7 @@ void			msh_keyval_free(void *keyval);
 /*
 ** *ptrをfreeして、*ptr=NULLする便利関数
 */
+
 void			msh_free_setnull(void **ptr);
 
 #endif

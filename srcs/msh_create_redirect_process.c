@@ -6,12 +6,13 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/08 14:29:20 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/10 10:12:32 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/10 20:38:04 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <fcntl.h>
+#include <stdlib.h>
 #include "minishell.h"
 
 #define MSH_BUFSIZE 1024

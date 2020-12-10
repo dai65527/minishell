@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/08 14:29:20 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/09 18:02:42 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/10 20:28:42 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,19 @@
 int			msh_handle_redirect_and_pipe(char **argv, t_mshinfo *mshinfo)
 {
 	int		i;
-	int		haspipe;
 	int		ret;
 	int		n_ps;
 
+	n_ps = 0;
 	i = 1;
 	while (argv[i + 1])
 	{
 		if ((ret = msh_handle_redirect(argv + i)) < 0)
 			return (-1);
 		n_ps += ret;
-		if ((haspipe = handle_pipe(argv)) < 0)
+		if ((ret = msh_handle_pipe(argv, mshinfo)) < 0)
 			return (-1);
-		else if (haspipe == 1)
+		else if (ret == 1)
 			return (n_ps + 1);
 		i++;
 	}
