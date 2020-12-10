@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/10 10:49:56 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/10 19:55:48 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/10 23:54:15 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,15 @@
 #include <stdlib.h>
 #include <errno.h>
 #include "minishell.h"
+#include  <stdio.h>
 
 int			msh_handle_pipe(char **argv, t_mshinfo *mshinfo)
 {
 	int		pipe_fd[2];
 	pid_t	pid;
 
-	if (ft_strncmp(argv[0], "|", 2) || argv[1] == NULL)
+	printf("reach\n");
+	if (!argv[0] || ft_strncmp(argv[0], "|", 2) || argv[1] == NULL)
 		return (0);
 	if (pipe(pipe_fd) < 0)
 		return (-1);

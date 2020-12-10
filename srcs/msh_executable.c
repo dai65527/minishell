@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 20:13:33 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/10 20:44:28 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/10 23:40:31 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 #include <sys/wait.h>
 #include <sys/errno.h>
 #include "minishell.h"
+
+#include <stdio.h>   
 
 static pid_t	fork_and_execute(char **argv, t_mshinfo *mshinfo)
 {
@@ -80,6 +82,8 @@ int		main(int argc, char **argv, char **envp)
 {
 	t_mshinfo	mshinfo;
 
+	if (argc == 1)
+		return (1);
 	msh_mshinfo_init(&mshinfo);
 	if (!(mshinfo.envlst = msh_parse_envp(envp)))
 		return (1);

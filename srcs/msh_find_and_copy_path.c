@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/10 18:21:28 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/10 19:53:16 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/10 22:57:43 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 #include <sys/types.h>
 #include <sys/errno.h>
 #include "minishell.h"
+
+#include <stdio.h>  
 
 static void	msh_free_strs(char **strs)
 {
@@ -57,7 +59,8 @@ static int	find_cmd_from_pathdir(char *cmd, char *dname, char *path)
 	{
 		if (!ft_strncmp(dent->d_name, cmd, PATH_MAX))
 		{
-			if (ft_strlcpy(path, dname, PATH_MAX >= PATH_MAX)
+			if (ft_strlcpy(path, dname, PATH_MAX) >= PATH_MAX
+				|| ft_strlcat(path, "/", PATH_MAX) >= PATH_MAX
 				|| ft_strlcat(path, cmd, PATH_MAX) >= PATH_MAX)
 			{
 				errno = ENAMETOOLONG;
