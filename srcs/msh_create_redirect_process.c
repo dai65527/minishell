@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/08 14:29:20 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/10 23:59:38 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/11 08:00:11 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,11 @@ static int	output_redirect_child(int file_fd, int *pipe_fd)
 	int		len;
 	char	buf[MSH_BUFSIZE];
 
-	printf("reach child\n");
 	close(pipe_fd[1]);
 	while((len = read(pipe_fd[0], buf, MSH_BUFSIZE)) > 0)
 		write(file_fd, buf, len);
 	close(pipe_fd[0]);
 	close(file_fd);
-	printf("reach child\n");
 	exit(0);
 }
 
@@ -68,16 +66,13 @@ int			msh_create_redirect_process(char *fname,
 		return (end_create_redirect(file_fd, pipe_fd, -1));
 	else if (pid == 0)
 	{
-		printf("reach child\n");
-		if (open_option | O_WRONLY)
+		if (open_option & O_WRONLY)
 			output_redirect_child(file_fd, pipe_fd);
 		else
 			input_redirect_child(file_fd, pipe_fd);
 	}
-	if (redirect_fd <= 2 && (open_option | O_WRONLY))
-	{
+	if (redirect_fd <= 2 && (open_option & O_WRONLY))
 		dup2(pipe_fd[1], redirect_fd);
-	}
 	else if (redirect_fd <= 2)
 		dup2(pipe_fd[0], redirect_fd);
 	return (end_create_redirect(file_fd, pipe_fd, 0));
