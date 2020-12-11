@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 20:13:33 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/11 11:30:00 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/11 12:32:29 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <sys/wait.h>
 #include <sys/errno.h>
 #include "minishell.h"
+#include <stdio.h>   
 
 static pid_t	fork_and_execute(char **argv, t_mshinfo *mshinfo)
 {
@@ -38,7 +39,7 @@ static pid_t	fork_and_execute(char **argv, t_mshinfo *mshinfo)
 		execve(path, argv, envp);
 		exit(errno);
 	}
-	return (0);
+	return (pid);
 }
 
 int				msh_executable(char **argv, t_mshinfo *mshinfo)
@@ -52,13 +53,21 @@ int				msh_executable(char **argv, t_mshinfo *mshinfo)
 		return (MSH_EXIT_BY_ERR);
 	if ((n_ps = msh_handle_redirect_and_pipe(argv, mshinfo)) < 0)
 		return (MSH_EXIT_BY_ERR);
+	printf("n_ps = %d\n", n_ps);
 	if ((pid = fork_and_execute(argv, mshinfo)) != -1)
 		n_ps++;
+	printf("n_ps_ = %d\n", n_ps);
 	msh_resetfd(stdfd_backup);
+	printf("waiting.\n");
 	while (n_ps--)
 	{
 		if (pid == wait(&status))
+		{
 			mshinfo->ret_last_cmd = status;
+			printf("%d has back\n", pid);
+		}
+		else
+			printf("child has back\n");
 	}
 	return (MSH_CONTINUE);
 }
