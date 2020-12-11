@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 16:44:56 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/11 02:48:19 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/11 23:50:31 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,11 +178,13 @@ size_t	msh_get_argv(t_mshinfo *mshinfo, char *save, ssize_t len)
 	char	*content;
 	t_list	*new;
 
-	if (!(content = ft_strdup("")))
-		ft_putendl_fd("msh_put_errmsg", 2);
 	begin1 = len;
 	while (msh_check_operator(mshinfo, save, len, "$><| \t\'\"\n;"))
 		len++;
+	if (begin1 == len && save[len] != '$')
+		return (0);
+	if (!(content = ft_strdup("")))
+		ft_putendl_fd("msh_put_errmsg", 2);
 	msh_free_set(&content,
 		ft_strjoin(content, ft_substr(save, begin1, len - begin1)));
 	if (save[len] == '$')
@@ -222,11 +224,13 @@ size_t	msh_get_argv_quate(t_mshinfo *mshinfo, char *save, ssize_t len)
 	char	*content;
 	t_list	*new;
 
-	if (!(content = ft_strdup("")))
-		ft_putendl_fd("msh_put_errmsg", 2);
 	begin1 = len;
 	while (msh_check_operator(mshinfo, save, len, "$\""))
 		len++;
+	if (begin1 == len)
+		return (0);
+	if (!(content = ft_strdup("")))
+		ft_putendl_fd("msh_put_errmsg", 2);
 	msh_free_set(&content,
 		ft_strjoin(content, ft_substr(save, begin1, len - begin1)));
 	if (save[len] == '$')
@@ -297,6 +301,41 @@ static size_t	msh_hundle_quate(t_mshinfo *mshinfo, char *save, size_t len)
 	return (len - begin);
 }
 
+int				msh_hundle_redirect_fd(t_mshinfo *mshinfo, char *save, size_t len)
+{
+	size_t	begin;
+
+	begin = len;
+	while (ft_isdigit(save[len]))
+		len++;
+	if (!save[len] || (save[len] && !ft_strchr("<>", save[len])))
+		return (0);
+	if (!ft_strncmp(&save[len], ">>", 2))
+	{
+		write(1, &save[begin], len - begin);		
+		ft_putendl_fd(">>", 1);
+		len += 2;
+		// len += hundle_append(mshinfo, &save[len], len);
+	}
+	else if (save[len] == '>')
+	{
+		write(1, &save[begin], len - begin);
+		ft_putendl_fd(">", 1);
+		len++;
+		// len += hundle_write(mshinfo, &save[len], len);
+	}
+	else if (save[len] == '<')
+	{
+		write(1, &save[begin], len - begin);
+		ft_putendl_fd("<", 1);
+		len++;
+		// len += hundle_read(mshinfo, &save[len], len);
+	}
+	while (save[len] && msh_is_space(save[len]))
+		len++;
+	return (len - begin);
+}
+
 static size_t	store_argv(t_mshinfo *mshinfo, char *save, size_t len)
 {
 	size_t	ret;
@@ -310,11 +349,10 @@ static size_t	store_argv(t_mshinfo *mshinfo, char *save, size_t len)
 	{
 		while (save[len] && msh_is_space(save[len]))
 			len++;
+		len += msh_hundle_redirect_fd(mshinfo, save,len);
 		len += msh_hundle_quate(mshinfo, save, len);
 		len += msh_get_argv(mshinfo, save, len);
 		len += msh_hundle_redirect_pipe(mshinfo, save, len);
-		while (save[len] && msh_is_space(save[len]))
-			len++;
 	}
 	return (len - begin);
 }
@@ -421,7 +459,9 @@ int		main(int argc, char **argv, char **envp)
 	else if ((mshinfo.fd_cmdsrc = open(argv[1], O_RDONLY)) < 0)
 		{}
 		// return (msh_exit_by_err(&mshinfo));
-	char *save = ft_strdup("$USER>>a>b<c");
+	char *save = ft_strdup("1>> $USER a>b 5<c");
+	printf("input: %s\n", save);
+	printf("---redirect, pipe---\n");
 	char **argvs = NULL;
 	msh_gnc_find_argv_from_save(&mshinfo, &save);
 	if (!(argvs = ft_calloc(sizeof(char*), ft_lstsize(mshinfo.arglst) + 1)))
@@ -429,6 +469,7 @@ int		main(int argc, char **argv, char **envp)
 	if (arglst_to_argv(&mshinfo, argvs))
 		ft_putendl_fd("msh_put_errmsg", 2);
 	int i = -1;
+	printf("---------argv-------\n");
 	while (argvs[++i])
 		printf("%s\n", argvs[i]);
 }
