@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/10 10:49:56 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/11 08:04:20 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/11 11:48:14 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int			msh_handle_pipe(char **argv, t_mshinfo *mshinfo)
 	int		pipe_fd[2];
 	pid_t	pid;
 
-	if (!argv[0] || ft_strncmp(argv[0], "|", 2) || argv[1] == NULL)
+	if (!argv[0] || !argv[1] || ft_strncmp(argv[0], "|", 2))
 		return (0);
 	if (pipe(pipe_fd) < 0)
 		return (-1);
@@ -36,8 +36,12 @@ int			msh_handle_pipe(char **argv, t_mshinfo *mshinfo)
 		close(pipe_fd[1]);
 		dup2(pipe_fd[0], FD_STDIN);
 		close(pipe_fd[0]);
-		msh_exec_cmd(mshinfo, argv);
+		msh_exec_cmd(mshinfo, argv + 1);
 		exit(errno);
 	}
+	argv[0] = NULL;
+	close(pipe_fd[0]);
+	dup2(pipe_fd[1], FD_STDOUT);
+	close(pipe_fd[1]);
 	return (1);
 }

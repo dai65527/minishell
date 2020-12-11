@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 20:13:33 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/11 09:25:01 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/11 11:30:00 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,18 @@ int				msh_executable(char **argv, t_mshinfo *mshinfo)
 /*
 **	HOW TO TEST
 **
+**	0.	move to srcs directory.
 **	1.	compile with -- gcc -Wall -Wextra -Werror -D TEST_MSH_EXECUTABLE -I../includes msh_executable.c msh_handle_redirect_and_pipe.c msh_handle_redirect.c msh_create_redirect_process.c msh_handle_pipe.c msh_find_and_copy_path.c msh_backupfd.c msh_resetfd.c msh_closefds.c msh_mshinfo_init.c msh_parse_envp.c msh_make_envp.c msh_keyval_free.c ../libft/libft.a
+**	2.	it works with command line arguments. ( '>', '<' or '|' should be escaped)
+**	ex)
+**		$ ./a.out cat
+**		$ ./a.out cat test.txt
+**		$ ./a.out cat test.txt \> test2.txt
+**		$ ./a.out cat test.txt \>\> test2.txt
+**		$ ./a.out cat test.txt \> test2.txt \> test3.txt
+**		$ ./a.out cat \< test.txt \> test2.txt
+**		$ ./a.out ls | cat
+**		$ ./a.out ls | cat 
 */
 
 #ifdef TEST_MSH_EXECUTABLE
@@ -90,8 +101,9 @@ int		main(int argc, char **argv, char **envp)
 		return (1);
 	if (argc <= 1)
 		mshinfo.fd_cmdsrc = FD_STDIN;
+	msh_executable(argv + 1, &mshinfo);
 	printf("end\n");
-	return (msh_executable(argv + 1, &mshinfo));
+	return (0);
 }
 
 #endif
