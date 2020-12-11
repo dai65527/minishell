@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 16:44:56 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/11 23:50:31 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/12 01:07:12 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,8 @@ static size_t	msh_hundle_dollars(t_mshinfo *mshinfo, char *save, ssize_t len)
 			ft_putendl_fd("msh_put_errmsg", 2);
 	else if (!ft_strncmp("$$", &save[len], 2) && !(content = ft_strdup("")))
 			ft_putendl_fd("msh_put_errmsg", 2);
-	else if (!ft_strncmp("$", &save[len], 2) && !(content = ft_strdup("$")))
+	else if ((!ft_strncmp("$", &save[len], 2) || !ft_strncmp("$\"", &save[len], 2))
+			 && !(content = ft_strdup("$")))
 			ft_putendl_fd("msh_put_errmsg", 2);
 	if (content)
 	{
@@ -170,13 +171,27 @@ int		msh_check_operator(t_mshinfo *mshinfo,
 		return (0);
 }
 
+int		msh_content_arglst(t_mshinfo *mshinfo, char *content)
+{
+	t_list	*new;
+
+	if (content)
+	{
+		if (!(new = ft_lstnew(content)))
+			return (1);
+		ft_lstadd_back(&mshinfo->arglst, new);
+	}
+	else
+		return (1);
+	return (0);
+}
+
 size_t	msh_get_argv(t_mshinfo *mshinfo, char *save, ssize_t len)
 {
 	size_t	begin1;
 	size_t	begin2;
 	char	*key;
 	char	*content;
-	t_list	*new;
 
 	begin1 = len;
 	while (msh_check_operator(mshinfo, save, len, "$><| \t\'\"\n;"))
@@ -205,13 +220,7 @@ size_t	msh_get_argv(t_mshinfo *mshinfo, char *save, ssize_t len)
 		}
 	}
 	msh_free_set(&content, ft_strdup_skip_bslash(content));
-	if (content)
-	{
-		if (!(new = ft_lstnew(content)))
-			ft_putendl_fd("msh_put_errmsg", 2);
-		ft_lstadd_back(&mshinfo->arglst, new);
-	}
-	else
+	if (msh_content_arglst(mshinfo, content))
 		ft_putendl_fd("msh_put_errmsg", 2);
 	return (len - begin1);
 }
@@ -222,7 +231,6 @@ size_t	msh_get_argv_quate(t_mshinfo *mshinfo, char *save, ssize_t len)
 	size_t	begin2;
 	char	*key;
 	char	*content;
-	t_list	*new;
 
 	begin1 = len;
 	while (msh_check_operator(mshinfo, save, len, "$\""))
@@ -246,23 +254,11 @@ size_t	msh_get_argv_quate(t_mshinfo *mshinfo, char *save, ssize_t len)
 				ft_putendl_fd("msh_put_errmsg", 2);
 			msh_free_set(&content,
 				ft_strjoin(content, get_value_from_envlst(mshinfo, &key)));
-			if (content)
-			{
-				if (!(new = ft_lstnew(content)))
-					ft_putendl_fd("msh_put_errmsg", 2);
-				ft_lstadd_back(&mshinfo->arglst, new);
-			}
-			else
+			if (msh_content_arglst(mshinfo, content))
 				ft_putendl_fd("msh_put_errmsg", 2);
 		}
 	}
-	if (content)
-	{
-		if (!(new = ft_lstnew(content)))
-			ft_putendl_fd("msh_put_errmsg", 2);
-		ft_lstadd_back(&mshinfo->arglst, new);
-	}
-	else
+	if (msh_content_arglst(mshinfo, content))
 		ft_putendl_fd("msh_put_errmsg", 2);
 	return (len - begin1);
 }
@@ -271,34 +267,31 @@ static size_t	msh_hundle_quate(t_mshinfo *mshinfo, char *save, size_t len)
 {
 	size_t	begin;
 	char	*content;
+	t_list	*new;
 
 	if (!ft_strchr("\'\"", save[len]))
 		return (0);
-	if (!(content = ft_strdup("")))
-		ft_putendl_fd("msh_put_errmsg", 2);
-	begin = len;
 	if (save[len] == '\'')
 	{
-		if (!(content = ft_strdup("")))
-			ft_putendl_fd("msh_put_errmsg", 2);
-		begin = len;
+		begin = ++len;
 		while (msh_check_operator(mshinfo, save, len, "\'"))
 			len++;
 		if (save[len] != '\'')
 			ft_putendl_fd("quatation is not closing", 2);
-		msh_free_set(&content,
-			ft_strjoin(content, ft_substr(save, begin, len - begin)));
-		if (!content)
+		if (!(content = ft_substr(save, begin, len - begin)))
 			ft_putendl_fd("msh_put_errmsg", 2);
-		return (len - begin);
+		len++;
+		if (msh_content_arglst(mshinfo, content))
+				ft_putendl_fd("msh_put_errmsg", 2);
+		return (len - (begin - 1));
 	}
 	else if (save[len] == '\"')
 	{
 		len += msh_get_argv_quate(mshinfo, save, len);
-		if (save[len] != '\'')
+		if (save[len] != '\"')
 			ft_putendl_fd("quatation is not closing", 2);
 	}
-	return (len - begin);
+	return (len - (begin - 1));
 }
 
 int				msh_hundle_redirect_fd(t_mshinfo *mshinfo, char *save, size_t len)
@@ -353,6 +346,8 @@ static size_t	store_argv(t_mshinfo *mshinfo, char *save, size_t len)
 		len += msh_hundle_quate(mshinfo, save, len);
 		len += msh_get_argv(mshinfo, save, len);
 		len += msh_hundle_redirect_pipe(mshinfo, save, len);
+		while (save[len] && msh_is_space(save[len]))
+			len++;
 	}
 	return (len - begin);
 }
@@ -421,10 +416,6 @@ int				msh_gnc_find_argv_from_save(t_mshinfo *mshinfo, char **save)
 	head = *save;
 	flg_continue = 0;
 	argvlen = gnc_argvlen(mshinfo, *save, head, &flg_continue);
-	// if (!(argv = ft_calloc(sizeof(char*), ft_lstsize(mshinfo->arglst) + 1)))
-	// 	ft_putendl_fd("msh_put_errmsg", 2);
-	// if (arglst_to_argv(mshinfo, argv))
-	// 	ft_putendl_fd("msh_put_errmsg", 2);
 	if (flg_continue)
 		return (MSH_CONTINUE);
 	new_save = ft_substr(*save, argvlen + 1, ft_strlen(*save) - argvlen - 1);
@@ -459,7 +450,7 @@ int		main(int argc, char **argv, char **envp)
 	else if ((mshinfo.fd_cmdsrc = open(argv[1], O_RDONLY)) < 0)
 		{}
 		// return (msh_exit_by_err(&mshinfo));
-	char *save = ft_strdup("1>> $USER a>b 5<c");
+	char *save = ft_strdup("echo 42> test \"a$USER b $? $$ $\" c>>d 19<e 'a$USER b $? $$ $'");
 	printf("input: %s\n", save);
 	printf("---redirect, pipe---\n");
 	char **argvs = NULL;
