@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 20:13:33 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/10 23:40:31 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/11 09:25:01 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@
 #include <sys/wait.h>
 #include <sys/errno.h>
 #include "minishell.h"
-
-#include <stdio.h>   
 
 static pid_t	fork_and_execute(char **argv, t_mshinfo *mshinfo)
 {
@@ -73,6 +71,8 @@ int				msh_executable(char **argv, t_mshinfo *mshinfo)
 
 #ifdef TEST_MSH_EXECUTABLE
 
+#include <stdio.h>
+
 int		msh_exec_cmd(t_mshinfo *mshinfo, char **argv)
 {
 	return (msh_executable(argv, mshinfo));
@@ -82,6 +82,7 @@ int		main(int argc, char **argv, char **envp)
 {
 	t_mshinfo	mshinfo;
 
+	printf("start\n");
 	if (argc == 1)
 		return (1);
 	msh_mshinfo_init(&mshinfo);
@@ -89,6 +90,7 @@ int		main(int argc, char **argv, char **envp)
 		return (1);
 	if (argc <= 1)
 		mshinfo.fd_cmdsrc = FD_STDIN;
+	printf("end\n");
 	return (msh_executable(argv + 1, &mshinfo));
 }
 

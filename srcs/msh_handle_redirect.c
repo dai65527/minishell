@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/08 14:29:20 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/11 08:03:11 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/11 09:22:36 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static int	get_open_option(char *arg)
 	if (!ft_strncmp(arg, "<", 2))
 		return (O_RDONLY);
 	else if (!ft_strncmp(arg, ">", 2))
-		return (O_WRONLY | O_CREAT);
+		return (O_WRONLY | O_CREAT | O_TRUNC);
 	else if	(!ft_strncmp(arg, ">>", 3))
 		return (O_WRONLY | O_CREAT | O_APPEND);
 	return (-1);
@@ -56,6 +56,7 @@ static int	remove_redirect_from_argv(char **argv)
 		argv[i] = argv[i + 2];
 		if (argv[i] == NULL)
 			break;
+		i++;
 	}
 	argv[i + 1] = NULL;
 	argv[i + 2] = NULL;
