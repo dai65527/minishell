@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/11 00:20:35 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/12 23:30:15 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,22 @@ int				msh_isenv(char *s, char *envkey, size_t slen);
 int				msh_isescaped(char *s, size_t len_from_start);
 
 /*
+** msh_gnc_find_argv_from_save
+*/
+size_t			msh_store_argv(t_mshinfo *mshinfo, char *save, size_t len);
+int				msh_content_arglst(t_mshinfo *mshinfo, char *content);
+int				msh_check_operator(t_mshinfo *mshinfo,
+				char *save, ssize_t len, char *operator);
+size_t			msh_hundle_dollars(t_mshinfo *mshinfo, char *save, ssize_t len);
+size_t			msh_hundle_redirect_fd(t_mshinfo *mshinfo,
+										char *save, size_t len);
+size_t			msh_hundle_redirect_pipe(t_mshinfo *mshinfo,
+										char *save, ssize_t len);
+size_t			msh_hundle_quate(t_mshinfo *mshinfo,
+										char *save, size_t len);
+char			*get_value_from_envlst(t_mshinfo *mshinfo, char **key);
+char			*ft_strdup_skip_bslash(char *s);
+/*
 ** minishell utils
 */
 
@@ -101,6 +117,8 @@ char			**msh_split_cmd_to_argv(t_mshinfo *mshinfo,
 void			*msh_put_errmsg(t_mshinfo *mshinfo);
 void			msh_mshinfo_init(t_mshinfo *mshinfo);
 void			msh_mshinfo_free(t_mshinfo *mshinfo);
+void			msh_free_set(char **dest, char *src);
+void			msh_free_argvp(void ***argvp);
 
 /*
 ** minishell 終了時用の関数
@@ -183,7 +201,7 @@ void			msh_free_setnull(void **ptr);
 /*
 ** '\'によりエスケープされているかを判定する関数。
 */
-int			msh_isescaped(char *s, size_t len_from_start);
-int			msh_is_space(char c);
+int				msh_isescaped(char *s, size_t len_from_start);
+int				msh_is_space(char c);
 
 #endif
