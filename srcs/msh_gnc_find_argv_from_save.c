@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 16:44:56 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/12 23:36:35 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/15 11:29:40 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include "minishell.h"
 
-static size_t		gnc_argvlen(t_mshinfo *mshinfo, char *save, char *head, int *flg_continue)
+static size_t		gnc_argvlen(t_mshinfo *mshinfo, char *save, int *flg_continue)
 {
 	size_t	len;
 
@@ -38,12 +38,20 @@ static size_t		gnc_argvlen(t_mshinfo *mshinfo, char *save, char *head, int *flg_
 	return (len);
 }
 
-static t_list		*ft_lstget(t_list *lst, int index)
+/*
+** get elem from linkedlist by index from the begining
+*/
+
+t_list				*ft_lstget(t_list *lst, int index)
 {
 	while (lst && index--)
 		lst = lst->next;
 	return (lst);
 }
+
+/*
+** arglst(linked list of argv) is convereted to char **argv
+*/
 
 static int			arglst_to_argv(t_mshinfo *mshinfo, char **argv)
 {
@@ -77,7 +85,7 @@ int					msh_gnc_find_argv_from_save(t_mshinfo *mshinfo, char **save)
 
 	head = *save;
 	flg_continue = 0;
-	argvlen = gnc_argvlen(mshinfo, *save, head, &flg_continue);
+	argvlen = gnc_argvlen(mshinfo, *save, &flg_continue);
 	if (flg_continue)
 		return (MSH_CONTINUE);
 	new_save = ft_substr(*save, argvlen + 1, ft_strlen(*save) - argvlen - 1);
@@ -92,8 +100,8 @@ int					msh_gnc_find_argv_from_save(t_mshinfo *mshinfo, char **save)
 }
 
 /*
-** gcc msh_mshinfo_init.c msh_parse_envp.c msh_gnc_find_argv_from_save.c msh_free_setnull.c msh_isescaped.c msh_keyval_free.c msh_store_argv.c msh_hundle_quatation.c msh_isspace.c msh_strdup_skip_bslash.c msh_free_funcs.c msh_get_value_from_envlst.c msh_argv_redirect_pipe.c -I../includes ../libft/libft.a -D ARGV_TEST
-** 115行目のsaveの引数でテストできます。
+** gcc -Wall -Wextra -Werror msh_mshinfo_init.c msh_parse_envp.c msh_gnc_find_argv_from_save.c msh_free_setnull.c msh_isescaped.c msh_keyval_free.c msh_store_argv.c msh_hundle_quatation.c msh_isspace.c msh_strdup_skip_bslash.c msh_free_funcs.c msh_get_value_from_envlst.c msh_argv_redirect_pipe.c -I../includes ../libft/libft.a -D ARGV_TEST
+** 116行目のsaveの引数でテストできます。
 */
 
 #ifdef ARGV_TEST
@@ -112,7 +120,9 @@ int		main(int argc, char **argv, char **envp)
 	else if ((mshinfo.fd_cmdsrc = open(argv[1], O_RDONLY)) < 0)
 		{}
 		// return (msh_exit_by_err(&mshinfo));
-	char *save = ft_strdup("a$USER<a|a 42>> 'a$USER<a|a 42>>'  \"a$USER<a|a 42>>\"");
+	// char *save = ft_strdup("a$USER<");
+	char *save = ft_strdup("a$USER<b c$USER12<d 22<e \\32<f a$USER|a \\42>>'a$USER<a|a \\42>>'\"a$USER<a|a \\52>>\"");
+	// char *save = ft_strdup("echo 42>> test1 42> test2 42< test3");
 	printf("input: %s\n", save);
 	printf("---redirect, pipe---\n");
 	char **argvs = NULL;

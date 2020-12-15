@@ -6,12 +6,16 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 01:56:20 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/12 23:27:05 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/15 11:25:43 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include "minishell.h"
+
+/*
+** hundle specail case for '$'
+*/
 
 size_t			msh_hundle_dollars(t_mshinfo *mshinfo, char *save, ssize_t len)
 {
@@ -40,6 +44,10 @@ size_t			msh_hundle_dollars(t_mshinfo *mshinfo, char *save, ssize_t len)
 	return (0);
 }
 
+/*
+** get env in quatation
+*/
+
 static size_t	msh_get_env_quate(t_mshinfo *mshinfo, char *save,
 									ssize_t len, char **content)
 {
@@ -49,7 +57,7 @@ static size_t	msh_get_env_quate(t_mshinfo *mshinfo, char *save,
 	if (msh_hundle_dollars(mshinfo, save, len))
 		return (2);
 	begin = ++len;
-	while (msh_check_operator(mshinfo, save, len, "$<>|\'\""))
+	while (msh_check_operator(save, len, "$<>|\'\""))
 		len++;
 	if (!(key = ft_substr(save, begin, len - begin)))
 		ft_putendl_fd("msh_put_errmsg", 2);
@@ -60,20 +68,23 @@ static size_t	msh_get_env_quate(t_mshinfo *mshinfo, char *save,
 	return (len - (begin - 1));
 }
 
+/*
+** get argv in double quotation
+*/
+
 size_t			msh_get_argv_quate(t_mshinfo *mshinfo, char *save, ssize_t len)
 {
 	size_t	begin1;
 	size_t	begin2;
-	char	*key;
 	char	*content;
 
 	if (!(content = ft_strdup("")))
 		ft_putendl_fd("msh_put_errmsg", 2);
 	begin1 = len;
-	while (msh_check_operator(mshinfo, save, len, "\""))
+	while (msh_check_operator(save, len, "\""))
 	{
 		begin2 = len;
-		while (msh_check_operator(mshinfo, save, len, "$\""))
+		while (msh_check_operator(save, len, "$\""))
 			len++;
 		msh_free_set(&content,
 			ft_strjoin(content, ft_substr(save, begin2, len - begin2)));
@@ -85,24 +96,30 @@ size_t			msh_get_argv_quate(t_mshinfo *mshinfo, char *save, ssize_t len)
 	return (len - begin1);
 }
 
+/*
+** hundle single and double quatation
+** for single, store argv to arglst here
+** for double call func to store argv
+*/
+
 size_t			msh_hundle_quate(t_mshinfo *mshinfo, char *save, size_t len)
 {
 	size_t	begin;
 	char	*content;
-	t_list	*new;
 
 	if (!ft_strchr("\'\"", save[len]))
 		return (0);
 	if (save[len] == '\'')
 	{
 		begin = ++len;
-		while (msh_check_operator(mshinfo, save, len, "\'"))
+		while (msh_check_operator(save, len, "\'"))
 			len++;
 		if (save[len] != '\'')
 			ft_putendl_fd("quatation is not closing", 2);
 		content = ft_substr(save, begin, len++ - begin);
 		if (msh_content_arglst(mshinfo, content))
 			ft_putendl_fd("msh_put_errmsg", 2);
+		return (len - (begin - 1));
 	}
 	else if (save[len] == '\"')
 	{
@@ -110,6 +127,7 @@ size_t			msh_hundle_quate(t_mshinfo *mshinfo, char *save, size_t len)
 		len += msh_get_argv_quate(mshinfo, save, len);
 		if (save[len++] != '\"')
 			ft_putendl_fd("quatation is not closing", 2);
+		return (len - (begin - 1));
 	}
-	return (len - (begin - 1));
+	return (0);
 }
