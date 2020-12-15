@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh_hundle_quatation.c                             :+:      :+:    :+:   */
+/*   msh_handle_quotation.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 01:56:20 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/15 11:25:43 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/16 01:20:47 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 #include "minishell.h"
 
 /*
-** hundle specail case for '$'
+** handle specail case for '$'
 */
 
-size_t			msh_hundle_dollars(t_mshinfo *mshinfo, char *save, ssize_t len)
+size_t			msh_handle_dollars(t_mshinfo *mshinfo, char *save, ssize_t len)
 {
 	t_list	*new;
 	char	*content;
@@ -54,7 +54,7 @@ static size_t	msh_get_env_quate(t_mshinfo *mshinfo, char *save,
 	size_t	begin;
 	char	*key;
 
-	if (msh_hundle_dollars(mshinfo, save, len))
+	if (msh_handle_dollars(mshinfo, save, len))
 		return (2);
 	begin = ++len;
 	while (msh_check_operator(save, len, "$<>|\'\""))
@@ -97,12 +97,12 @@ size_t			msh_get_argv_quate(t_mshinfo *mshinfo, char *save, ssize_t len)
 }
 
 /*
-** hundle single and double quatation
+** handle single and double quatation
 ** for single, store argv to arglst here
 ** for double call func to store argv
 */
 
-size_t			msh_hundle_quate(t_mshinfo *mshinfo, char *save, size_t len)
+size_t			msh_handle_quate(t_mshinfo *mshinfo, char *save, size_t len)
 {
 	size_t	begin;
 	char	*content;
@@ -121,7 +121,7 @@ size_t			msh_hundle_quate(t_mshinfo *mshinfo, char *save, size_t len)
 			ft_putendl_fd("msh_put_errmsg", 2);
 		return (len - (begin - 1));
 	}
-	else if (save[len] == '\"')
+	else
 	{
 		begin = ++len;
 		len += msh_get_argv_quate(mshinfo, save, len);
@@ -129,5 +129,4 @@ size_t			msh_hundle_quate(t_mshinfo *mshinfo, char *save, size_t len)
 			ft_putendl_fd("quatation is not closing", 2);
 		return (len - (begin - 1));
 	}
-	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 02:18:04 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/15 11:26:13 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/16 01:47:29 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,24 +18,21 @@
 ** msh_store_argv is modified.
 */
 
-size_t			msh_store_argv_redirect(t_mshinfo *mshinfo, char *save, size_t len)
+size_t			msh_store_argv_redirect(t_mshinfo *mshinfo, char *save,
+										size_t len)
 {
 	size_t	begin;
 	size_t	ret;
 
 	begin = len;
 	ret = 0;
-	while (msh_check_operator(save, len, "\n;"))
+	while (msh_check_operator(save, len, "\n;<>|"))
 	{
 		while (save[len] && msh_is_space(save[len]))
 			len++;
-		if ((ret = msh_hundle_redirect_fd(mshinfo, save, len)) > 0)
+		if ((ret = msh_handle_quate(mshinfo, save, len)) > 0)
 			break ;
-		if ((ret = msh_hundle_quate(mshinfo, save, len)) > 0)
-			break ;
-		if ((ret = msh_get_argv(mshinfo, save, len)) > 0)
-			break ;
-		if ((ret = msh_hundle_redirect_pipe(mshinfo, save, len)) > 0)
+		else if ((ret = msh_get_argv(mshinfo, save, len)) > 0)
 			break ;
 		while (save[len] && msh_is_space(save[len]))
 			len++;
@@ -48,7 +45,7 @@ size_t			msh_store_argv_redirect(t_mshinfo *mshinfo, char *save, size_t len)
 ** delete last elem of arglst and set null for prev elem's next;
 */
 
-void	ft_lstpop(t_list **arglst)
+void			ft_lstpop(t_list **arglst)
 {
 	t_list *last;
 
@@ -59,116 +56,103 @@ void	ft_lstpop(t_list **arglst)
 }
 
 /*
-** hundle redirect and pipe and get argv after that,
-** then delete the argv
+** パイプのハンドリングの関数です。
+** fdを取らないこと、処理がredirectと違うことから分けました。
+** 中身は中野さんにお任せです。
 */
 
-size_t	msh_hundle_redirect_pipe(t_mshinfo *mshinfo, char *save, ssize_t len)
+size_t			msh_handle_pipe(t_mshinfo *mshinfo, char *save, ssize_t len)
 {
-	size_t	begin;
-	size_t	ret;
-	t_list	*last;
+	size_t		begin;
+	t_list		*tmp;
 
 	begin = len;
-	ret = 0;
-	if (!ft_strncmp(&save[len], ">>", 2))
-	{
-		ft_putendl_fd(">>", 1);
-		len += 2;
-		if((ret = msh_store_argv_redirect(mshinfo, save, len)) == 0)
-			return (len + ret - begin);		
-		last = ft_lstlast(mshinfo->arglst);
-		ft_putendl_fd((char*)last->content, 1);
-		ft_lstpop(&mshinfo->arglst);
-		// len += hundle_append(mshinfo, &save[len], len);
-	}
-	else if (save[len] == '>')
-	{
-		ft_putendl_fd(">", 1);
-		len++;
-		if((ret = msh_store_argv_redirect(mshinfo, save, len)) == 0)
-			return (len + ret - begin);	
-		last = ft_lstlast(mshinfo->arglst);
-		ft_putendl_fd((char*)last->content, 1);
-		ft_lstpop(&mshinfo->arglst);
-		// len += hundle_write(mshinfo, &save[len], len);
-	}
-	else if (save[len] == '<')
-	{
-		ft_putendl_fd("<", 1);
-		len++;
-		if((ret = msh_store_argv_redirect(mshinfo, save, len)) == 0)
-			return (len + ret - begin);	
-		last = ft_lstlast(mshinfo->arglst);
-		ft_putendl_fd((char*)last->content, 1);
-		ft_lstpop(&mshinfo->arglst);
-		// len += hundle_read(mshinfo, &save[len], len);
-	}
-	else if (save[len] == '|')
-	{
-		ft_putendl_fd("|", 1);
-		len++;
-		if((ret = msh_store_argv_redirect(mshinfo, save, len)) == 0)
-			return (len + ret - begin);	
-		last = ft_lstlast(mshinfo->arglst);
-		ft_putendl_fd((char*)last->content, 1);
-		ft_lstpop(&mshinfo->arglst);
-		// len += hundle_pipe(mshinfo, &save[len], len);
-	}
-	return (len + ret - begin);
+	if (msh_check_operator(save, len, "|"))
+		return (0);
+	ft_putendl_fd("|", 1);
+	len++;
+	// dnakno special!
+	tmp = mshinfo->arglst;//-W option対策、無意味です。
+	return (len - begin);
 }
 
 /*
-** hundling number + redirect as fd + redirect and get the next argv then delete the argv
+** redirect, pipeごとのflagを立てることと、fdの調整をします。
+** fdは指定がない場合、各redirectごとのデフォルトの0か１に調整します。
 */
 
-size_t	msh_hundle_redirect_fd(t_mshinfo *mshinfo, char *save, size_t len)
+static int		get_flg_redirect(char *save, size_t len, size_t begin, int *fd)
 {
-	size_t	begin;
-	size_t	ret;
-	t_list	*last;
-
-	begin = len;
-	ret = 0;
-	while (ft_isdigit(save[len]))
-		len++;
-	if (begin == len || !save[len] || (save[len] && !ft_strchr("<>", save[len])))
-		return (0);
 	if (!ft_strncmp(&save[len], ">>", 2))
 	{
-		write(1, &save[begin], len - begin);		
-		ft_putendl_fd(">>", 1);
-		len += 2;
-		if((ret = msh_store_argv_redirect(mshinfo, save, len)) == 0)
-			return (len + ret - begin);		
-		last = ft_lstlast(mshinfo->arglst);
-		ft_putendl_fd((char*)last->content, 1);
-		ft_lstpop(&mshinfo->arglst);
-		// len += hundle_append(mshinfo, &save[len], len);
+		if (begin == len && *fd == 0)
+			*fd = 1;
+		return (0);
 	}
 	else if (save[len] == '>')
 	{
-		write(1, &save[begin], len - begin);
-		ft_putendl_fd(">", 1);
-		len++;
-		if((ret = msh_store_argv_redirect(mshinfo, save, len)) == 0)
-			return (len + ret - begin);		
-		last = ft_lstlast(mshinfo->arglst);
-		ft_putendl_fd((char*)last->content, 1);
-		ft_lstpop(&mshinfo->arglst);
-		// len += hundle_write(mshinfo, &save[len], len);
+		if (begin == len && *fd == 0)
+			*fd = 1;
+		return (1);
 	}
 	else if (save[len] == '<')
 	{
-		write(1, &save[begin], len - begin);
-		ft_putendl_fd("<", 1);
-		len++;
-		if((ret = msh_store_argv_redirect(mshinfo, save, len)) == 0)
-			return (len + ret - begin);		
-		last = ft_lstlast(mshinfo->arglst);
-		ft_putendl_fd((char*)last->content, 1);
-		ft_lstpop(&mshinfo->arglst);
-		// len += hundle_read(mshinfo, &save[len], len);
+		if (begin == len && *fd == 0)
+			*fd = 0;
+		return (2);
 	}
+	return (-1);
+}
+
+/*
+** 中野さんがリダイレクトとパイプをやっつける関数
+** redirect, pipeのフラグ、file discripter, １つ後のargvが引数です。
+** 処理にエラーがあれば1, なければ0を返します。
+** 暫定的に動作確認のためedirectとpipe fdを出力するようにしています。
+*/
+
+int				dnakano_redirect(int flg_redirect_pipe, int fd, char *argv)
+{
+	ft_putnbr_fd(fd, 1);
+	if (flg_redirect_pipe == 0)
+		ft_putstr_fd(">>", 1);
+	if (flg_redirect_pipe == 1)
+		ft_putstr_fd(">", 1);
+	if (flg_redirect_pipe == 2)
+		ft_putstr_fd("<", 1);
+	ft_putendl_fd(argv, 1);
+	return (0);
+}
+
+/*
+** hundling number + redirect as fd + redirect
+** and get the next argv then delete the argv
+*/
+
+size_t			msh_handle_redirect_fd(t_mshinfo *mshinfo, char *save, size_t len)
+{
+	size_t	begin;
+	size_t	ret;
+	int		fd;
+	t_list	*last;
+	int		flg_redirect_pipe;
+
+	begin = len;
+	fd = 0;
+	while (ft_isdigit(save[len]))
+	{
+		fd = fd * 10 + (save[len] - '0');
+		len++;
+	}
+	if (msh_check_operator(save, len, "<>"))
+		return (0);
+	flg_redirect_pipe = get_flg_redirect(save, len, begin, &fd);
+	len += (flg_redirect_pipe == 0) ? 2 : 1;
+	if ((ret = msh_store_argv_redirect(mshinfo, save, len)) == 0)
+		ft_putendl_fd("syntax error of redirection", 2);//free, exit, close fd etc...
+	last = ft_lstlast(mshinfo->arglst);
+	if (dnakano_redirect(flg_redirect_pipe, fd, last->content))
+		ft_putendl_fd("msh_put_errmsg", 2);//free, exit, close fd etc...
+	ft_lstpop(&mshinfo->arglst);
 	return (len + ret - begin);
 }

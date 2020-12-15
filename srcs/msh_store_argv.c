@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 01:36:14 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/15 11:28:25 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/16 01:12:12 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static size_t	msh_get_env(t_mshinfo *mshinfo, char *save,
 	size_t	begin;
 	char	*key;
 
-	if (msh_hundle_dollars(mshinfo, save, len))
+	if (msh_handle_dollars(mshinfo, save, len))
 		return (2);
 	while (msh_check_operator(save, len, "><| \t\'\"\n;"))
 	{
@@ -57,10 +57,10 @@ static size_t	msh_get_env(t_mshinfo *mshinfo, char *save,
 }
 
 /*
-** get argv and hundle '$'
+** get argv and handle '$'
 */
 
-size_t		msh_get_argv(t_mshinfo *mshinfo, char *save, size_t len)
+size_t			msh_get_argv(t_mshinfo *mshinfo, char *save, size_t len)
 {
 	size_t	begin;
 	char	*content;
@@ -99,27 +99,30 @@ int				msh_check_operator(char *save, ssize_t len, char *operator)
 ** store argv and increment len to parse the string from begining to end
 */
 
-size_t			msh_store_argv(t_mshinfo *mshinfo, char *save, size_t len)
+size_t			msh_store_argv(t_mshinfo *mshinfo, char *save,
+								int *flg_continue)
 {
-	size_t	begin;
+	size_t	len;
 	size_t	ret;
 
-	begin = len;
+	len = 0;
 	ret = 0;
 	while (msh_check_operator(save, len, "\n;"))
 	{
 		while (save[len] && msh_is_space(save[len]))
 			len++;
-		if ((ret = msh_hundle_redirect_fd(mshinfo, save, len)) > 0)
+		if ((ret = msh_handle_redirect_fd(mshinfo, save, len)) > 0)
 			len += ret;
-		else if ((ret = msh_hundle_quate(mshinfo, save, len)) > 0)
+		else if ((ret = msh_handle_pipe(mshinfo, save, len)) > 0)
 			len += ret;
-		else if ((ret= msh_get_argv(mshinfo, save, len)) > 0)
+		else if ((ret = msh_handle_quate(mshinfo, save, len)) > 0)
 			len += ret;
-		else if ((ret = msh_hundle_redirect_pipe(mshinfo, save, len)) > 0)
+		else if ((ret = msh_get_argv(mshinfo, save, len)) > 0)
 			len += ret;
 		while (save[len] && msh_is_space(save[len]))
 			len++;
 	}
-	return (len - begin);
+	if (!save[len])
+		*flg_continue = 1;
+	return (len);
 }

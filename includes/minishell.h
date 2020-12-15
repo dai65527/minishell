@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/15 01:48:52 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/16 00:51:20 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,18 +94,18 @@ int				msh_isescaped(char *s, size_t len_from_start);
 /*
 ** msh_gnc_find_argv_from_save
 */
-size_t			msh_store_argv(t_mshinfo *mshinfo, char *save, size_t len);
+size_t			msh_store_argv(t_mshinfo *mshinfo, char *save,
+								int *flg_continue);
 size_t			msh_store_argv_redirect(t_mshinfo *mshinfo, char *save,
 										size_t len);
 size_t			msh_get_argv(t_mshinfo *mshinfo, char *save, size_t len);
 int				msh_content_arglst(t_mshinfo *mshinfo, char *content);
 int				msh_check_operator(char *save, ssize_t len, char *operator);
-size_t			msh_hundle_dollars(t_mshinfo *mshinfo, char *save, ssize_t len);
-size_t			msh_hundle_redirect_fd(t_mshinfo *mshinfo,
+size_t			msh_handle_dollars(t_mshinfo *mshinfo, char *save, ssize_t len);
+size_t			msh_handle_redirect_fd(t_mshinfo *mshinfo,
 										char *save, size_t len);
-size_t			msh_hundle_redirect_pipe(t_mshinfo *mshinfo,
-										char *save, ssize_t len);
-size_t			msh_hundle_quate(t_mshinfo *mshinfo,
+size_t			msh_handle_pipe(t_mshinfo *mshinfo, char *save, ssize_t len);
+size_t			msh_handle_quate(t_mshinfo *mshinfo,
 										char *save, size_t len);
 char			*get_value_from_envlst(t_mshinfo *mshinfo, char **key);
 char			*ft_strdup_skip_bslash(char *s);

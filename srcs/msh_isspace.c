@@ -6,13 +6,13 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 02:41:56 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/12 02:42:10 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/15 22:05:56 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 int			msh_is_space(char c)
 {
-	if (c == ' ' || c == '\t')
+	if (c == ' ' || c == '\t' || c == '\v' || c == '\f' || c == '\r')
 		return (1);
 	return (0);
 }
