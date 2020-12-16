@@ -1,38 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh_get_value_from_envlst.c                        :+:      :+:    :+:   */
+/*   msh_check_operator.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/12 02:49:51 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/16 22:50:49 by dhasegaw         ###   ########.fr       */
+/*   Created: 2020/12/16 22:48:07 by dhasegaw          #+#    #+#             */
+/*   Updated: 2020/12/17 01:21:09 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char			*msh_get_value_from_envlst(t_mshinfo *mshinfo, char **key)
-{
-	t_list		*head;
-	t_keyval	*env;
+/*
+** check are there special character(operator) and are they escaped
+*/
 
-	if (!*key)
-	{
-		msh_free_setnull((void**)key);
-		return ("");
-	}
-	head = mshinfo->envlst;
-	while (head)
-	{
-		env = head->content;
-		if (!ft_strncmp(env->key, *key, ft_strlen(*key) + 1))
-		{
-			msh_free_setnull((void**)key);
-			return (env->val);
-		}
-		head = head->next;
-	}
-	msh_free_setnull((void**)key);
-	return ("");
+int				msh_check_operator(char *save, ssize_t len, char *operator)
+{
+	if (save[len] && !(ft_strchr(operator, save[len])
+		&& !msh_isescaped(&save[len], len)))
+		return (1);
+	else
+		return (0);
 }

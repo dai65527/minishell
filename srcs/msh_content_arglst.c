@@ -1,38 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh_get_value_from_envlst.c                        :+:      :+:    :+:   */
+/*   msh_content_arglst.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/12 02:49:51 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/16 22:50:49 by dhasegaw         ###   ########.fr       */
+/*   Created: 2020/12/16 23:23:02 by dhasegaw          #+#    #+#             */
+/*   Updated: 2020/12/17 00:59:52 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char			*msh_get_value_from_envlst(t_mshinfo *mshinfo, char **key)
-{
-	t_list		*head;
-	t_keyval	*env;
+/*
+** store string into linkedlist 'arglst'
+** arglst will be converted to char **argv later
+*/
 
-	if (!*key)
-	{
-		msh_free_setnull((void**)key);
-		return ("");
-	}
-	head = mshinfo->envlst;
-	while (head)
-	{
-		env = head->content;
-		if (!ft_strncmp(env->key, *key, ft_strlen(*key) + 1))
-		{
-			msh_free_setnull((void**)key);
-			return (env->val);
-		}
-		head = head->next;
-	}
-	msh_free_setnull((void**)key);
-	return ("");
+int	msh_content_arglst(t_mshinfo *mshinfo, char *content)
+{
+	t_list	*new;
+
+	if (!content)
+		return (1);
+	if (!(new = ft_lstnew(content)))
+		return (1);
+	ft_lstadd_back(&mshinfo->arglst, new);
+	return (0);
 }

@@ -1,28 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh_argv_redirect_pipe.c                           :+:      :+:    :+:   */
+/*   msh_handle_redirect.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 02:18:04 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/16 01:47:29 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/17 03:15:10 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
 #include "minishell.h"
+#include <stdlib.h>
 
 /*
 ** to get only one argv after redirect,
 ** msh_store_argv is modified.
 */
 
-size_t			msh_store_argv_redirect(t_mshinfo *mshinfo, char *save,
-										size_t len)
+static ssize_t	store_argv_redirect(t_mshinfo *mshinfo, char *save,
+										ssize_t len)
 {
-	size_t	begin;
-	size_t	ret;
+	ssize_t	begin;
+	ssize_t	ret;
 
 	begin = len;
 	ret = 0;
@@ -30,14 +30,14 @@ size_t			msh_store_argv_redirect(t_mshinfo *mshinfo, char *save,
 	{
 		while (save[len] && msh_is_space(save[len]))
 			len++;
-		if ((ret = msh_handle_quate(mshinfo, save, len)) > 0)
-			break ;
-		else if ((ret = msh_get_argv(mshinfo, save, len)) > 0)
-			break ;
+		if ((ret = msh_handle_quote(mshinfo, save, len)) != 0)
+			return (ret > 0 ? len + ret - begin : -1);
+		else if ((ret = msh_get_argv(mshinfo, save, len)) != 0)
+			return (ret > 0 ? len + ret - begin : -1);
 		while (save[len] && msh_is_space(save[len]))
 			len++;
 	}
-	return (len + ret - begin);
+	return (-1);
 }
 
 /*
@@ -45,7 +45,7 @@ size_t			msh_store_argv_redirect(t_mshinfo *mshinfo, char *save,
 ** delete last elem of arglst and set null for prev elem's next;
 */
 
-void			ft_lstpop(t_list **arglst)
+static	void	ft_lstpop(t_list **arglst)
 {
 	t_list *last;
 
@@ -56,32 +56,12 @@ void			ft_lstpop(t_list **arglst)
 }
 
 /*
-** パイプのハンドリングの関数です。
-** fdを取らないこと、処理がredirectと違うことから分けました。
-** 中身は中野さんにお任せです。
-*/
-
-size_t			msh_handle_pipe(t_mshinfo *mshinfo, char *save, ssize_t len)
-{
-	size_t		begin;
-	t_list		*tmp;
-
-	begin = len;
-	if (msh_check_operator(save, len, "|"))
-		return (0);
-	ft_putendl_fd("|", 1);
-	len++;
-	// dnakno special!
-	tmp = mshinfo->arglst;//-W option対策、無意味です。
-	return (len - begin);
-}
-
-/*
 ** redirect, pipeごとのflagを立てることと、fdの調整をします。
 ** fdは指定がない場合、各redirectごとのデフォルトの0か１に調整します。
 */
 
-static int		get_flg_redirect(char *save, size_t len, size_t begin, int *fd)
+static int		get_flg_redirect(char *save, ssize_t len, ssize_t begin,
+									int *fd)
 {
 	if (!ft_strncmp(&save[len], ">>", 2))
 	{
@@ -111,14 +91,14 @@ static int		get_flg_redirect(char *save, size_t len, size_t begin, int *fd)
 ** 暫定的に動作確認のためedirectとpipe fdを出力するようにしています。
 */
 
-int				dnakano_redirect(int flg_redirect_pipe, int fd, char *argv)
+static int		dnakano_redirect(int flg_redirect, int fd, char *argv)
 {
 	ft_putnbr_fd(fd, 1);
-	if (flg_redirect_pipe == 0)
+	if (flg_redirect == 0)
 		ft_putstr_fd(">>", 1);
-	if (flg_redirect_pipe == 1)
+	if (flg_redirect == 1)
 		ft_putstr_fd(">", 1);
-	if (flg_redirect_pipe == 2)
+	if (flg_redirect == 2)
 		ft_putstr_fd("<", 1);
 	ft_putendl_fd(argv, 1);
 	return (0);
@@ -129,13 +109,13 @@ int				dnakano_redirect(int flg_redirect_pipe, int fd, char *argv)
 ** and get the next argv then delete the argv
 */
 
-size_t			msh_handle_redirect_fd(t_mshinfo *mshinfo, char *save, size_t len)
+ssize_t			msh_handle_redirect(t_mshinfo *mshinfo, char *save, ssize_t len)
 {
-	size_t	begin;
-	size_t	ret;
+	ssize_t	begin;
+	ssize_t	ret;
 	int		fd;
 	t_list	*last;
-	int		flg_redirect_pipe;
+	int		flg_redirect;
 
 	begin = len;
 	fd = 0;
@@ -146,13 +126,13 @@ size_t			msh_handle_redirect_fd(t_mshinfo *mshinfo, char *save, size_t len)
 	}
 	if (msh_check_operator(save, len, "<>"))
 		return (0);
-	flg_redirect_pipe = get_flg_redirect(save, len, begin, &fd);
-	len += (flg_redirect_pipe == 0) ? 2 : 1;
-	if ((ret = msh_store_argv_redirect(mshinfo, save, len)) == 0)
-		ft_putendl_fd("syntax error of redirection", 2);//free, exit, close fd etc...
+	flg_redirect = get_flg_redirect(save, len, begin, &fd);
+	len += (flg_redirect == 0) ? 2 : 1;
+	if ((ret = store_argv_redirect(mshinfo, save, len)) < 0)
+		return (msh_msg_return_val("syntax error", 2, -1));
 	last = ft_lstlast(mshinfo->arglst);
-	if (dnakano_redirect(flg_redirect_pipe, fd, last->content))
-		ft_putendl_fd("msh_put_errmsg", 2);//free, exit, close fd etc...
+	if (dnakano_redirect(flg_redirect, fd, last->content))
+		return (msh_msg_return_val("redirect error", 2, -1));
 	ft_lstpop(&mshinfo->arglst);
 	return (len + ret - begin);
 }
