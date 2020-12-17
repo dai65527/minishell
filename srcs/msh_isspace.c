@@ -1,30 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh_mshinfo_init.c                                 :+:      :+:    :+:   */
+/*   msh_isspace.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/24 19:38:44 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/10 21:48:33 by dhasegaw         ###   ########.fr       */
+/*   Created: 2020/12/12 02:41:56 by dhasegaw          #+#    #+#             */
+/*   Updated: 2020/12/16 23:48:14 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#include "minishell.h"
-
-/*
-** msh_mshinfo_init
-**
-** initialize structure mshinfo.
-** 構造体msh_infoの初期化用関数
-*/
-
-void	msh_mshinfo_init(t_mshinfo *mshinfo)
+int			msh_is_space(char c)
 {
-	mshinfo->envlst = NULL;
-	mshinfo->arglst = NULL;
-	mshinfo->num_process = 0;
-	mshinfo->fd_cmdsrc = 0;
-	mshinfo->ret_last_cmd = 0;
+	return (c == ' ' || c == '\t' || c == '\v' || c == '\f' || c == '\r');
 }

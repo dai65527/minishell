@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msh_exec_cmd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/25 09:42:10 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/25 22:17:48 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/11/27 11:51:07 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 ** 			（コマンド自体（"echo"など）も含む）
 **
 ** 関数
-** 	mrt_split_cmd_to_argv:	その名の通りcmdをスペース、タブで分割してargvに格納する
+** 	msh_split_cmd_to_argv:	その名の通りcmdをスペース、タブで分割してargvに格納する
 ** 	msh_xxx:				コマンドを実行する。
 ** 	msh_executable:			実行可能ファイル（executable）or shell scriptを実行する。
 */
@@ -37,7 +37,7 @@ int			msh_exec_cmd(t_mshinfo *mshinfo, char *cmd, int fd_input)
 	int		argc;
 	char	**argv;
 
-	if (!(argv = mrt_split_cmd_to_argv(cmd, &argc)))
+	if (!(argv = msh_split_cmd_to_argv(mshinfo, cmd, &argc)))
 		return (MSH_EXIT_BY_ERR);
 	if (!ft_strncmp(argv[0], "echo", ft_strlen("echo") + 1))
 		return (msh_echo(argc, argv, mshinfo, fd_input));

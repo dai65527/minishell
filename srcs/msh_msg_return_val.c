@@ -1,30 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh_mshinfo_init.c                                 :+:      :+:    :+:   */
+/*   msh_msg_return_val.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/24 19:38:44 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/10 21:48:33 by dhasegaw         ###   ########.fr       */
+/*   Created: 2020/12/16 23:54:06 by dhasegaw          #+#    #+#             */
+/*   Updated: 2020/12/17 01:10:05 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-#include "minishell.h"
+#include <sys/types.h>
 
 /*
-** msh_mshinfo_init
-**
-** initialize structure mshinfo.
-** 構造体msh_infoの初期化用関数
+** function to handle msg, fd, return value at the same time
 */
 
-void	msh_mshinfo_init(t_mshinfo *mshinfo)
+ssize_t		msh_msg_return_val(char *msg, int fd, ssize_t ret)
 {
-	mshinfo->envlst = NULL;
-	mshinfo->arglst = NULL;
-	mshinfo->num_process = 0;
-	mshinfo->fd_cmdsrc = 0;
-	mshinfo->ret_last_cmd = 0;
+	ft_putendl_fd(msg, fd);
+	return (ret);
 }
