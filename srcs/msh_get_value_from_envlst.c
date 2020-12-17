@@ -1,30 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh_mshinfo_init.c                                 :+:      :+:    :+:   */
+/*   msh_get_value_from_envlst.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/24 19:38:44 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/10 21:48:33 by dhasegaw         ###   ########.fr       */
+/*   Created: 2020/12/12 02:49:51 by dhasegaw          #+#    #+#             */
+/*   Updated: 2020/12/16 22:50:49 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
 #include "minishell.h"
 
-/*
-** msh_mshinfo_init
-**
-** initialize structure mshinfo.
-** 構造体msh_infoの初期化用関数
-*/
-
-void	msh_mshinfo_init(t_mshinfo *mshinfo)
+char			*msh_get_value_from_envlst(t_mshinfo *mshinfo, char **key)
 {
-	mshinfo->envlst = NULL;
-	mshinfo->arglst = NULL;
-	mshinfo->num_process = 0;
-	mshinfo->fd_cmdsrc = 0;
-	mshinfo->ret_last_cmd = 0;
+	t_list		*head;
+	t_keyval	*env;
+
+	if (!*key)
+	{
+		msh_free_setnull((void**)key);
+		return ("");
+	}
+	head = mshinfo->envlst;
+	while (head)
+	{
+		env = head->content;
+		if (!ft_strncmp(env->key, *key, ft_strlen(*key) + 1))
+		{
+			msh_free_setnull((void**)key);
+			return (env->val);
+		}
+		head = head->next;
+	}
+	msh_free_setnull((void**)key);
+	return ("");
 }

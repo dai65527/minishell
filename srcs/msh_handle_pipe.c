@@ -5,43 +5,32 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/10 10:49:56 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/11 11:48:14 by dnakano          ###   ########.fr       */
+/*   Created: 2020/12/16 22:57:23 by dhasegaw          #+#    #+#             */
+/*   Updated: 2020/12/17 11:50:30 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
-#include <stdlib.h>
-#include <errno.h>
 #include "minishell.h"
-#include  <stdio.h>
+#include "libft.h"
 
-int			msh_handle_pipe(char **argv, t_mshinfo *mshinfo)
+/*
+** パイプのハンドリングの関数です。
+** fdを取らないこと、処理がredirectと違うことから分けました。
+** 中身は中野さんにお任せです。
+*/
+
+ssize_t			msh_handle_pipe(t_mshinfo *mshinfo, char *save, ssize_t len)
 {
-	int		pipe_fd[2];
-	pid_t	pid;
+	ssize_t		begin;
+	t_list		*tmp;
 
-	if (!argv[0] || !argv[1] || ft_strncmp(argv[0], "|", 2))
+	begin = len;
+	if (msh_check_operator(save, len, "|"))
 		return (0);
-	if (pipe(pipe_fd) < 0)
-		return (-1);
-	if ((pid = fork()) < 0)
-	{
-		close(pipe_fd[0]);
-		close(pipe_fd[1]);
-		return (0);
-	}
-	else if (pid == 0)
-	{
-		close(pipe_fd[1]);
-		dup2(pipe_fd[0], FD_STDIN);
-		close(pipe_fd[0]);
-		msh_exec_cmd(mshinfo, argv + 1);
-		exit(errno);
-	}
-	argv[0] = NULL;
-	close(pipe_fd[0]);
-	dup2(pipe_fd[1], FD_STDOUT);
-	close(pipe_fd[1]);
-	return (1);
+	ft_putendl_fd("|", 1);
+	len++;
+	// if (!(dnakno special))
+	// return (msh_msg_return_val("pipe error", 2, -1));
+	tmp = mshinfo->arglst;//-W option対策、無意味です。
+	return (len - begin);
 }

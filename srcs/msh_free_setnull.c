@@ -1,30 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh_mshinfo_init.c                                 :+:      :+:    :+:   */
+/*   msh_free_setnull.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/24 19:38:44 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/10 21:48:33 by dhasegaw         ###   ########.fr       */
+/*   Created: 2020/11/26 13:39:02 by dhasegaw          #+#    #+#             */
+/*   Updated: 2020/12/16 23:43:21 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#include "minishell.h"
+#include <stdlib.h>
 
-/*
-** msh_mshinfo_init
-**
-** initialize structure mshinfo.
-** 構造体msh_infoの初期化用関数
-*/
-
-void	msh_mshinfo_init(t_mshinfo *mshinfo)
+void	msh_free_setnull(void **ptr)
 {
-	mshinfo->envlst = NULL;
-	mshinfo->arglst = NULL;
-	mshinfo->num_process = 0;
-	mshinfo->fd_cmdsrc = 0;
-	mshinfo->ret_last_cmd = 0;
+	free(*ptr);
+	*ptr = NULL;
 }

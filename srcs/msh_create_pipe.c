@@ -1,0 +1,47 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   msh_create_pipe.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/12/10 10:49:56 by dnakano           #+#    #+#             */
+/*   Updated: 2020/12/17 11:50:26 by dnakano          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include <unistd.h>
+#include <stdlib.h>
+#include <errno.h>
+#include "minishell.h"
+#include  <stdio.h>
+
+int			msh_handle_pipe(char **argv, t_mshinfo *mshinfo)
+{
+	int		pipe_fd[2];
+	pid_t	pid;
+
+	if (!argv[0] || !argv[1] || ft_strncmp(argv[0], "|", 2))
+		return (0);
+	if (pipe(pipe_fd) < 0)
+		return (-1);
+	if ((pid = fork()) < 0)
+	{
+		close(pipe_fd[0]);
+		close(pipe_fd[1]);
+		return (0);
+	}
+	else if (pid == 0)
+	{
+		close(pipe_fd[1]);
+		dup2(pipe_fd[0], FD_STDIN);
+		close(pipe_fd[0]);
+		msh_exec_cmd(mshinfo, argv + 1);
+		exit(errno);
+	}
+	argv[0] = NULL;
+	close(pipe_fd[0]);
+	dup2(pipe_fd[1], FD_STDOUT);
+	close(pipe_fd[1]);
+	return (1);
+}

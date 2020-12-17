@@ -53,3 +53,7 @@ dkms.conf
 
 # Individual test code
 *test*
+
+# Hidden file
+.*
+!.gitignore
