@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 20:13:33 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/20 20:23:13 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/20 20:42:47 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,30 +19,6 @@
 #include <stdio.h>
 
 #define BUFSIZE 2048
-
-static pid_t	fork_and_execute(char **argv, t_mshinfo *mshinfo)
-{
-	pid_t	pid;
-	char	**envp;
-	char	path[PATH_MAX];
-
-	if (msh_find_and_copy_path(argv, mshinfo, path) < 0)
-	{
-		mshinfo->ret_last_cmd = 127;
-		return (-1);
-	}
-	if ()
-	if ((pid = fork()) < 0)
-		return (-1);
-	else if (pid == 0)	
-	{
-		if (!(envp = msh_make_envp(mshinfo->envlst)))
-			return (-1);
-		execve(path, argv, envp);
-		exit(errno);
-	}
-	return (pid);
-}
 
 static int		executable_errend(char *cmd, int ret)
 {
