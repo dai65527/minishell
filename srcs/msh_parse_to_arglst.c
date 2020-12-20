@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 16:44:56 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/20 13:25:42 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/20 18:39:07 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,9 @@ static int			arglst_to_argv(t_list **arglst, char **argv)
 **	0: continue to read
 **	1: ready to exec command
 **	2: ready to exec piped command
+** flg
+**	flg == 1 -> continue
+**	flg == 2 -> pipe
 */
 
 int					msh_parse_to_arglst(t_mshinfo *mshinfo, char **save)
@@ -73,17 +76,19 @@ int					msh_parse_to_arglst(t_mshinfo *mshinfo, char **save)
 	argvlen = msh_store_argv(mshinfo, *save, &flg);
 	if (argvlen < 0)
 		return (-1);
-	if (flg == 2)
+	if (flg == 1)
 		return (0);
 	new_save = ft_substr(*save, argvlen + 1, ft_strlen(*save) - argvlen - 1);
 	if (!new_save)
 	{
 		msh_free_setnull((void **)save);
-		return (1);
+		return (-1);
 	}
 	free(*save);
 	*save = new_save;
-	return (!MSH_CONTINUE);
+	if (flg == 2)
+		return (2);
+	return (1);
 }
 
 /*

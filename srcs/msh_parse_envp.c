@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 08:49:16 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/29 11:26:21 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/20 17:50:56 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ t_list			*msh_parse_envp(char **envp)
 	return (envlst);
 }
 
-#ifdef TEST
+#ifdef TEST_PARSE_ENVP
 
 int				main(int argc, char **argv, char **envp)
 {

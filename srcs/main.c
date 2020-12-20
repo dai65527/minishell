@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:37:15 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/25 11:23:52 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/20 18:12:20 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,12 @@ int		main(int argc, char **argv, char **envp)
 
 	msh_mshinfo_init(&mshinfo);
 	if (!(mshinfo.envlst = msh_parse_envp(envp)))
-		return (msh_exit_by_err(&mshinfo));
+		return (msh_puterr("bash", 1));
 	if (argc <= 1)
 		mshinfo.fd_cmdsrc = FD_STDIN;
 	else if ((mshinfo.fd_cmdsrc = open(argv[1], O_RDONLY)) < 0)
-		return (msh_exit_by_err(&mshinfo));
-	return (msh_loop(&mshinfo));
+		return (msh_puterr("bash", 1));
+	msh_loop(&mshinfo);
+	msh_mshinfo_free(&mshinfo);
+	return (0);
 }

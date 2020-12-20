@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/20 13:53:43 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/20 19:30:54 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,8 +76,12 @@ typedef struct	s_keyval
 
 int				msh_loop(t_mshinfo *mshinfo);
 int				msh_read_and_exec_cmd(t_mshinfo *mshinfo);
-int				msh_exec_cmd(t_mshinfo *mshinfo, char **argv);
 int				msh_parse_and_exec_cmd(t_mshinfo *mshinfo, char **save);
+int				msh_parse_to_arglst(t_mshinfo *mshinfo, char **save);
+int				msh_exec_cmd(t_mshinfo *mshinfo, char **argv, int flg_forked);
+pid_t			msh_create_pipe(t_mshinfo *mshinfo, char **argv);
+int				msh_create_redirect(const char *fname, int redirect_fd,
+								int flg_redirect);
 
 /*
 ** msh_get_next_cmd
@@ -123,6 +127,7 @@ void			msh_mshinfo_init(t_mshinfo *mshinfo);
 void			msh_mshinfo_free(t_mshinfo *mshinfo);
 void			msh_free_set(char **dest, char *src);
 void			msh_free_argvp(void ***argvp);
+int				msh_puterr(const char *str, int ret);
 
 /*
 ** file discripter utils
@@ -153,49 +158,49 @@ int				msh_create_redirect(const char *fname, int redirect_fd,
 ** echo
 */
 
-int				msh_echo(char **argv, t_mshinfo *mshinfo);
+int				msh_echo(t_mshinfo *mshinfo, char **argv, int flg_forked);
 
 /*
 ** cd
 */
 
-int				msh_cd(char **argv, t_mshinfo *mshinfo);
+int				msh_cd(t_mshinfo *mshinfo, char **argv, int flg_forked);
 
 /*
 ** pwd
 */
 
-int				msh_pwd(char **argv, t_mshinfo *mshinfo);
+int				msh_pwd(t_mshinfo *mshinfo, char **argv, int flg_forked);
 
 /*
 ** export
 */
 
-int				msh_export(char **argv, t_mshinfo *mshinfo);
+int				msh_export(t_mshinfo *mshinfo, char **argv, int flg_forked);
 
 /*
 ** unset
 */
 
-int				msh_unset(char **argv, t_mshinfo *mshinfo);
+int				msh_unset(t_mshinfo *mshinfo, char **argv, int flg_forked);
 
 /*
 ** env
 */
 
-int				msh_env(char **argv, t_mshinfo *mshinfo);
+int				msh_env(t_mshinfo *mshinfo, char **argv, int flg_forked);
 
 /*
 ** exit
 */
 
-int				msh_exit(char **argv, t_mshinfo *mshinfo);
+int				msh_exit(t_mshinfo *mshinfo, char **argv, int flg_forked);
 
 /*
 ** exec_exceutable
 */
 
-int				msh_executable(char **argv, t_mshinfo *mshinfo);
+int				msh_executable(t_mshinfo *mshinfo, char **argv, int flg_forked);
 int				msh_find_and_copy_path(char **argv, t_mshinfo *mshinfo,
 																char *path);
 

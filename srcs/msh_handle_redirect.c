@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 02:18:04 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/20 11:48:25 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/20 18:56:04 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,32 +85,12 @@ static int		get_flg_redirect(char *save, ssize_t len, ssize_t begin,
 }
 
 /*
-** 中野さんがリダイレクトとパイプをやっつける関数
-** redirect, pipeのフラグ、file discripter, １つ後のargvが引数です。
-** 処理にエラーがあれば1, なければ0を返します。
-** 暫定的に動作確認のためedirectとpipe fdを出力するようにしています。
+** hundling number + redirect as fd + redirect
+** and get the next argv then delete the argv
 ** flg_redirect
 **	0: append
 **	1: write
 **	2: read
-*/
-
-static int		msh_create_redirect(int flg_redirect, int fd, char *argv)
-{
-	ft_putnbr_fd(fd, 1);
-	if (flg_redirect == 0)
-		ft_putstr_fd(">>", 1);
-	if (flg_redirect == 1)
-		ft_putstr_fd(">", 1);
-	if (flg_redirect == 2)
-		ft_putstr_fd("<", 1);
-	ft_putendl_fd(argv, 1);
-	return (0);
-}
-
-/*
-** hundling number + redirect as fd + redirect
-** and get the next argv then delete the argv
 */
 
 ssize_t			msh_handle_redirect(t_mshinfo *mshinfo, char *save, ssize_t len)

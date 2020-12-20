@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/25 09:42:10 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/17 11:53:34 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/20 17:38:53 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,27 +31,21 @@
 ** 	msh_executable:			実行可能ファイル（executable）or shell scriptを実行する。
 */
 
-int			msh_exec_cmd(t_mshinfo *mshinfo, char **argv)
+int			msh_exec_cmd(t_mshinfo *mshinfo, char **argv, int flg_forked)
 {
-	int		argc;
-	char	**argv;
-
-	if (!(argv = msh_split_cmd_to_argv(mshinfo, cmd, &argc)))
-		return (MSH_EXIT_BY_ERR);
 	if (!ft_strncmp(argv[0], "echo", ft_strlen("echo") + 1))
-		return (msh_echo(argv, mshinfo));
+		return (msh_echo(mshinfo, argv, flg_forked));
 	else if (!ft_strncmp(argv[0], "cd", ft_strlen("cd") + 1))
-		return (msh_cd(argv, mshinfo));
+		return (msh_cd(mshinfo, argv, flg_forked));
 	else if (!ft_strncmp(argv[0], "pwd", ft_strlen("pwd") + 1))
-		return (msh_pwd(argv, mshinfo));
+		return (msh_pwd(mshinfo, argv, flg_forked));
 	else if (!ft_strncmp(argv[0], "export", ft_strlen("export") + 1))
-		return (msh_export(argv, mshinfo));
+		return (msh_export(mshinfo, argv, flg_forked));
 	else if (!ft_strncmp(argv[0], "unset", ft_strlen("unset") + 1))
-		return (msh_unset(argv, mshinfo));
+		return (msh_unset(mshinfo, argv, flg_forked));
 	else if (!ft_strncmp(argv[0], "env", ft_strlen("env") + 1))
-		return (msh_env(argv, mshinfo));
+		return (msh_env(mshinfo, argv, flg_forked));
 	else if (!ft_strncmp(argv[0], "exit", ft_strlen("exit") + 1))
-		return (msh_exit(argv, mshinfo));
-	else
-		return (msh_executable(argv, mshinfo));
+		return (msh_exit(mshinfo, argv, flg_forked));
+	return (msh_executable(mshinfo, argv, flg_forked));
 }

@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 10:05:38 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/20 13:01:39 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/20 18:51:38 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,12 +60,13 @@ int			msh_parse_and_exec_cmd(t_mshinfo *mshinfo, char **save)
 			return (-1);
 		if (!(argv = arglst_to_argv(mshinfo->arglst)))
 			return (-1);
-		mshinfo->n_proc++;
 		if (ret == 1)		// exec command
-		{
-			msh_exec_cmd(mshinfo, save);
-			return (1);
-		}
-		msh_create_pipe_process(mshinfo);
+			break ;
+		if (msh_create_pipe(mshinfo, argv) < 0)
+			return (-1);
+		msh_freestrs(argv);
 	}
+	msh_exec_cmd(mshinfo, argv, 0);
+	msh_free_strs(argv);
+	return (1);
 }

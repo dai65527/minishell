@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/08 14:29:20 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/20 11:41:47 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/20 18:56:45 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,8 @@ static int	open_redirect_file(const char *fname, int flg_redirect)
 **	 1: one process created
 */
 
-int			msh_create_redirect(const char *fname, int redirect_fd, int flg_redirect)
+int			msh_create_redirect(const char *fname, int redirect_fd,
+									int flg_redirect)
 {
 	int		file_fd;
 	int		pipe_fd[2];
