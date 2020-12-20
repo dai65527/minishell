@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/20 19:30:54 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/20 20:22:26 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ typedef struct	s_keyval
 
 int				msh_loop(t_mshinfo *mshinfo);
 int				msh_read_and_exec_cmd(t_mshinfo *mshinfo);
-int				msh_parse_and_exec_cmd(t_mshinfo *mshinfo, char **save);
+pid_t			msh_parse_and_exec_cmd(t_mshinfo *mshinfo, char **save);
 int				msh_parse_to_arglst(t_mshinfo *mshinfo, char **save);
 int				msh_exec_cmd(t_mshinfo *mshinfo, char **argv, int flg_forked);
 pid_t			msh_create_pipe(t_mshinfo *mshinfo, char **argv);
@@ -122,7 +122,6 @@ ssize_t			msh_msg_return_val(char *msg, int fd, ssize_t ret);
 t_list			*msh_parse_envp(char **envp);
 char			**msh_split_cmd_to_argv(t_mshinfo *mshinfo,
 										char *cmd, int *argc);
-void			*msh_put_errmsg(t_mshinfo *mshinfo);
 void			msh_mshinfo_init(t_mshinfo *mshinfo);
 void			msh_mshinfo_free(t_mshinfo *mshinfo);
 void			msh_free_set(char **dest, char *src);

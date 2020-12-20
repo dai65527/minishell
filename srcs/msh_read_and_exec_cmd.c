@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 13:02:21 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/20 13:51:48 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/20 20:21:29 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int			msh_read_and_exec_cmd(t_mshinfo *mshinfo)
 		if ((ret = msh_parse_and_exec_cmd(mshinfo, save)) != 0)
 			break ;
 	}
-	msh_wait(mshinfo);
+	msh_wait(mshinfo, ret);
 	msh_resetfd(std_fd);
 	return (MSH_CONTINUE);
 }

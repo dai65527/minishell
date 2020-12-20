@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 10:05:38 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/20 18:51:38 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/20 20:20:29 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,11 @@ static char		**arglst_to_argv(t_list **arglst)
 	return (0);
 }
 
-int			msh_parse_and_exec_cmd(t_mshinfo *mshinfo, char **save)
+pid_t		msh_parse_and_exec_cmd(t_mshinfo *mshinfo, char **save)
 {
 	int		ret;
 	char	**argv;
+	pid_t	pid;
 
 	while (1)
 	{
@@ -66,7 +67,7 @@ int			msh_parse_and_exec_cmd(t_mshinfo *mshinfo, char **save)
 			return (-1);
 		msh_freestrs(argv);
 	}
-	msh_exec_cmd(mshinfo, argv, 0);
+	pid = msh_exec_cmd(mshinfo, argv, 0);
 	msh_free_strs(argv);
-	return (1);
+	return (pid);
 }

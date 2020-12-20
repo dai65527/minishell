@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/10 18:21:28 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/10 22:57:43 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/20 19:55:01 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ int			msh_find_and_copy_path(char **argv, t_mshinfo *mshinfo, char *path)
 			{
 				ft_putstr_fd("minishell: ", 2);
 				ft_putstr_fd(argv[1], 2);
-				ft_putstr_fd("cmd not found", 2);
+				ft_putstr_fd("command not found", 2);
 			}
 			return (-1);
 		}

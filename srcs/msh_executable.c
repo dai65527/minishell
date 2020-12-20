@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 20:13:33 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/11 12:32:29 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/20 20:23:13 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,11 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <limits.h>
-#include <sys/wait.h>
-#include <sys/errno.h>
+#include <errno.h>
 #include "minishell.h"
-#include <stdio.h>   
+#include <stdio.h>
+
+#define BUFSIZE 2048
 
 static pid_t	fork_and_execute(char **argv, t_mshinfo *mshinfo)
 {
@@ -30,6 +31,7 @@ static pid_t	fork_and_execute(char **argv, t_mshinfo *mshinfo)
 		mshinfo->ret_last_cmd = 127;
 		return (-1);
 	}
+	if ()
 	if ((pid = fork()) < 0)
 		return (-1);
 	else if (pid == 0)	
@@ -42,77 +44,44 @@ static pid_t	fork_and_execute(char **argv, t_mshinfo *mshinfo)
 	return (pid);
 }
 
-int				msh_executable(char **argv, t_mshinfo *mshinfo)
+static int		executable_errend(char *cmd, int ret)
 {
-	int		pid;
+	char		buf[BUFSIZE];
+
+	ft_strlcpy(buf, "minishell: ", BUFSIZE);
+	ft_strlcat(buf, cmd, BUFSIZE);
+	return (msh_puterr(buf, ret));
+}
+
+static int		execute(t_mshinfo *mshinfo, char **argv, const char *path)
+{
+	char		**envp;
+
+	if (!(envp = msh_make_envp(mshinfo->envlst)))
+		exit(msh_puterr("minishell", 1));
+	execve(path, argv, envp);
+	exit(executable_errend(argv[0], errno));
+}
+
+int				msh_executable(t_mshinfo *mshinfo, char **argv, int flg_forked)
+{
+	pid_t	pid;
 	int		status;
 	int		stdfd_backup[3];
+	char	path[PATH_MAX];
 	int		n_ps;
 
-	if (msh_backupfd(stdfd_backup))
-		return (MSH_EXIT_BY_ERR);
-	if ((n_ps = msh_handle_redirect_and_pipe(argv, mshinfo)) < 0)
-		return (MSH_EXIT_BY_ERR);
-	printf("n_ps = %d\n", n_ps);
-	if ((pid = fork_and_execute(argv, mshinfo)) != -1)
-		n_ps++;
-	printf("n_ps_ = %d\n", n_ps);
-	msh_resetfd(stdfd_backup);
-	printf("waiting.\n");
-	while (n_ps--)
+	if (msh_find_and_copy_path(argv, mshinfo, path) < 0)
 	{
-		if (pid == wait(&status))
-		{
-			mshinfo->ret_last_cmd = status;
-			printf("%d has back\n", pid);
-		}
-		else
-			printf("child has back\n");
+		mshinfo->ret_last_cmd = 127;
+		return (-1);
 	}
-	return (MSH_CONTINUE);
+	if (flg_forked)
+		execute(mshinfo, argv, path);
+	if ((pid = fork()) < 0)
+		return (msh_puterr("minishell", errno));
+	else if (pid == 0)
+		execute(mshinfo, argv, path);
+	mshinfo->n_proc++;
+	return (pid);
 }
-
-/*
-**	HOW TO TEST
-**
-**	0.	move to srcs directory.
-**	1.	compile with -- gcc -Wall -Wextra -Werror -D TEST_MSH_EXECUTABLE -I../includes msh_executable.c msh_handle_redirect_and_pipe.c msh_handle_redirect.c msh_create_redirect_process.c msh_handle_pipe.c msh_find_and_copy_path.c msh_backupfd.c msh_resetfd.c msh_closefds.c msh_mshinfo_init.c msh_parse_envp.c msh_make_envp.c msh_keyval_free.c ../libft/libft.a
-**	2.	it works with command line arguments. ( '>', '<' or '|' should be escaped)
-**	ex)
-**		$ ./a.out cat
-**		$ ./a.out cat test.txt
-**		$ ./a.out cat test.txt \> test2.txt
-**		$ ./a.out cat test.txt \>\> test2.txt
-**		$ ./a.out cat test.txt \> test2.txt \> test3.txt
-**		$ ./a.out cat \< test.txt \> test2.txt
-**		$ ./a.out ls | cat
-**		$ ./a.out ls | cat 
-*/
-
-#ifdef TEST_MSH_EXECUTABLE
-
-#include <stdio.h>
-
-int		msh_exec_cmd(t_mshinfo *mshinfo, char **argv)
-{
-	return (msh_executable(argv, mshinfo));
-}
-
-int		main(int argc, char **argv, char **envp)
-{
-	t_mshinfo	mshinfo;
-
-	printf("start\n");
-	if (argc == 1)
-		return (1);
-	msh_mshinfo_init(&mshinfo);
-	if (!(mshinfo.envlst = msh_parse_envp(envp)))
-		return (1);
-	if (argc <= 1)
-		mshinfo.fd_cmdsrc = FD_STDIN;
-	msh_executable(argv + 1, &mshinfo);
-	printf("end\n");
-	return (0);
-}
-
-#endif
