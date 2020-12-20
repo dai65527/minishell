@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/17 11:53:30 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/18 10:23:09 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,10 +145,10 @@ int				msh_exit_by_err(t_mshinfo *mshinfo);
 */
 
 int				msh_handle_redirect_and_pipe(char **argv, t_mshinfo *mshinfo);
-int				msh_handle_redirect(char **argv);
+// int				msh_handle_redirect(char **argv);
 int				msh_create_redirect_process(char *fname,
 								int redirect_fd, int open_option);
-int				msh_handle_pipe(char **argv, t_mshinfo *mshinfo);
+// int				msh_handle_pipe(char **argv, t_mshinfo *mshinfo);
 
 /*
 ** echo
