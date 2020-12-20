@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/08 14:12:28 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/08 21:55:01 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/20 13:45:54 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 **  This is needed because these might be overwritten by pipefd.
 */
 
-int			msh_backupfd(int *stdfd_backup)
+int			msh_backupfd(int stdfd_backup[3])
 {
 	stdfd_backup[0] = dup(FD_STDIN);
 	stdfd_backup[1] = dup(FD_STDOUT);

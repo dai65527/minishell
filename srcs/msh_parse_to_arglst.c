@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh_gnc_find_argv_from_save.c                      :+:      :+:    :+:   */
+/*   msh_parse_to_arglst.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 16:44:56 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/17 03:15:58 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/20 13:25:42 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,27 +51,35 @@ static int			arglst_to_argv(t_list **arglst, char **argv)
 /*
 ** saveから'\n' or ';'を探して、
 ** その手前まで(=コマンド)を抽出し、cmdに格納する
+** flg == 1 -> continue
+** flg == 2 -> pipe
+**
+** return val
+**	-1: error
+**	0: continue to read
+**	1: ready to exec command
+**	2: ready to exec piped command
 */
 
-int					msh_gnc_find_argv_from_save(t_mshinfo *mshinfo, char **save)
+int					msh_parse_to_arglst(t_mshinfo *mshinfo, char **save)
 {
-	int		flg_continue;
+	int		flg;
 	ssize_t	argvlen;
 	char	*new_save;
 	char	*head;
 
 	head = *save;
-	flg_continue = 0;
-	argvlen = msh_store_argv(mshinfo, *save, &flg_continue);
+	flg = 0;
+	argvlen = msh_store_argv(mshinfo, *save, &flg);
 	if (argvlen < 0)
 		return (-1);
-	if (flg_continue)
-		return (MSH_CONTINUE);
+	if (flg == 2)
+		return (0);
 	new_save = ft_substr(*save, argvlen + 1, ft_strlen(*save) - argvlen - 1);
 	if (!new_save)
 	{
 		msh_free_setnull((void **)save);
-		return (!MSH_CONTINUE);
+		return (1);
 	}
 	free(*save);
 	*save = new_save;
@@ -100,7 +108,7 @@ int		main(int argc, char **argv, char **envp)
 		{}
 		// return (msh_exit_by_err(&mshinfo));
 	// char *save = ft_strdup("a$USER<b c$USER12<d 0>e f>g \\32<h a$USER|a \\42>>'a$USER<a|a \\42>>'\"a$USER<a|a \\52>>\"");
-	char *save = ft_strdup("a>>>b");
+	char *save = ft_strdup("a b|b d;c e");
 	printf("input: %s\n", save);
 	printf("---redirect, pipe---\n");
 	char **argvs = NULL;
@@ -112,6 +120,22 @@ int		main(int argc, char **argv, char **envp)
 	if (arglst_to_argv(&mshinfo.arglst, argvs))
 		ft_putendl_fd("msh_put_errmsg", 2);
 	int i = -1;
+	printf("---------argv-------\n");
+	while (argvs[++i])
+	{
+		printf("%s\n", argvs[i]);
+		msh_free_setnull((void**)&argvs[i]);
+	}
+	free(argvs);
+	argvs = NULL;
+	ret = msh_gnc_find_argv_from_save(&mshinfo, &save);
+	if (ret < 0)
+		return (1);
+	if (!(argvs = ft_calloc(sizeof(char*), ft_lstsize(mshinfo.arglst) + 1)))
+		ft_putendl_fd("msh_put_errmsg", 2);
+	if (arglst_to_argv(&mshinfo.arglst, argvs))
+		ft_putendl_fd("msh_put_errmsg", 2);
+	i = -1;
 	printf("---------argv-------\n");
 	while (argvs[++i])
 	{

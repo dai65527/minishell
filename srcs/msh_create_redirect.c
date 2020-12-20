@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/08 14:29:20 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/17 11:48:15 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/20 11:41:47 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,67 +16,93 @@
 #include "minishell.h"
 #include <stdio.h>
 
-#define BUFSIZE 1024
+#define MSH_BUFSIZE 1024
 
-static int	get_redirect_fd(char **arg)
+static int	close_end(int file_fd, int pipe_fd[2], int ret)
+{
+	if (file_fd >= 0)
+		close(file_fd);
+	if (pipe_fd)
+	{
+		close(pipe_fd[0]);
+		close(pipe_fd[0]);
+	}
+	return (ret);
+}
+
+static int	input_redirect_child(int file_fd, int *pipe_fd)
+{
+	int		len;
+	char	buf[MSH_BUFSIZE];
+
+	close(pipe_fd[0]);
+	while((len = read(file_fd, buf, MSH_BUFSIZE)) > 0)
+		write(pipe_fd[1], buf, len);
+	close(pipe_fd[1]);
+	close(file_fd);
+	exit(0);
+}
+
+static int	output_redirect_child(int file_fd, int *pipe_fd)
+{
+	int		len;
+	char	buf[MSH_BUFSIZE];
+
+	close(pipe_fd[1]);
+	while((len = read(pipe_fd[0], buf, MSH_BUFSIZE)) > 0)
+		write(file_fd, buf, len);
+	close(pipe_fd[0]);
+	close(file_fd);
+	exit(0);
+}
+
+
+static int	open_redirect_file(const char *fname, int flg_redirect)
 {
 	int		fd;
 
-	if (**arg == '<')
-		return (0);
-	if (**arg == '>')
-		return (1);
-	fd = 0;
-	while (ft_isdigit(**arg))
-	{
-		fd = fd * 10 + **arg - '0';
-		(*arg)++;
-	}
+	if (flg_redirect == 0)
+		fd = open(fname, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	else if (flg_redirect == 1)
+		fd = open(fname, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	else
+		fd = open(fname, O_RDONLY);
+	if (fd < 0)
+		return (error());
 	return (fd);
 }
 
-static int	get_open_option(char *arg)
-{
-	if (!ft_strncmp(arg, "<", 2))
-		return (O_RDONLY);
-	else if (!ft_strncmp(arg, ">", 2))
-		return (O_WRONLY | O_CREAT | O_TRUNC);
-	else if	(!ft_strncmp(arg, ">>", 3))
-		return (O_WRONLY | O_CREAT | O_APPEND);
-	return (-1);
-}
+/*
+** return value
+**	-1: error occured
+**	 0: no process created
+**	 1: one process created
+*/
 
-static int	remove_redirect_from_argv(char **argv)
+int			msh_create_redirect(const char *fname, int redirect_fd, int flg_redirect)
 {
-	int		i;
+	int		file_fd;
+	int		pipe_fd[2];
+	pid_t	pid;
 
-	i = 0;
-	while (1)
+	if (redirect_fd > 2 || redirect_fd < 0)
+		return (0);
+	if ((file_fd = open_redirect_file(fname, flg_redirect)) < 0)
+		return (-1);
+	if (pipe(pipe_fd) < 0)
+		return (close_end(file_fd, NULL, -1));
+	if ((pid = fork()) < 0)
+		return (close_end(file_fd, pipe_fd, -1));
+	else if (pid == 0)
 	{
-		argv[i] = argv[i + 2];
-		if (argv[i] == NULL)
-			break;
-		i++;
+		if (flg_redirect == 2)
+			input_redirect_child(file_fd, pipe_fd);
+		else
+			output_redirect_child(file_fd, pipe_fd);
 	}
-	argv[i + 1] = NULL;
-	argv[i + 2] = NULL;
-	return (0);
-}
-
-int			msh_handle_redirect(char **argv)
-{
-	int		open_option;
-	int		redirect_fd;
-
-	if (*(argv + 1) == NULL)
-		return (0);
-	if ((redirect_fd = get_redirect_fd(argv)) < 0)
-		return (0);
-	if ((open_option = get_open_option(*argv)) < 0)
-		return (0);
-	if (msh_create_redirect_process(*(argv + 1), redirect_fd, open_option) < 0)
-		return (-1);
-	if (remove_redirect_from_argv(argv) < 0)
-		return (-1);
-	return (1);
+	if (flg_redirect == 2)
+		dup2(pipe_fd[0], redirect_fd);
+	else
+		dup2(pipe_fd[1], redirect_fd);
+	return (close_end(file_fd, pipe_fd, 1));
 }

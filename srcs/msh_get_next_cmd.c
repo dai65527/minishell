@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/26 08:19:31 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/30 09:53:24 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/18 12:01:39 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,14 +71,14 @@ static int	gnc_joinbuf(char **save, char *buf, ssize_t len)
 ** #13 Ctrl+D Ctrl+Cの挙動
 */
 
-int			msh_get_next_cmd(t_mshinfo *mshinfo, char **cmd, char **save)
+int			msh_exec_next_cmd(t_mshinfo *mshinfo, char **cmd, char **save)
 {
 	ssize_t	len;
 	char	buf[GNC_BUFSIZE];
 
 	if (!(*save) && !(*save = ft_calloc(1, sizeof(char))))
 		return (gnc_exit(MSH_EXIT_BY_ERR, NULL, NULL));
-	if (msh_gnc_find_cmd_from_save(cmd, save) != MSH_CONTINUE)
+	if (msh_find_cmd_and_exec(cmd, save) != MSH_CONTINUE)
 		return (*save ? MSH_CONTINUE : MSH_EXIT_BY_ERR);
 	if (mshinfo->fd_cmdsrc == FD_STDIN)
 		ft_putstr_fd(MSH_PROMPT, FD_STDOUT);

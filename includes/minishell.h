@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/18 10:23:09 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/20 13:53:43 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ typedef struct	s_mshinfo
 {
 	t_list		*envlst;
 	t_list		*arglst;
-	int			num_process;
+	int			n_proc;
 	int			fd_cmdsrc;
 	int			ret_last_cmd;
 }				t_mshinfo;
@@ -75,7 +75,9 @@ typedef struct	s_keyval
 */
 
 int				msh_loop(t_mshinfo *mshinfo);
+int				msh_read_and_exec_cmd(t_mshinfo *mshinfo);
 int				msh_exec_cmd(t_mshinfo *mshinfo, char **argv);
+int				msh_parse_and_exec_cmd(t_mshinfo *mshinfo, char **save);
 
 /*
 ** msh_get_next_cmd
@@ -101,7 +103,7 @@ int				msh_check_operator(char *save, ssize_t len, char *operator);
 ssize_t			msh_handle_dollars(t_mshinfo *mshinfo, char *save, ssize_t len);
 ssize_t			msh_handle_redirect(t_mshinfo *mshinfo,
 										char *save, ssize_t len);
-ssize_t			msh_handle_pipe(t_mshinfo *mshinfo, char *save, ssize_t len);
+ssize_t			msh_handle_pipe(char *save, ssize_t len);
 ssize_t			msh_handle_quote(t_mshinfo *mshinfo,
 										char *save, ssize_t len);
 char			*msh_get_value_from_envlst(t_mshinfo *mshinfo, char **key);
@@ -144,11 +146,8 @@ int				msh_exit_by_err(t_mshinfo *mshinfo);
 ** redirect and pipe
 */
 
-int				msh_handle_redirect_and_pipe(char **argv, t_mshinfo *mshinfo);
-// int				msh_handle_redirect(char **argv);
-int				msh_create_redirect_process(char *fname,
-								int redirect_fd, int open_option);
-// int				msh_handle_pipe(char **argv, t_mshinfo *mshinfo);
+int				msh_create_redirect(const char *fname, int redirect_fd,
+										int flg_redirect);
 
 /*
 ** echo

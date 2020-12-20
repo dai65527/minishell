@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/24 15:59:01 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/28 17:55:37 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/20 13:43:32 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,22 +48,16 @@
 int		msh_loop(t_mshinfo *mshinfo)
 {
 	int		ret;
-	char	*cmd;
-	char	*save;
 
-	save = NULL;
-	cmd = NULL;
 	while (1)
 	{
-		if ((ret = (msh_get_next_cmd(mshinfo, &cmd, &save)) != MSH_CONTINUE))
-			break ;
-		ret = msh_exec_cmd(mshinfo, cmd, FD_STDIN);
-		msh_free_setnull((void *)&cmd);
-		if (ret != MSH_CONTINUE)
-			break ;
+		if (mshinfo->fd_cmdsrc == FD_STDIN)
+			ft_putstr_fd(MSH_PROMPT, FD_STDERR);
+		ret = msh_read_and_exec_cmd(t_mshinfo *mshinfo);
 	}
-	free(save);
 	if (ret == MSH_EXIT_BY_ERR)
 		return (msh_exit_by_err(mshinfo));
+	if (mshinfo->fd_cmdsrc == FD_STDIN)
+		ft_putstr_fd("exit\n", FD_STDERR);
 	return (msh_exit_by_cmd(mshinfo));
 }

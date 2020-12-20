@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 02:18:04 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/17 11:48:18 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/20 11:48:25 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,9 +89,13 @@ static int		get_flg_redirect(char *save, ssize_t len, ssize_t begin,
 ** redirect, pipeのフラグ、file discripter, １つ後のargvが引数です。
 ** 処理にエラーがあれば1, なければ0を返します。
 ** 暫定的に動作確認のためedirectとpipe fdを出力するようにしています。
+** flg_redirect
+**	0: append
+**	1: write
+**	2: read
 */
 
-static int		dnakano_redirect(int flg_redirect, int fd, char *argv)
+static int		msh_create_redirect(int flg_redirect, int fd, char *argv)
 {
 	ft_putnbr_fd(fd, 1);
 	if (flg_redirect == 0)
@@ -131,8 +135,10 @@ ssize_t			msh_handle_redirect(t_mshinfo *mshinfo, char *save, ssize_t len)
 	if ((ret = store_argv_redirect(mshinfo, save, len)) < 0)
 		return (msh_msg_return_val("syntax error", 2, -1));
 	last = ft_lstlast(mshinfo->arglst);
-	if (dnakano_redirect(flg_redirect, fd, last->content))
+	ret = msh_create_redirect(last->content, fd, flg_redirect);
+	if (ret < 0)
 		return (msh_msg_return_val("redirect error", 2, -1));
-	ft_lstpop(&mshinfo->arglst);
+	else if (ret == 1)
+		mshinfo->n_proc++;
 	return (len + ret - begin);
 }
