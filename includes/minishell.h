@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/21 17:45:43 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 18:21:18 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ void			*msh_puterr_return_null(char *str1, char *str2);
 */
 
 int				msh_backupfd(int *stdfd_backup);
-int				msh_resetfd(int *stdfd_backup);
+int				msh_resetfd(int *fd_std);
 void			msh_closefds(int fd, int *pipe_fd);
 
 /*
