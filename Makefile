@@ -6,7 +6,7 @@
 #    By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/21 08:47:29 by dnakano           #+#    #+#              #
-#    Updated: 2020/12/21 09:08:58 by dnakano          ###   ########.fr        #
+#    Updated: 2020/12/21 21:10:32 by dnakano          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -51,7 +51,6 @@ SRCNAME			:=	main.c \
 					msh_isescaped.c \
 					msh_check_operator.c \
 					msh_isspace.c \
-					msh_backupfd.c \
 					msh_store_argv.c \
 					msh_resetfd.c \
 					msh_free_setnull.c \
