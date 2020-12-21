@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/10 18:21:28 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/20 19:55:01 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 10:39:59 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@
 #include <sys/types.h>
 #include <sys/errno.h>
 #include "minishell.h"
-
-#include <stdio.h>  
 
 static void	msh_free_strs(char **strs)
 {
@@ -117,8 +115,8 @@ int			msh_find_and_copy_path(char **argv, t_mshinfo *mshinfo, char *path)
 			if (!errno)
 			{
 				ft_putstr_fd("minishell: ", 2);
-				ft_putstr_fd(argv[1], 2);
-				ft_putstr_fd("command not found", 2);
+				ft_putstr_fd(argv[0], 2);
+				ft_putstr_fd(" :command not found\n", 2);
 			}
 			return (-1);
 		}
