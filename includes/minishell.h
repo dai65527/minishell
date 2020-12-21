@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/21 17:08:39 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 17:45:43 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,17 +36,23 @@
 # define MSH_PROMPT	"minishell $ "
 
 /*
-** t_mshinfo (= struct s_mshinfo)
-** Structure to store information for execution of minishell.
-** minishellの実行に必要な情報を格納する構造体。
+**	Struct: s_mshinfo (t_mshinfo)
 **
-** member
-**  fd_cmdsrc:		コマンドのソースのファイルディスクリプタを格納する。
-**					コンソールからの入力(STDIN) -> fd_cmdsrc = 0
-**					シェルスクリプト(ファイル)からの入力 -> fd_cmdsrc >= 3
-** 	envlst:			環境変数のリスト（環境変数(t_keyval型)を格納するt_list）
-** 	arglst:			argvのリスト
-** 	ret_last_cmd:	最後に実行したコマンドの返り値。（=$?）
+**	Struct to store information for execution of minishell.
+**
+**	Member
+** 	- envlst:		List of enviroment variable.
+** 	- arglst:		List of argument of command input.
+**					Used in function msh_read_and_exec_cmd.
+**	- n_proc:		Number of process in one command execution.
+**  - fd_cmdsrc:	File discriptor of command sourse.
+**					- FROM stdin -> ft_cmdsrc = fd_std[0]	
+**					- FROM file -> opened file descriptor.
+**	- fd_std:		Backups of standard input, output and error output.
+**					- fd_std[0]: Standard input.
+**					- fd_std[1]: Standard output.
+**					- fd_std[2]: Standard error output.
+**	- ret_last_cmd:	Return variable of last command. (=$?)
 */
 
 typedef struct	s_mshinfo
@@ -55,6 +61,7 @@ typedef struct	s_mshinfo
 	t_list		*arglst;
 	int			n_proc;
 	int			fd_cmdsrc;
+	int			fd_std[3];
 	int			ret_last_cmd;
 }				t_mshinfo;
 
@@ -121,11 +128,11 @@ ssize_t			msh_msg_return_val(char *msg, int fd, ssize_t ret);
 ** minishell utils
 */
 
+int				msh_mshinfo_init(t_mshinfo *mshinfo);
+void			msh_mshinfo_free(t_mshinfo *mshinfo);
 t_list			*msh_parse_envp(char **envp);
 char			**msh_split_cmd_to_argv(t_mshinfo *mshinfo,
 										char *cmd, int *argc);
-void			msh_mshinfo_init(t_mshinfo *mshinfo);
-void			msh_mshinfo_free(t_mshinfo *mshinfo);
 void			msh_free_set(char **dest, char *src);
 void			msh_free_argvp(void ***argvp);
 int				msh_puterr(char *str1, char *str2, int ret);
