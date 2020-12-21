@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/08 14:29:20 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/21 07:50:11 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 13:44:08 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static int	close_end(int file_fd, int pipe_fd[2], int ret)
 	if (pipe_fd)
 	{
 		close(pipe_fd[0]);
-		close(pipe_fd[0]);
+		close(pipe_fd[1]);
 	}
 	return (ret);
 }
