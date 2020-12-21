@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/24 15:59:01 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/21 14:11:11 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 18:14:08 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,35 +14,15 @@
 #include "minishell.h"
 
 /*
-** msh_loop
+**	Function: msh_loop
 **
-** コマンド待ち受け→実行のループを繰り返す関数
-**
-** msh_get_next_cmd :
-** 	- 標準入力 or シェルスクリプトからコマンドを1つ受け取り、cmdに格納する
-** 	- 標準入力に対してはプロンプトを表示する。
-** 	- コマンドは改行 or ; で分ける。（パイプやリダイレクトがあった場合はそれも含め1コマンドと認識する）
-** 	- Ctrl+C, Ctrl+Dの再現を行う必要あり。
-** 	- quote, dquoteを待つ処理が必要。
-** 	- 返り値
-** 		- MSH_CONTINUE: 正常にコマンドを読み取り、コマンドを実行できる状態。
-** 		- MSH_EXIT_BY_CMD: Ctrl+Dによるminishell終了時
-** 		- MSH_EXIT_BY_ERR: その他のエラーによるmisnishell終了時（malloc失敗等）
-**
-** msh_exec_cmd :
-** 	- cmdの内容に基づいてコマンドを実行する。
-** 	- 返り値
-** 		- MSH_CONTINUE: 正常にコマンドの実行を終えて、次のコマンドに移ることができる。
-** 		- MSH_EXIT_BY_CMD: exitコマンドによるminishell終了時
-** 		- MSH_EXIT_BY_ERR: その他のエラーによるmisnishell終了時（malloc失敗等）
-**
-** msh_ext_by_cmd :
-** 	- comanndからの指令により終了する(エラ〜メッセージ等は出力しない)
-** 	- mshinfoの内容を適切に開放する。
-**
-** msh_ext_by_err :
-** 	- mallocの失敗等、プログラム実行中のエラーにより終了する（エラ〜メッセージを出力する）
-** 	- mshinfoの内容を適切に開放する。
+**	- Put script if command source is standard input.
+**	- If return value of msh_read_and_exec_cmd is not 0, quit main loop.
+**	- Put message "exit" when exiting properly. (Return value of 
+**	  msh_read_and_exec_cmd is 1)
+**	- Returns...
+**		- 0 on proper termination of minishell.
+**		- -1 when some error has occured.
 */
 
 int		msh_loop(t_mshinfo *mshinfo)
@@ -51,14 +31,14 @@ int		msh_loop(t_mshinfo *mshinfo)
 
 	while (1)
 	{
-		if (mshinfo->fd_cmdsrc == FD_STDIN)
+		if (mshinfo->fd_cmdsrc == mshinfo->fd_std[0])
 			ft_putstr_fd(MSH_PROMPT, FD_STDERR);
-		if ((ret = msh_read_and_exec_cmd(mshinfo)) != MSH_CONTINUE)
+		if ((ret = msh_read_and_exec_cmd(mshinfo)) != 0)
 			break ;
 	}
-	if (ret == MSH_EXIT_BY_ERR)
+	if (ret < 0)
 		return (-1);
-	else if (mshinfo->fd_cmdsrc == FD_STDIN)
+	else if (mshinfo->fd_cmdsrc == mshinfo->fd_std[0])
 		ft_putstr_fd("exit\n", FD_STDOUT);
 	return (0);
 }
