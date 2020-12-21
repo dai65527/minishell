@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/24 19:15:46 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/21 16:42:18 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 17:08:20 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 */
 
 /*
-** msh_puterr
+** Function: msh_puterr
 **
 ** - put error message which is following str1 and str2 to stderr.
 ** - str1 and str2 will be followed by ": "
@@ -42,4 +42,17 @@ int			msh_puterr(char *str1, char *str2, int ret)
 	}
 	ft_putendl_fd(strerror(errno), FD_STDERR);
 	return (ret);
+}
+
+/*
+** Function: msh_puterr_return_null
+**
+** - put error message as msh_puterr.
+** - returns null pointer.
+*/
+
+void		*msh_puterr_return_null(char *str1, char *str2)
+{
+	msh_puterr(str1, str2, 0);
+	return (NULL);
 }

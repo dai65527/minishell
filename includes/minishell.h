@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/21 16:43:01 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 17:08:39 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,7 @@ void			msh_mshinfo_free(t_mshinfo *mshinfo);
 void			msh_free_set(char **dest, char *src);
 void			msh_free_argvp(void ***argvp);
 int				msh_puterr(char *str1, char *str2, int ret);
+void			*msh_puterr_return_null(char *str1, char *str2);
 
 /*
 ** file discripter utils
