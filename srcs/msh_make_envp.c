@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/04 12:53:58 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/04 12:58:49 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 13:09:59 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,5 +48,6 @@ char		**msh_make_envp(t_list *envlst)
 		envlst = envlst->next;
 		i++;
 	}
+	envp[size] = NULL;
 	return (envp);
 }
