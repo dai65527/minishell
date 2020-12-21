@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:37:15 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/20 18:12:20 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 09:17:45 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 
 int		main(int argc, char **argv, char **envp)
 {
+	int			ret;
 	t_mshinfo	mshinfo;
 
 	msh_mshinfo_init(&mshinfo);
@@ -39,7 +40,7 @@ int		main(int argc, char **argv, char **envp)
 		mshinfo.fd_cmdsrc = FD_STDIN;
 	else if ((mshinfo.fd_cmdsrc = open(argv[1], O_RDONLY)) < 0)
 		return (msh_puterr("bash", 1));
-	msh_loop(&mshinfo);
+	ret = msh_loop(&mshinfo);
 	msh_mshinfo_free(&mshinfo);
-	return (0);
+	return (ret);
 }
