@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 01:36:14 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/21 20:41:37 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 20:50:51 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static ssize_t	clear_arglst_return_val(t_list **arglst, ssize_t ret)
 	return (ret);
 }
 
-static int		setflg(char *c)
+static int		setflg(char c)
 {
 	if (c == '\0')
 		return (0);
