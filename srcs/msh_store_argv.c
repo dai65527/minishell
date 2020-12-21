@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 01:36:14 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/21 14:42:43 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 20:41:37 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,17 @@ static ssize_t	clear_arglst_return_val(t_list **arglst, ssize_t ret)
 {
 	ft_lstclear(arglst, &free);
 	return (ret);
+}
+
+static int		setflg(char *c)
+{
+	if (c == '\0')
+		return (0);
+	else if (c == '\n')
+		return (1);
+	else if (c == ';')
+		return (2);
+	return (3);
 }
 
 /*
@@ -37,27 +48,17 @@ ssize_t			msh_store_argv(t_mshinfo *mshinfo, char *save, int *flg)
 	{
 		while (save[len] && msh_isspace(save[len]))
 			len++;
-		if ((ret = msh_handle_redirect(mshinfo, save, len)) != 0)
-			;
-		// else if ((ret = msh_handle_pipe(save, len)) != 0)
-		// 	*flg = 3;
-		else if ((ret = msh_handle_quote(mshinfo, save, len)) != 0)
-			;
-		else if ((ret = msh_get_argv(mshinfo, save, len)) != 0)
-			;
-		if (ret < 0)
-			return (clear_arglst_return_val(&mshinfo->arglst, -1));
-		len += ret;
+		if (((ret = msh_handle_redirect(mshinfo, save, len)) != 0)
+			|| ((ret = msh_handle_quote(mshinfo, save, len)) != 0)
+			|| ((ret = msh_get_argv(mshinfo, save, len)) != 0))
+		{
+			if (ret < 0)
+				return (clear_arglst_return_val(&mshinfo->arglst, -1));
+			len += ret;
+		}
 		while (save[len] && msh_isspace(save[len]))
 			len++;
 	}
-	if (save[len] == '\0')
-		*flg = 0;
-	else if (save[len] == '\n')
-		*flg = 1;
-	else if (save[len] == ';')
-		*flg = 2;
-	else
-		*flg = 3;
+	*flg = setflg(save[len]);
 	return (len);
 }
