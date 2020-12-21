@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 20:13:33 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/21 13:14:39 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 16:49:16 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,23 +20,14 @@
 
 #define BUFSIZE 2048
 
-static int		executable_errend(char *cmd, int ret)
-{
-	char		buf[BUFSIZE];
-
-	ft_strlcpy(buf, "minishell: ", BUFSIZE);
-	ft_strlcat(buf, cmd, BUFSIZE);
-	return (msh_puterr(buf, ret));
-}
-
 static int		execute(t_mshinfo *mshinfo, char **argv, const char *path)
 {
 	char		**envp;
 
 	if (!(envp = msh_make_envp(mshinfo->envlst)))
-		exit(msh_puterr("minishell", 1));
+		exit(errno);
 	execve(path, argv, envp);
-	exit(executable_errend(argv[0], errno));
+	exit(msh_puterr("minishell", argv[0], errno));
 }
 
 int				msh_executable(t_mshinfo *mshinfo, char **argv, int flg_forked)
@@ -52,7 +43,7 @@ int				msh_executable(t_mshinfo *mshinfo, char **argv, int flg_forked)
 	if (flg_forked)
 		execute(mshinfo, argv, path);
 	if ((pid = fork()) < 0)
-		return (msh_puterr("minishell", errno));
+		return (msh_puterr("minishell", "fork", errno));
 	else if (pid == 0)
 		execute(mshinfo, argv, path);
 	mshinfo->n_proc++;

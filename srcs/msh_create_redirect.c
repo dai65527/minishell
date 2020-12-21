@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/08 14:29:20 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/21 13:44:08 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 16:44:11 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ static int	open_redirect_file(char *fname, int flg_redirect)
 	else
 		fd = open(fname, O_RDONLY);
 	if (fd < 0)
-		return (msh_puterr(fname, -1));
+		return (msh_puterr(fname, NULL, -1));
 	return (fd);
 }
 
