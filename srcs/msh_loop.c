@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/24 15:59:01 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/21 21:05:44 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/22 07:31:12 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,6 @@ int		msh_loop(t_mshinfo *mshinfo)
 	if (ret < 0)
 		return (-1);
 	else if (mshinfo->fd_cmdsrc == mshinfo->fd_std[0])
-		ft_putstr_fd("exit\n", FD_STDOUT);
+		ft_putstr_fd("exit\n", FD_STDERR);
 	return (0);
 }
