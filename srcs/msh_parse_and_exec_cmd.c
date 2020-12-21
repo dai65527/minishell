@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 10:05:38 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/21 20:24:59 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 21:13:55 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ static pid_t	parse_and_exec(t_mshinfo *mshinfo, char **save, int *flg_gonext)
 	{
 		if ((ret = msh_parse_to_arglst(mshinfo, save)) == 0)
 			return (0);
-		else if	(ret < 0)
+		else if (ret < 0)
 			return (-1);
 		if (!(argv = arglst_to_argv(&mshinfo->arglst)))
 			return (-1);
@@ -104,7 +104,7 @@ static pid_t	parse_and_exec(t_mshinfo *mshinfo, char **save, int *flg_gonext)
 **	flg_gonext is 0. (This means save stil contains command to be executed)
 */
 
-int			msh_parse_and_exec_cmd(t_mshinfo *mshinfo, char **save)
+int				msh_parse_and_exec_cmd(t_mshinfo *mshinfo, char **save)
 {
 	pid_t	pid;
 	int		flg_gonext;

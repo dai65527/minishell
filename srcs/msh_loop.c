@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/24 15:59:01 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/21 18:14:08 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 21:05:44 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 **
 **	- Put script if command source is standard input.
 **	- If return value of msh_read_and_exec_cmd is not 0, quit main loop.
-**	- Put message "exit" when exiting properly. (Return value of 
+**	- Put message "exit" when exiting properly. (Return value of
 **	  msh_read_and_exec_cmd is 1)
 **	- Returns...
 **		- 0 on proper termination of minishell.

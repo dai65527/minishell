@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/08 14:29:20 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/21 16:44:11 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 21:03:12 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,8 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include "minishell.h"
-#include <stdio.h>
 
-#define MSH_BUFSIZE 1024
+#define MSH_BUFSIZE 2048
 
 static int	close_end(int file_fd, int pipe_fd[2], int ret)
 {
@@ -36,7 +35,7 @@ static int	input_redirect_child(int file_fd, int *pipe_fd)
 	char	buf[MSH_BUFSIZE];
 
 	close(pipe_fd[0]);
-	while((len = read(file_fd, buf, MSH_BUFSIZE)) > 0)
+	while ((len = read(file_fd, buf, MSH_BUFSIZE)) > 0)
 		write(pipe_fd[1], buf, len);
 	close(pipe_fd[1]);
 	close(file_fd);
@@ -49,13 +48,12 @@ static int	output_redirect_child(int file_fd, int *pipe_fd)
 	char	buf[MSH_BUFSIZE];
 
 	close(pipe_fd[1]);
-	while((len = read(pipe_fd[0], buf, MSH_BUFSIZE)) > 0)
+	while ((len = read(pipe_fd[0], buf, MSH_BUFSIZE)) > 0)
 		write(file_fd, buf, len);
 	close(pipe_fd[0]);
 	close(file_fd);
 	exit(0);
 }
-
 
 static int	open_redirect_file(char *fname, int flg_redirect)
 {
