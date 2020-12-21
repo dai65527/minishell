@@ -6,14 +6,20 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/10 10:49:56 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/21 12:11:38 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 20:49:19 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <stdlib.h>
-#include <stdio.h> //
 #include "minishell.h"
+
+/*
+**	Function: msh_create_pipe
+**
+**	Create forked process for pipe and execute command by msh_exec_cmd.
+**	3rd argument of msh_exec_cmd (flg forked) should be set to 1 when call it.
+*/
 
 pid_t		msh_create_pipe(t_mshinfo *mshinfo, char **argv)
 {
@@ -32,7 +38,6 @@ pid_t		msh_create_pipe(t_mshinfo *mshinfo, char **argv)
 		dup2(pipe_fd[1], STDOUT_FILENO);
 		close(pipe_fd[0]);
 		close(pipe_fd[1]);
-		// fprintf(stderr, "piped\n");
 		msh_exec_cmd(mshinfo, argv, 1);
 		exit(1);
 	}

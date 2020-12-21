@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 02:18:04 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/21 13:59:20 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 20:43:47 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,10 +84,7 @@ ssize_t			msh_handle_redirect(t_mshinfo *mshinfo, char *save, ssize_t len)
 	begin = len;
 	fd = 0;
 	while (ft_isdigit(save[len]))
-	{
-		fd = fd * 10 + (save[len] - '0');
-		len++;
-	}
+		fd = fd * 10 + (save[len++] - '0');
 	if (msh_check_operator(save, len, "<>"))
 		return (0);
 	flg_redirect = get_flg_redirect(save, len, begin, &fd);
