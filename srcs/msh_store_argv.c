@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 01:36:14 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/21 12:05:17 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 14:42:43 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,10 @@ static ssize_t	clear_arglst_return_val(t_list **arglst, ssize_t ret)
 
 /*
 ** store argv and increment len to parse the string from begining to end
-** flg == 1 -> continue
-** flg == 2 -> pipe
+** flg == 0 -> continue
+** flg == 1 -> \n end
+** flg == 2 -> ; end
+** flg == 3 -> pipe
 */
 
 ssize_t			msh_store_argv(t_mshinfo *mshinfo, char *save, int *flg)
@@ -31,14 +33,14 @@ ssize_t			msh_store_argv(t_mshinfo *mshinfo, char *save, int *flg)
 	ssize_t	ret;
 
 	len = 0;
-	while (msh_check_operator(save, len, "\n;"))
+	while (msh_check_operator(save, len, "\n;|"))
 	{
 		while (save[len] && msh_isspace(save[len]))
 			len++;
 		if ((ret = msh_handle_redirect(mshinfo, save, len)) != 0)
 			;
-		else if ((ret = msh_handle_pipe(save, len)) != 0)
-			*flg = 2;
+		// else if ((ret = msh_handle_pipe(save, len)) != 0)
+		// 	*flg = 3;
 		else if ((ret = msh_handle_quote(mshinfo, save, len)) != 0)
 			;
 		else if ((ret = msh_get_argv(mshinfo, save, len)) != 0)
@@ -48,10 +50,14 @@ ssize_t			msh_store_argv(t_mshinfo *mshinfo, char *save, int *flg)
 		len += ret;
 		while (save[len] && msh_isspace(save[len]))
 			len++;
-		if (*flg == 2)
-			return (len - 1);
 	}
-	if (!save[len])
+	if (save[len] == '\0')
+		*flg = 0;
+	else if (save[len] == '\n')
 		*flg = 1;
+	else if (save[len] == ';')
+		*flg = 2;
+	else
+		*flg = 3;
 	return (len);
 }

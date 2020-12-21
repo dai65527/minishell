@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/21 08:53:46 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 15:06:33 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,8 @@ typedef struct	s_keyval
 
 int				msh_loop(t_mshinfo *mshinfo);
 int				msh_read_and_exec_cmd(t_mshinfo *mshinfo);
-pid_t			msh_parse_and_exec_cmd(t_mshinfo *mshinfo, char **save);
+// pid_t			msh_parse_and_exec_cmd(t_mshinfo *mshinfo, char **save);
+pid_t			msh_parse_and_exec_cmd(t_mshinfo *mshinfo, char **save, int *flg_gonext);
 int				msh_parse_to_arglst(t_mshinfo *mshinfo, char **save);
 int				msh_exec_cmd(t_mshinfo *mshinfo, char **argv, int flg_forked);
 pid_t			msh_create_pipe(t_mshinfo *mshinfo, char **argv);
