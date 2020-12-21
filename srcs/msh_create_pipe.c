@@ -6,11 +6,12 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/10 10:49:56 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/20 17:46:01 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 07:51:31 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
+#include <stdlib.h>
 #include "minishell.h"
 
 pid_t		msh_create_pipe(t_mshinfo *mshinfo, char **argv)

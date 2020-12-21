@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 01:36:14 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/20 13:38:10 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 07:56:41 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ ssize_t			msh_store_argv(t_mshinfo *mshinfo, char *save, int *flg)
 	len = 0;
 	while (msh_check_operator(save, len, "\n;"))
 	{
-		while (save[len] && msh_is_space(save[len]))
+		while (save[len] && msh_isspace(save[len]))
 			len++;
 		if ((ret = msh_handle_redirect(mshinfo, save, len)) != 0)
 			;
@@ -46,7 +46,7 @@ ssize_t			msh_store_argv(t_mshinfo *mshinfo, char *save, int *flg)
 		if (ret < 0)
 			return (clear_arglst_return_val(&mshinfo->arglst, -1));
 		len += ret;
-		while (save[len] && msh_is_space(save[len]))
+		while (save[len] && msh_isspace(save[len]))
 			len++;
 	}
 	if (!save[len])

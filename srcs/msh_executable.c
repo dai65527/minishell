@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 20:13:33 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/20 20:42:47 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 08:49:51 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,7 @@ static int		execute(t_mshinfo *mshinfo, char **argv, const char *path)
 int				msh_executable(t_mshinfo *mshinfo, char **argv, int flg_forked)
 {
 	pid_t	pid;
-	int		status;
-	int		stdfd_backup[3];
 	char	path[PATH_MAX];
-	int		n_ps;
 
 	if (msh_find_and_copy_path(argv, mshinfo, path) < 0)
 	{

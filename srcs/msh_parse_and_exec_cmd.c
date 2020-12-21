@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 10:05:38 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/20 20:20:29 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 07:06:52 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static char		**arglst_to_argv(t_list **arglst)
 	int		lstsize;
 	char	**argv;
 
-	lstsize = ft_lstsize(arglst);
+	lstsize = ft_lstsize(*arglst);
 	if (!(argv = (char **)malloc(sizeof(char) * (lstsize + 1))))
 	{
 		ft_lstclear(arglst, free);
@@ -59,15 +59,15 @@ pid_t		msh_parse_and_exec_cmd(t_mshinfo *mshinfo, char **save)
 			return (0);
 		else if	(ret != 1 && ret != 2)	// has error
 			return (-1);
-		if (!(argv = arglst_to_argv(mshinfo->arglst)))
+		if (!(argv = arglst_to_argv(&mshinfo->arglst)))
 			return (-1);
 		if (ret == 1)		// exec command
 			break ;
 		if (msh_create_pipe(mshinfo, argv) < 0)
 			return (-1);
-		msh_freestrs(argv);
+		msh_free_argvp((void ***)(&argv));
 	}
 	pid = msh_exec_cmd(mshinfo, argv, 0);
-	msh_free_strs(argv);
+	msh_free_argvp((void ***)(&argv));
 	return (pid);
 }

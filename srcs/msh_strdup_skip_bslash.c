@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   msh_strdup_skip_bslash.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 02:34:32 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/12 02:51:05 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/21 08:53:46 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include "minishell.h"
 
-static void	sub_ft_strdup_skip_bslash(char *s, char *substr,
+static void	sub_msh_strdup_skip_bslash(char *s, char *substr,
 										size_t s_len, size_t len)
 {
 	size_t	i;
@@ -30,7 +30,7 @@ static void	sub_ft_strdup_skip_bslash(char *s, char *substr,
 	substr[len] = 0;
 }
 
-char		*ft_strdup_skip_bslash(char *s)
+char		*msh_strdup_skip_bslash(char *s)
 {
 	size_t	s_len;
 	size_t	len;
@@ -50,6 +50,6 @@ char		*ft_strdup_skip_bslash(char *s)
 	}
 	if (!(substr = (char *)malloc(len + 1)))
 		return (NULL);
-	sub_ft_strdup_skip_bslash(head, substr, s_len, len);
+	sub_msh_strdup_skip_bslash(head, substr, s_len, len);
 	return (substr);
 }

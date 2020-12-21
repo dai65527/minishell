@@ -6,11 +6,12 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 13:02:21 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/20 20:21:29 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 07:03:14 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
+#include <stdlib.h>
 #include "minishell.h"
 
 #define MSH_READBUFLEN 1024
@@ -36,13 +37,12 @@ static int	joinbuf(char **save, char *buf, ssize_t len)
 
 int			msh_read_and_exec_cmd(t_mshinfo *mshinfo)
 {
-	int			n_ps;
 	int			std_fd[3];
 	ssize_t		ret;
 	char		buf[MSH_READBUFLEN];
 	static char	*save;
 
-	if (!(*save) && !(*save = ft_strdup("")))
+	if (!save && !(save = ft_strdup("")))
 		return (MSH_EXIT_BY_ERR);
 	msh_backupfd(std_fd);
 	mshinfo->n_proc = 0;
@@ -54,7 +54,7 @@ int			msh_read_and_exec_cmd(t_mshinfo *mshinfo)
 				return (MSH_EXIT_BY_CMD);
 			else if (mshinfo->fd_cmdsrc == FD_STDIN)
 				continue ;
-			if (!(save = ft_strjoin(save, "\n")))
+			if (joinbuf(&save, "\n", 1) < 0)
 				return (MSH_EXIT_BY_ERR);
 		}
 		else if (ret < 0)
@@ -62,7 +62,7 @@ int			msh_read_and_exec_cmd(t_mshinfo *mshinfo)
 		if (joinbuf(&save, buf, ret) < 0)
 			return (MSH_EXIT_BY_ERR);
 		// msh_exec_cmdは\nで終了したら1を返す。エラーは-1。0はもう一度read
-		if ((ret = msh_parse_and_exec_cmd(mshinfo, save)) != 0)
+		if ((ret = msh_parse_and_exec_cmd(mshinfo, &save)) != 0)
 			break ;
 	}
 	msh_wait(mshinfo, ret);

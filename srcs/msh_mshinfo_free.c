@@ -6,10 +6,11 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/24 19:44:56 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/20 18:14:02 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 08:56:35 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <unistd.h>
 #include <stdlib.h>
 #include "libft.h"
 #include "minishell.h"

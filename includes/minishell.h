@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/20 20:22:26 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 08:53:46 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,8 +80,9 @@ pid_t			msh_parse_and_exec_cmd(t_mshinfo *mshinfo, char **save);
 int				msh_parse_to_arglst(t_mshinfo *mshinfo, char **save);
 int				msh_exec_cmd(t_mshinfo *mshinfo, char **argv, int flg_forked);
 pid_t			msh_create_pipe(t_mshinfo *mshinfo, char **argv);
-int				msh_create_redirect(const char *fname, int redirect_fd,
+int				msh_create_redirect(char *fname, int redirect_fd,
 								int flg_redirect);
+void			msh_wait(t_mshinfo *mshinfo, pid_t pid);
 
 /*
 ** msh_get_next_cmd
@@ -111,7 +112,7 @@ ssize_t			msh_handle_pipe(char *save, ssize_t len);
 ssize_t			msh_handle_quote(t_mshinfo *mshinfo,
 										char *save, ssize_t len);
 char			*msh_get_value_from_envlst(t_mshinfo *mshinfo, char **key);
-char			*ft_strdup_skip_bslash(char *s);
+char			*msh_strdup_skip_bslash(char *s);
 t_list			*ft_lstget(t_list *lst, int index);
 ssize_t			msh_msg_return_val(char *msg, int fd, ssize_t ret);
 
@@ -126,7 +127,7 @@ void			msh_mshinfo_init(t_mshinfo *mshinfo);
 void			msh_mshinfo_free(t_mshinfo *mshinfo);
 void			msh_free_set(char **dest, char *src);
 void			msh_free_argvp(void ***argvp);
-int				msh_puterr(const char *str, int ret);
+int				msh_puterr(char *str, int ret);
 
 /*
 ** file discripter utils
@@ -145,13 +146,6 @@ void			msh_closefds(int fd, int *pipe_fd);
 
 int				msh_exit_by_cmd(t_mshinfo *mshinfo);
 int				msh_exit_by_err(t_mshinfo *mshinfo);
-
-/*
-** redirect and pipe
-*/
-
-int				msh_create_redirect(const char *fname, int redirect_fd,
-										int flg_redirect);
 
 /*
 ** echo
@@ -202,6 +196,7 @@ int				msh_exit(t_mshinfo *mshinfo, char **argv, int flg_forked);
 int				msh_executable(t_mshinfo *mshinfo, char **argv, int flg_forked);
 int				msh_find_and_copy_path(char **argv, t_mshinfo *mshinfo,
 																char *path);
+char			**msh_make_envp(t_list *envlst);
 
 /*
 ** t_keyval utils
@@ -220,6 +215,6 @@ void			msh_free_setnull(void **ptr);
 ** '\'によりエスケープされているかを判定する関数。
 */
 int				msh_isescaped(char *s, size_t len_from_start);
-int				msh_is_space(char c);
+int				msh_isspace(char c);
 
 #endif

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh_puterr_and_return.c                            :+:      :+:    :+:   */
+/*   msh_puterr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/24 19:15:46 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/20 18:09:55 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 06:50:08 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,20 +20,13 @@
 */
 
 /*
-** static int	exit_by_err_returnval(void)
-** {
-** 	return (errno);
-** }
-*/
-
-/*
 ** msh_ext_by_err
 **
 ** for in case minishell itself encounters an error.
 ** minishell自体がエラーに遭遇したときに終了する用
 */
 
-int			msh_puterr(const char *str, int ret)
+int			msh_puterr(char *str, int ret)
 {
 	if (str)
 		ft_putstr_fd(str, FD_STDERR);

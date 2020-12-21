@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 02:18:04 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/20 18:56:04 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 07:56:41 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,37 +28,17 @@ static ssize_t	store_argv_redirect(t_mshinfo *mshinfo, char *save,
 	ret = 0;
 	while (msh_check_operator(save, len, "\n;<>|"))
 	{
-		while (save[len] && msh_is_space(save[len]))
+		while (save[len] && msh_isspace(save[len]))
 			len++;
 		if ((ret = msh_handle_quote(mshinfo, save, len)) != 0)
 			return (ret > 0 ? len + ret - begin : -1);
 		else if ((ret = msh_get_argv(mshinfo, save, len)) != 0)
 			return (ret > 0 ? len + ret - begin : -1);
-		while (save[len] && msh_is_space(save[len]))
+		while (save[len] && msh_isspace(save[len]))
 			len++;
 	}
 	return (-1);
 }
-
-/*
-** for use of hundling redirection,
-** delete last elem of arglst and set null for prev elem's next;
-*/
-
-static	void	ft_lstpop(t_list **arglst)
-{
-	t_list *last;
-
-	last = ft_lstlast(*arglst);
-	ft_lstdelone(last, &free);
-	last = NULL;
-	ft_lstget(*arglst, ft_lstsize(*arglst) - 2)->next = NULL;
-}
-
-/*
-** redirect, pipeごとのflagを立てることと、fdの調整をします。
-** fdは指定がない場合、各redirectごとのデフォルトの0か１に調整します。
-*/
 
 static int		get_flg_redirect(char *save, ssize_t len, ssize_t begin,
 									int *fd)
@@ -120,5 +100,6 @@ ssize_t			msh_handle_redirect(t_mshinfo *mshinfo, char *save, ssize_t len)
 		return (msh_msg_return_val("redirect error", 2, -1));
 	else if (ret == 1)
 		mshinfo->n_proc++;
+	ft_lstpop(&mshinfo->arglst, free);
 	return (len + ret - begin);
 }

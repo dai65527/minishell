@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 16:44:56 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/20 18:39:07 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 07:07:28 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,28 +24,6 @@ t_list				*ft_lstget(t_list *lst, int index)
 	while (lst && index--)
 		lst = lst->next;
 	return (lst);
-}
-
-/*
-** arglst(linked list of argv) is convereted to char **argv
-*/
-
-static int			arglst_to_argv(t_list **arglst, char **argv)
-{
-	int i;
-
-	i = 0;
-	while (i < ft_lstsize(*arglst))
-	{
-		if (!(argv[i] = ft_strdup(ft_lstget(*arglst, i)->content)))
-		{
-			ft_lstclear(arglst, &free);
-			return (1);
-		}
-		i++;
-	}
-	ft_lstclear(arglst, &free);
-	return (0);
 }
 
 /*
