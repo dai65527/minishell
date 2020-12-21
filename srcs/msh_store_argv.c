@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 01:36:14 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/21 07:56:41 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 12:05:17 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,8 @@ ssize_t			msh_store_argv(t_mshinfo *mshinfo, char *save, int *flg)
 		len += ret;
 		while (save[len] && msh_isspace(save[len]))
 			len++;
+		if (*flg == 2)
+			return (len - 1);
 	}
 	if (!save[len])
 		*flg = 1;

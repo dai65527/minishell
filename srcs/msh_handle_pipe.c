@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 22:57:23 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/20 13:41:37 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 12:07:49 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,5 +23,7 @@
 
 ssize_t			msh_handle_pipe(char *save, ssize_t len)
 {
-	return (!msh_check_operator(save, len, "|"));
+	if (msh_check_operator(save, len, "|"))
+		return (0);
+	return (1);
 }

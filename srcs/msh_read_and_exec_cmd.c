@@ -6,13 +6,14 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 13:02:21 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/21 07:03:14 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 13:15:14 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <stdlib.h>
 #include "minishell.h"
+#include <stdio.h>		//
 
 #define MSH_READBUFLEN 1024
 
@@ -38,6 +39,7 @@ static int	joinbuf(char **save, char *buf, ssize_t len)
 int			msh_read_and_exec_cmd(t_mshinfo *mshinfo)
 {
 	int			std_fd[3];
+	int			read_fd;
 	ssize_t		ret;
 	char		buf[MSH_READBUFLEN];
 	static char	*save;
@@ -45,10 +47,12 @@ int			msh_read_and_exec_cmd(t_mshinfo *mshinfo)
 	if (!save && !(save = ft_strdup("")))
 		return (MSH_EXIT_BY_ERR);
 	msh_backupfd(std_fd);
+	read_fd = (mshinfo->fd_cmdsrc == FD_STDIN) ? std_fd[0] : mshinfo->fd_cmdsrc;
 	mshinfo->n_proc = 0;
 	while (1)
 	{
-		if ((ret = read(mshinfo->fd_cmdsrc, buf, MSH_READBUFLEN)) == 0)
+		// if ((ret = read(mshinfo->fd_cmdsrc, buf, MSH_READBUFLEN)) == 0)
+		if ((ret = read(read_fd, buf, MSH_READBUFLEN)) == 0)
 		{
 			if (ft_strlen(save) == 0)
 				return (MSH_EXIT_BY_CMD);
@@ -59,13 +63,14 @@ int			msh_read_and_exec_cmd(t_mshinfo *mshinfo)
 		}
 		else if (ret < 0)
 			return (MSH_EXIT_BY_ERR);
+		// write(2, buf, ret);
 		if (joinbuf(&save, buf, ret) < 0)
 			return (MSH_EXIT_BY_ERR);
 		// msh_exec_cmdは\nで終了したら1を返す。エラーは-1。0はもう一度read
 		if ((ret = msh_parse_and_exec_cmd(mshinfo, &save)) != 0)
 			break ;
 	}
-	msh_wait(mshinfo, ret);
 	msh_resetfd(std_fd);
+	msh_wait(mshinfo, ret);
 	return (MSH_CONTINUE);
 }
