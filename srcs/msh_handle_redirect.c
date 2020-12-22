@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 02:18:04 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/21 20:43:47 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/22 16:00:09 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,10 +93,7 @@ ssize_t			msh_handle_redirect(t_mshinfo *mshinfo, char *save, ssize_t len)
 		return (msh_msg_return_val("syntax error", 2, -1));
 	len += ret;
 	last = ft_lstlast(mshinfo->arglst);
-	ret = msh_create_redirect(last->content, fd, flg_redirect);
-	if (ret < 0)
-		return (msh_msg_return_val("redirect error", 2, -1));
-	else if (ret == 1)
+	if ((msh_create_redirect(last->content, fd, flg_redirect)) > 0)
 		mshinfo->n_proc++;
 	ft_lstpop(&mshinfo->arglst, free);
 	return (len - begin);
