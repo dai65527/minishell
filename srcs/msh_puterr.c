@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/24 19:15:46 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/21 17:08:20 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/22 16:43:50 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int			msh_puterr(char *str1, char *str2, int ret)
 	}
 	if (str2)
 	{
-		ft_putstr_fd(str1, FD_STDERR);
+		ft_putstr_fd(str2, FD_STDERR);
 		ft_putstr_fd(": ", FD_STDERR);
 	}
 	ft_putendl_fd(strerror(errno), FD_STDERR);
