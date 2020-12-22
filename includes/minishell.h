@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/21 19:14:49 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/23 07:32:53 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,24 +16,9 @@
 # include "libft.h"
 # include <sys/types.h>
 
-/*
-** return values of msh_exec_command function.
-*/
-
-# define MSH_CONTINUE		0
-# define MSH_EXIT_BY_CMD	1
-# define MSH_EXIT_BY_ERR	2
-
-/*
-** used in msh_get_next_cmd
-**
-** MSH_PROMPT_NORMAL: waiting for input from stdin
-** MSH_PROMPT_NEWLINE: waiting for newline from stdin
-** MSH_PROMPT_QUOTE: waiting for single quotation
-** MSH_PROMPT_DQUOTE: waiting for double quotation
-*/
-
 # define MSH_PROMPT	"minishell $ "
+
+# define MSH_NAME "minishell"
 
 /*
 **	Struct: s_mshinfo (t_mshinfo)
@@ -45,9 +30,6 @@
 ** 	- arglst:		List of argument of command input.
 **					Used in function msh_read_and_exec_cmd.
 **	- n_proc:		Number of process in one command execution.
-**  - fd_cmdsrc:	File discriptor of command sourse.
-**					- FROM stdin -> ft_cmdsrc = fd_std[0]	
-**					- FROM file -> opened file descriptor.
 **	- fd_std:		Backups of standard input, output and error output.
 **					- fd_std[0]: Standard input.
 **					- fd_std[1]: Standard output.
@@ -60,7 +42,6 @@ typedef struct	s_mshinfo
 	t_list		*envlst;
 	t_list		*arglst;
 	int			n_proc;
-	int			fd_cmdsrc;
 	int			fd_std[3];
 	int			ret_last_cmd;
 }				t_mshinfo;

@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 13:02:21 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/21 19:49:44 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/23 07:35:11 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,16 +55,13 @@ int			msh_read_and_exec_cmd(t_mshinfo *mshinfo)
 	if (!save && !(save = ft_strdup("")))
 		return (msh_puterr("minishell", NULL, -1));
 	mshinfo->n_proc = 0;
-	while ((ret = read(mshinfo->fd_cmdsrc, buf, MSH_READBUFLEN)) >= 0)
+	while ((ret = read(mshinfo->fd_std[0], buf, MSH_READBUFLEN)) >= 0)
 	{
 		if (ret == 0)
 		{
 			if (ft_strlen(save) == 0)
 				return (1);
-			else if (mshinfo->fd_cmdsrc == mshinfo->fd_std[0])
-				continue ;
-			if ((ret = joinbuf(&save, "\n", 1)) < 0)
-				return (ret);
+			continue ;
 		}
 		if (joinbuf(&save, buf, ret) < 0)
 			return (-1);
