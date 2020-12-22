@@ -1,29 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh_handle_pipe.c                                  :+:      :+:    :+:   */
+/*   ft_lstpop.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/16 22:57:23 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/21 12:07:49 by dnakano          ###   ########.fr       */
+/*   Created: 2020/12/21 07:36:43 by dnakano           #+#    #+#             */
+/*   Updated: 2020/12/21 08:03:00 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
 #include "libft.h"
 
-/*
-** パイプのハンドリングの関数です。
-** fdを取らないこと、処理がredirectと違うことから分けました。
-** 中身は中野さんにお任せです。
-**
-** => 返り値が0でなければflgを立てるだけに変更します。(20.12.20 中野)
-*/
-
-ssize_t			msh_handle_pipe(char *save, ssize_t len)
+void		ft_lstpop(t_list **lst, void (*del)(void *))
 {
-	if (msh_check_operator(save, len, "|"))
-		return (0);
-	return (1);
+	t_list	*prevlast;
+
+	if (lst == NULL || *lst == NULL)
+		return ;
+	if ((*lst)->next == NULL)
+	{
+		ft_lstdelone(*lst, del);
+		*lst = NULL;
+		return ;
+	}
+	prevlast = *lst;
+	while (prevlast->next->next != NULL)
+		prevlast = prevlast->next;
+	ft_lstdelone(prevlast->next, del);
+	prevlast->next = NULL;
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/17 02:19:32 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/21 19:14:49 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,25 +36,32 @@
 # define MSH_PROMPT	"minishell $ "
 
 /*
-** t_mshinfo (= struct s_mshinfo)
-** Structure to store information for execution of minishell.
-** minishellの実行に必要な情報を格納する構造体。
+**	Struct: s_mshinfo (t_mshinfo)
 **
-** member
-**  fd_cmdsrc:		コマンドのソースのファイルディスクリプタを格納する。
-**					コンソールからの入力(STDIN) -> fd_cmdsrc = 0
-**					シェルスクリプト(ファイル)からの入力 -> fd_cmdsrc >= 3
-** 	envlst:			環境変数のリスト（環境変数(t_keyval型)を格納するt_list）
-** 	arglst:			argvのリスト
-** 	ret_last_cmd:	最後に実行したコマンドの返り値。（=$?）
+**	Struct to store information for execution of minishell.
+**
+**	Member
+** 	- envlst:		List of enviroment variable.
+** 	- arglst:		List of argument of command input.
+**					Used in function msh_read_and_exec_cmd.
+**	- n_proc:		Number of process in one command execution.
+**  - fd_cmdsrc:	File discriptor of command sourse.
+**					- FROM stdin -> ft_cmdsrc = fd_std[0]	
+**					- FROM file -> opened file descriptor.
+**	- fd_std:		Backups of standard input, output and error output.
+**					- fd_std[0]: Standard input.
+**					- fd_std[1]: Standard output.
+**					- fd_std[2]: Standard error output.
+**	- ret_last_cmd:	Return variable of last command. (=$?)
 */
 
 typedef struct	s_mshinfo
 {
 	t_list		*envlst;
 	t_list		*arglst;
-	int			num_process;
+	int			n_proc;
 	int			fd_cmdsrc;
+	int			fd_std[3];
 	int			ret_last_cmd;
 }				t_mshinfo;
 
@@ -75,7 +82,15 @@ typedef struct	s_keyval
 */
 
 int				msh_loop(t_mshinfo *mshinfo);
-int				msh_exec_cmd(t_mshinfo *mshinfo, char *cmd, int fd_input);
+int				msh_read_and_exec_cmd(t_mshinfo *mshinfo);
+// pid_t			msh_parse_and_exec_cmd(t_mshinfo *mshinfo, char **save);
+pid_t			msh_parse_and_exec_cmd(t_mshinfo *mshinfo, char **save);
+int				msh_parse_to_arglst(t_mshinfo *mshinfo, char **save);
+int				msh_exec_cmd(t_mshinfo *mshinfo, char **argv, int flg_forked);
+pid_t			msh_create_pipe(t_mshinfo *mshinfo, char **argv);
+int				msh_create_redirect(char *fname, int redirect_fd,
+								int flg_redirect);
+void			msh_wait(t_mshinfo *mshinfo, pid_t pid);
 
 /*
 ** msh_get_next_cmd
@@ -101,11 +116,11 @@ int				msh_check_operator(char *save, ssize_t len, char *operator);
 ssize_t			msh_handle_dollars(t_mshinfo *mshinfo, char *save, ssize_t len);
 ssize_t			msh_handle_redirect(t_mshinfo *mshinfo,
 										char *save, ssize_t len);
-ssize_t			msh_handle_pipe(t_mshinfo *mshinfo, char *save, ssize_t len);
+ssize_t			msh_handle_pipe(char *save, ssize_t len);
 ssize_t			msh_handle_quote(t_mshinfo *mshinfo,
 										char *save, ssize_t len);
 char			*msh_get_value_from_envlst(t_mshinfo *mshinfo, char **key);
-char			*ft_strdup_skip_bslash(char *s);
+char			*msh_strdup_skip_bslash(char *s);
 t_list			*ft_lstget(t_list *lst, int index);
 ssize_t			msh_msg_return_val(char *msg, int fd, ssize_t ret);
 
@@ -113,14 +128,23 @@ ssize_t			msh_msg_return_val(char *msg, int fd, ssize_t ret);
 ** minishell utils
 */
 
+int				msh_mshinfo_init(t_mshinfo *mshinfo);
+void			msh_mshinfo_free(t_mshinfo *mshinfo);
 t_list			*msh_parse_envp(char **envp);
 char			**msh_split_cmd_to_argv(t_mshinfo *mshinfo,
 										char *cmd, int *argc);
-void			*msh_put_errmsg(t_mshinfo *mshinfo);
-void			msh_mshinfo_init(t_mshinfo *mshinfo);
-void			msh_mshinfo_free(t_mshinfo *mshinfo);
 void			msh_free_set(char **dest, char *src);
 void			msh_free_argvp(void ***argvp);
+int				msh_puterr(char *str1, char *str2, int ret);
+void			*msh_puterr_return_null(char *str1, char *str2);
+
+/*
+** file discripter utils
+*/
+
+int				msh_backupfd(int *stdfd_backup);
+int				msh_resetfd(int *fd_std);
+void			msh_closefds(int fd, int *pipe_fd);
 
 /*
 ** minishell 終了時用の関数
@@ -136,57 +160,52 @@ int				msh_exit_by_err(t_mshinfo *mshinfo);
 ** echo
 */
 
-int				msh_echo(int argc, char **argv, t_mshinfo *mshinfo,
-							int ft_input);
+int				msh_echo(t_mshinfo *mshinfo, char **argv, int flg_forked);
 
 /*
 ** cd
 */
 
-int				msh_cd(int argc, char **argv, t_mshinfo *mshinfo,
-							int ft_input);
+int				msh_cd(t_mshinfo *mshinfo, char **argv, int flg_forked);
 
 /*
 ** pwd
 */
 
-int				msh_pwd(int argc, char **argv, t_mshinfo *mshinfo,
-							int ft_input);
+int				msh_pwd(t_mshinfo *mshinfo, char **argv, int flg_forked);
 
 /*
 ** export
 */
 
-int				msh_export(int argc, char **argv, t_mshinfo *mshinfo,
-							int ft_input);
+int				msh_export(t_mshinfo *mshinfo, char **argv, int flg_forked);
 
 /*
 ** unset
 */
 
-int				msh_unset(int argc, char **argv, t_mshinfo *mshinfo,
-							int ft_input);
+int				msh_unset(t_mshinfo *mshinfo, char **argv, int flg_forked);
 
 /*
 ** env
 */
 
-int				msh_env(int argc, char **argv, t_mshinfo *mshinfo,
-							int ft_input);
+int				msh_env(t_mshinfo *mshinfo, char **argv, int flg_forked);
 
 /*
 ** exit
 */
 
-int				msh_exit(int argc, char **argv, t_mshinfo *mshinfo,
-							int ft_input);
+int				msh_exit(t_mshinfo *mshinfo, char **argv, int flg_forked);
 
 /*
 ** exec_exceutable
 */
 
-int				msh_executable(int argc, char **argv, t_mshinfo *mshinfo,
-							int ft_input);
+int				msh_executable(t_mshinfo *mshinfo, char **argv, int flg_forked);
+int				msh_find_and_copy_path(char **argv, t_mshinfo *mshinfo,
+																char *path);
+char			**msh_make_envp(t_list *envlst);
 
 /*
 ** t_keyval utils
@@ -198,12 +217,13 @@ void			msh_keyval_free(void *keyval);
 /*
 ** *ptrをfreeして、*ptr=NULLする便利関数
 */
+
 void			msh_free_setnull(void **ptr);
 
 /*
 ** '\'によりエスケープされているかを判定する関数。
 */
 int				msh_isescaped(char *s, size_t len_from_start);
-int				msh_is_space(char c);
+int				msh_isspace(char c);
 
 #endif

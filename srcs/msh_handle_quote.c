@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msh_handle_quote.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 01:56:20 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/17 02:26:21 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/20 22:10:15 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 ** get env in quatation
 */
 
-static ssize_t	msh_get_env_quate(t_mshinfo *mshinfo, char *save,
+static ssize_t	get_env_quate(t_mshinfo *mshinfo, char *save,
 									ssize_t len, char **content)
 {
 	ssize_t	begin;
@@ -40,7 +40,7 @@ static ssize_t	msh_get_env_quate(t_mshinfo *mshinfo, char *save,
 ** get argv in double quotation
 */
 
-static ssize_t	msh_get_argv_quate(t_mshinfo *mshinfo, char *save, ssize_t len)
+static ssize_t	get_argv_quote(t_mshinfo *mshinfo, char *save, ssize_t len)
 {
 	ssize_t	ret;
 	ssize_t	begin[2];
@@ -60,7 +60,7 @@ static ssize_t	msh_get_argv_quate(t_mshinfo *mshinfo, char *save, ssize_t len)
 		msh_free_set(&content[0], ft_strjoin(content[0], content[1]));
 		msh_free_setnull((void**)&content[1]);
 		if (save[len] == '$'
-			&& ((ret = msh_get_env_quate(mshinfo, save, len, &content[0])) < 0))
+			&& ((ret = get_env_quate(mshinfo, save, len, &content[0])) < 0))
 			return (-1);
 		len += ret;
 	}
@@ -95,7 +95,7 @@ ssize_t			msh_handle_quote(t_mshinfo *mshinfo, char *save, ssize_t len)
 	}
 	ret = 0;
 	begin = ++len;
-	if ((ret = msh_get_argv_quate(mshinfo, save, len)) < 0)
+	if ((ret = get_argv_quote(mshinfo, save, len)) < 0)
 		return (msh_msg_return_val("malloc error", 2, -1));
 	len += ret;
 	if (save[len++] != '\"')

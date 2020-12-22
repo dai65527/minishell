@@ -1,29 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh_handle_pipe.c                                  :+:      :+:    :+:   */
+/*   msh_resetfd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/16 22:57:23 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/21 12:07:49 by dnakano          ###   ########.fr       */
+/*   Created: 2020/12/08 14:12:28 by dnakano           #+#    #+#             */
+/*   Updated: 2020/12/21 18:20:38 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <unistd.h>
 #include "minishell.h"
-#include "libft.h"
 
 /*
-** パイプのハンドリングの関数です。
-** fdを取らないこと、処理がredirectと違うことから分けました。
-** 中身は中野さんにお任せです。
+**	Function: msh_resetfd
 **
-** => 返り値が0でなければflgを立てるだけに変更します。(20.12.20 中野)
+**	Reset standard file discriptors which were backuped to stdfd[3].
 */
 
-ssize_t			msh_handle_pipe(char *save, ssize_t len)
+int			msh_resetfd(int *fd_std)
 {
-	if (msh_check_operator(save, len, "|"))
-		return (0);
-	return (1);
+	dup2(fd_std[0], FD_STDIN);
+	dup2(fd_std[1], FD_STDOUT);
+	dup2(fd_std[2], FD_STDERR);
+	return (0);
 }

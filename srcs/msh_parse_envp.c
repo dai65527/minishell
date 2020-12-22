@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 08:49:16 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/29 11:26:21 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 17:14:23 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,14 @@ static t_list	*errend(t_list *envlst, t_keyval *env)
 static t_keyval	*get_env_errend(t_keyval *env)
 {
 	free(env);
-	return (NULL);
+	return (msh_puterr_return_null("minshell", NULL));
 }
+
+/*
+**	Sub function: get_env
+**
+**	parse one element of envp (envstr) to one element of envlst.
+*/
 
 static t_keyval	*get_env(char *envstr)
 {
@@ -33,7 +39,7 @@ static t_keyval	*get_env(char *envstr)
 	t_keyval	*env;
 
 	if (!(env = (t_keyval *)malloc(sizeof(t_keyval))))
-		return (NULL);
+		return (msh_puterr_return_null("minishell", NULL));
 	keylen = 0;
 	while (envstr[keylen] != '\0' && envstr[keylen] != '=')
 		keylen++;
@@ -49,6 +55,12 @@ static t_keyval	*get_env(char *envstr)
 	}
 	return (env);
 }
+
+/*
+**	Function: msh_parse_envp
+**
+**	Parse and split envp to envlst.
+*/
 
 t_list			*msh_parse_envp(char **envp)
 {
@@ -68,29 +80,3 @@ t_list			*msh_parse_envp(char **envp)
 	}
 	return (envlst);
 }
-
-#ifdef TEST
-
-int				main(int argc, char **argv, char **envp)
-{
-	t_mshinfo	mshinfo;
-	t_list		*envlst;
-
-	(void)argc;
-	(void)argv;
-	msh_mshinfo_init(&mshinfo);
-	if (!(mshinfo.envlst = msh_parse_envp(envp)))
-		return (1);
-	envlst = mshinfo.envlst;
-	while (envlst)
-	{
-		ft_printf("key = \"%s\", val = \"%s\"\n",
-			((t_keyval *)(envlst->content))->key,
-			((t_keyval *)(envlst->content))->val);
-		envlst = envlst->next;
-	}
-	msh_mshinfo_free(&mshinfo);
-	return (0);
-}
-
-#endif

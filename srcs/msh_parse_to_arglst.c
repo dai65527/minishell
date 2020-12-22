@@ -1,71 +1,71 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh_gnc_find_cmd_from_save.c                       :+:      :+:    :+:   */
+/*   msh_parse_to_arglst.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 16:44:56 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/30 09:56:40 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/21 20:07:01 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <fcntl.h>
 #include "minishell.h"
 
-static size_t	gnc_cmdlen(char *save, int *flg_continue)
-{
-	size_t	len;
+/*
+** get elem from linkedlist by index from the begining
+*/
 
-	len = 0;
-	while (save[len] != '\n')
-	{
-		if (save[len] == '\0')
-		{
-			*flg_continue = 1;
-			break ;
-		}
-		if (save[len] == ';')
-		{
-			if (!msh_isescaped(save + len, len))
-				break ;
-			ft_memmove(save + len - 1, save + len, ft_strlen(save + len) + 1);
-			continue ;
-		}
-		len++;
-	}
-	return (len);
+t_list				*ft_lstget(t_list *lst, int index)
+{
+	while (lst && index--)
+		lst = lst->next;
+	return (lst);
 }
 
 /*
 ** saveから'\n' or ';'を探して、
 ** その手前まで(=コマンド)を抽出し、cmdに格納する
+** flg == 1 -> continue
+** flg == 2 -> pipe
+**
+** return val
+**	-1: error
+**	0: continue to read
+**	1: ready to exec command
+**  2: ready to exec command and seve still have command
+**	3: ready to exec piped command
+** flg
+**	flg == 0 -> continue
+**	flg == 1 -> \n end
+**	flg == 2 -> ; end
+**	flg == 3 -> pipe
 */
 
-int				msh_gnc_find_cmd_from_save(char **cmd, char **save)
+int					msh_parse_to_arglst(t_mshinfo *mshinfo, char **save)
 {
-	int		flg_continue;
-	size_t	cmdlen;
+	int		flg;
+	ssize_t	argvlen;
 	char	*new_save;
+	char	*head;
 
-	flg_continue = 0;
-	cmdlen = gnc_cmdlen(*save, &flg_continue);
-	if (flg_continue)
-		return (MSH_CONTINUE);
-	if (!(*cmd = ft_substr(*save, 0, cmdlen)))
-	{
-		msh_free_setnull((void **)save);
-		return (!MSH_CONTINUE);
-	}
-	new_save = ft_substr(*save, cmdlen + 1, ft_strlen(*save) - cmdlen - 1);
+	head = *save;
+	flg = 0;
+	argvlen = msh_store_argv(mshinfo, *save, &flg);
+	if (argvlen < 0)
+		return (-1);
+	if (flg == 0)
+		return (flg);
+	new_save = ft_substr(*save, argvlen + 1, ft_strlen(*save) - argvlen - 1);
 	if (!new_save)
 	{
 		msh_free_setnull((void **)save);
-		msh_free_setnull((void **)cmd);
-		return (!MSH_CONTINUE);
+		return (-1);
 	}
 	free(*save);
 	*save = new_save;
-	return (!MSH_CONTINUE);
+	return (flg);
 }
