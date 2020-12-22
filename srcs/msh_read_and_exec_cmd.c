@@ -6,16 +6,29 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 13:02:21 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/23 07:35:11 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/23 08:11:58 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <limits.h>
 #include "minishell.h"
 
-#define MSH_READBUFLEN 2048
+#define MSH_READBUFLEN ARG_MAX
+
+/*
+**	Sub function: free_buf_return
+**
+**	Free buf and return ret.
+*/
+
+int			free_buf_return(char *buf, int ret)
+{
+	free(buf);
+	return (ret);
+}
 
 /*
 **	Sub function: joinbuf
@@ -49,24 +62,26 @@ static int	joinbuf(char **save, char *buf, ssize_t len)
 int			msh_read_and_exec_cmd(t_mshinfo *mshinfo)
 {
 	ssize_t		ret;
-	char		buf[MSH_READBUFLEN];
+	char		*buf;
 	static char	*save;
 
 	if (!save && !(save = ft_strdup("")))
-		return (msh_puterr("minishell", NULL, -1));
+		return (msh_puterr(MSH_NAME, NULL, -1));
+	if (!(buf = (char *)malloc(sizeof(char) * MSH_READBUFLEN)))
+		return (msh_puterr(MSH_NAME, NULL, -1));
 	mshinfo->n_proc = 0;
 	while ((ret = read(mshinfo->fd_std[0], buf, MSH_READBUFLEN)) >= 0)
 	{
 		if (ret == 0)
 		{
 			if (ft_strlen(save) == 0)
-				return (1);
+				return (free_buf_return(buf, 1));
 			continue ;
 		}
 		if (joinbuf(&save, buf, ret) < 0)
-			return (-1);
+			return (free_buf_return(buf, -1));
 		if (msh_parse_and_exec_cmd(mshinfo, &save) != 0)
-			return (0);
+			return (free_buf_return(buf, 0));
 	}
-	return (msh_puterr("minishell", NULL, -1));
+	return (free_buf_return(buf, msh_puterr(MSH_NAME, NULL, -1)));
 }
