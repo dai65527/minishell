@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/23 07:32:53 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/23 11:41:38 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ typedef struct	s_keyval
 
 int				msh_loop(t_mshinfo *mshinfo);
 int				msh_read_and_exec_cmd(t_mshinfo *mshinfo);
-// pid_t			msh_parse_and_exec_cmd(t_mshinfo *mshinfo, char **save);
+int				msh_syntaxcheck(const char *save);
 pid_t			msh_parse_and_exec_cmd(t_mshinfo *mshinfo, char **save);
 int				msh_parse_to_arglst(t_mshinfo *mshinfo, char **save);
 int				msh_exec_cmd(t_mshinfo *mshinfo, char **argv, int flg_forked);
@@ -87,6 +87,7 @@ int				msh_isescaped(char *s, size_t len_from_start);
 /*
 ** msh_gnc_find_argv_from_save
 */
+
 ssize_t			msh_store_argv(t_mshinfo *mshinfo, char *save,
 								int *flg_continue);
 ssize_t			msh_store_argv_redirect(t_mshinfo *mshinfo, char *save,
@@ -123,19 +124,7 @@ void			*msh_puterr_return_null(char *str1, char *str2);
 ** file discripter utils
 */
 
-int				msh_backupfd(int *stdfd_backup);
 int				msh_resetfd(int *fd_std);
-void			msh_closefds(int fd, int *pipe_fd);
-
-/*
-** minishell 終了時用の関数
-** MEMO
-** 	msh_ext_by_cmd : comanndからの指令により終了する(エラ〜メッセージ等は出力しない)
-** 	msh_ext_by_err : mallocの失敗等、プログラム実行中のエラーにより終了する（エラ〜メッセージを出力する）
-*/
-
-int				msh_exit_by_cmd(t_mshinfo *mshinfo);
-int				msh_exit_by_err(t_mshinfo *mshinfo);
 
 /*
 ** echo
