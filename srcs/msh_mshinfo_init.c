@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/24 19:38:44 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/21 18:01:51 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/23 07:34:03 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ int		msh_mshinfo_init(t_mshinfo *mshinfo)
 	mshinfo->envlst = NULL;
 	mshinfo->arglst = NULL;
 	mshinfo->n_proc = 0;
-	mshinfo->fd_cmdsrc = 0;
 	mshinfo->ret_last_cmd = 0;
 	return (0);
 }

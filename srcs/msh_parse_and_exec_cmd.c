@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 10:05:38 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/23 15:17:13 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/23 22:10:48 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,8 @@ int				msh_parse_and_exec_cmd(t_mshinfo *mshinfo, char **save)
 	int		flg_gonext;
 
 	if (signal(SIGQUIT, msh_sighandle_putquit) == SIG_ERR)
+		return (msh_puterr("minishell", NULL, errno));
+	if (signal(SIGINT, msh_sighandle_putendl) == SIG_ERR)
 		return (msh_puterr("minishell", NULL, errno));
 	while (1)
 	{

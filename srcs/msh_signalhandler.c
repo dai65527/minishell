@@ -6,12 +6,25 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/23 13:31:15 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/23 15:28:38 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/23 22:11:28 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <signal.h>
 #include "minishell.h"
+
+/*
+**	Function: msh_sighandle_putendl
+**
+**	Used in case ctrl + C (SIGINT) has pushed.
+**	Delete "^C" and newline.
+*/
+
+void		msh_sighandle_putendl(int sig)
+{
+	(void)sig;
+	ft_putstr_fd("\b\b  \b\n", FD_STDERR);
+}
 
 /*
 **	Function: msh_sighandle_putprompt

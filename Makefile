@@ -6,7 +6,7 @@
 #    By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/21 08:47:29 by dnakano           #+#    #+#              #
-#    Updated: 2020/12/23 14:45:54 by dnakano          ###   ########.fr        #
+#    Updated: 2020/12/23 22:05:31 by dnakano          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,6 +23,8 @@ SRCNAME			:=	main.c \
 					msh_puterr.c \
 					msh_loop.c \
 					msh_read_and_exec_cmd.c \
+					msh_syntaxcheck.c \
+					msh_put_syntaxerr.c \
 					msh_parse_and_exec_cmd.c \
 					msh_get_value_from_envlst.c \
 					msh_strdup_skip_bslash.c \
