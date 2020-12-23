@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 13:02:21 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/23 11:57:51 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/23 12:15:18 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include <limits.h>
 #include "minishell.h"
 
-#define MSH_READBUFLEN ARG_MAX
+#define MSH_READBUFLEN 2048
 
 /*
 **	Sub function: free_buf_return
