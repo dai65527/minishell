@@ -6,11 +6,13 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 10:05:38 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/22 16:36:52 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/23 15:17:13 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
+#include <signal.h>
+#include <errno.h>
 #include "minishell.h"
 
 /*
@@ -116,6 +118,8 @@ int				msh_parse_and_exec_cmd(t_mshinfo *mshinfo, char **save)
 	pid_t	pid;
 	int		flg_gonext;
 
+	if (signal(SIGQUIT, msh_sighandle_putquit) == SIG_ERR)
+		return (msh_puterr("minishell", NULL, errno));
 	while (1)
 	{
 		flg_gonext = 1;

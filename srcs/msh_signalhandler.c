@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh_initsignal.c                                   :+:      :+:    :+:   */
+/*   msh_signalhandler.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/23 13:31:15 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/23 14:22:39 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/23 15:28:38 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 #include "minishell.h"
 
 /*
-**	Sub function: putprompt
+**	Function: msh_sighandle_putprompt
 **
 **	Used in case ctrl + C (SIGINT) has pushed.
 **	Delete "^C" and newline followed by new prompt.
 */
 
-static void		putprompt(int sig)
+void		msh_sighandle_putprompt(int sig)
 {
 	(void)sig;
 	ft_putstr_fd("\b\b  \b\n", FD_STDERR);
@@ -28,16 +28,30 @@ static void		putprompt(int sig)
 }
 
 /*
-**	Sub function: donothing
+**	Function: msh_sighandle_donothing
 **
-**	Used in case ctrl + D (SIGQUIT) has pushed.
+**	Used in case ctrl + \ (SIGQUIT) has pushed.
 **	Delete "^\" and donothing.
 */
 
-static void		donothing(int sig)
+void		msh_sighandle_donothing(int sig)
 {
 	(void)sig;
 	ft_putstr_fd("\b\b  \b\b", FD_STDERR);
+}
+
+/*
+**	Function: msh_sighandle_putquit
+**
+**	Used in case ctrl + \ (SIGQUIT) has pushed.
+**	Put "Quit: 3" and new line.
+*/
+
+void		msh_sighandle_putquit(int sig)
+{
+	ft_putstr_fd("Quit: ", FD_STDERR);
+	ft_putnbr_fd(sig, FD_STDERR);
+	ft_putstr_fd("\n", FD_STDERR);
 }
 
 /*
@@ -46,11 +60,11 @@ static void		donothing(int sig)
 **	Initialize signal handler of minishell.
 */
 
-int				msh_initsignal(void)
+int			msh_initsignal(void)
 {
-	if (signal(SIGINT, putprompt) == SIG_ERR)
-		return (-1);
-	if (signal(SIGQUIT, donothing) == SIG_ERR)
-		return (-1);
+	if (signal(SIGINT, msh_sighandle_putprompt) == SIG_ERR)
+		return (msh_puterr("minishell", NULL, -1));
+	if (signal(SIGQUIT, msh_sighandle_donothing) == SIG_ERR)
+		return (msh_puterr("minishell", NULL, -1));
 	return (0);
 }

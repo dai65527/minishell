@@ -6,11 +6,12 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/24 15:59:01 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/22 07:31:12 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/23 14:55:14 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
+#include <errno.h>
 #include "minishell.h"
 
 /*
@@ -31,6 +32,8 @@ int		msh_loop(t_mshinfo *mshinfo)
 
 	while (1)
 	{
+		if (msh_initsignal() < 0)
+			return ((msh_puterr("minishell", NULL, errno)));
 		if (mshinfo->fd_cmdsrc == mshinfo->fd_std[0])
 			ft_putstr_fd(MSH_PROMPT, FD_STDERR);
 		if ((ret = msh_read_and_exec_cmd(mshinfo)) != 0)

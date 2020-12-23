@@ -6,7 +6,7 @@
 #    By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/21 08:47:29 by dnakano           #+#    #+#              #
-#    Updated: 2020/12/23 13:49:29 by dnakano          ###   ########.fr        #
+#    Updated: 2020/12/23 14:45:54 by dnakano          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ SRCNAME			:=	main.c \
 					msh_mshinfo_init.c \
 					msh_mshinfo_free.c \
 					msh_parse_envp.c \
-					msh_initsignal.c \
+					msh_signalhandler.c \
 					msh_puterr.c \
 					msh_loop.c \
 					msh_read_and_exec_cmd.c \

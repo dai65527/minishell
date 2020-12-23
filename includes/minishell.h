@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/23 13:50:05 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/23 15:04:13 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,6 +143,9 @@ void			*msh_puterr_return_null(char *str1, char *str2);
 */
 
 int				msh_initsignal(void);
+void			msh_sighandle_putprompt(int sig);
+void			msh_sighandle_donothing(int sig);
+void			msh_sighandle_putquit(int sig);
 
 /*
 ** file discripter utils
