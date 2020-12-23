@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/23 08:44:34 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/23 12:05:29 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/23 12:13:28 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ static ssize_t	check_pipe(const char *save, size_t len, uint32_t *flg)
 	if ((save[len] != '|') || (*flg & F_ESCAPED))
 		return (0);
 	begin = len;
-	if (*flg | F_FIRST)
+	if (*flg & F_FIRST)
 		return (msh_put_syntaxerr('|'));
 	while (msh_isspace(save[++len]))
 		;
