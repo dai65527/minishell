@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/21 19:14:49 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/23 12:05:47 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,24 +16,9 @@
 # include "libft.h"
 # include <sys/types.h>
 
-/*
-** return values of msh_exec_command function.
-*/
-
-# define MSH_CONTINUE		0
-# define MSH_EXIT_BY_CMD	1
-# define MSH_EXIT_BY_ERR	2
-
-/*
-** used in msh_get_next_cmd
-**
-** MSH_PROMPT_NORMAL: waiting for input from stdin
-** MSH_PROMPT_NEWLINE: waiting for newline from stdin
-** MSH_PROMPT_QUOTE: waiting for single quotation
-** MSH_PROMPT_DQUOTE: waiting for double quotation
-*/
-
 # define MSH_PROMPT	"minishell $ "
+
+# define MSH_NAME "minishell"
 
 /*
 **	Struct: s_mshinfo (t_mshinfo)
@@ -45,9 +30,6 @@
 ** 	- arglst:		List of argument of command input.
 **					Used in function msh_read_and_exec_cmd.
 **	- n_proc:		Number of process in one command execution.
-**  - fd_cmdsrc:	File discriptor of command sourse.
-**					- FROM stdin -> ft_cmdsrc = fd_std[0]	
-**					- FROM file -> opened file descriptor.
 **	- fd_std:		Backups of standard input, output and error output.
 **					- fd_std[0]: Standard input.
 **					- fd_std[1]: Standard output.
@@ -60,7 +42,6 @@ typedef struct	s_mshinfo
 	t_list		*envlst;
 	t_list		*arglst;
 	int			n_proc;
-	int			fd_cmdsrc;
 	int			fd_std[3];
 	int			ret_last_cmd;
 }				t_mshinfo;
@@ -83,7 +64,8 @@ typedef struct	s_keyval
 
 int				msh_loop(t_mshinfo *mshinfo);
 int				msh_read_and_exec_cmd(t_mshinfo *mshinfo);
-// pid_t			msh_parse_and_exec_cmd(t_mshinfo *mshinfo, char **save);
+int				msh_syntaxcheck(const char *save);
+ssize_t			msh_put_syntaxerr(const char token);
 pid_t			msh_parse_and_exec_cmd(t_mshinfo *mshinfo, char **save);
 int				msh_parse_to_arglst(t_mshinfo *mshinfo, char **save);
 int				msh_exec_cmd(t_mshinfo *mshinfo, char **argv, int flg_forked);
@@ -106,6 +88,7 @@ int				msh_isescaped(char *s, size_t len_from_start);
 /*
 ** msh_gnc_find_argv_from_save
 */
+
 ssize_t			msh_store_argv(t_mshinfo *mshinfo, char *save,
 								int *flg_continue);
 ssize_t			msh_store_argv_redirect(t_mshinfo *mshinfo, char *save,
@@ -142,19 +125,7 @@ void			*msh_puterr_return_null(char *str1, char *str2);
 ** file discripter utils
 */
 
-int				msh_backupfd(int *stdfd_backup);
 int				msh_resetfd(int *fd_std);
-void			msh_closefds(int fd, int *pipe_fd);
-
-/*
-** minishell 終了時用の関数
-** MEMO
-** 	msh_ext_by_cmd : comanndからの指令により終了する(エラ〜メッセージ等は出力しない)
-** 	msh_ext_by_err : mallocの失敗等、プログラム実行中のエラーにより終了する（エラ〜メッセージを出力する）
-*/
-
-int				msh_exit_by_cmd(t_mshinfo *mshinfo);
-int				msh_exit_by_err(t_mshinfo *mshinfo);
 
 /*
 ** echo

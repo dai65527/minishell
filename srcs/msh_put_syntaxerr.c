@@ -1,30 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh_mshinfo_free.c                                 :+:      :+:    :+:   */
+/*   msh_put_syntaxerr.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/24 19:44:56 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/23 07:36:21 by dnakano          ###   ########.fr       */
+/*   Created: 2020/12/23 12:03:51 by dnakano           #+#    #+#             */
+/*   Updated: 2020/12/23 12:04:36 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
-#include <stdlib.h>
-#include "libft.h"
 #include "minishell.h"
 
-/*
-** Function: msh_mshinfo_free
-**
-** Free or close menbers of structure mshinfo if needed.
-*/
-
-void	msh_mshinfo_free(t_mshinfo *mshinfo)
+ssize_t			msh_put_syntaxerr(const char token)
 {
-	ft_lstclear(&mshinfo->envlst, msh_keyval_free);
-	close(mshinfo->fd_std[0]);
-	close(mshinfo->fd_std[1]);
-	close(mshinfo->fd_std[2]);
+	ft_putstr_fd(MSH_NAME, FD_STDERR);
+	ft_putstr_fd(": syntax error near unexpected token `", FD_STDERR);
+	if (token == '\n')
+		ft_putstr_fd("newline", FD_STDERR);
+	else if (token == '\0')
+		ft_putstr_fd("EOF", FD_STDERR);
+	else
+		ft_putchar_fd((char)token, FD_STDERR);
+	ft_putstr_fd("'\n", FD_STDERR);
+	return (-1);
 }

@@ -6,16 +6,31 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 13:02:21 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/21 19:49:44 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/23 15:45:20 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <limits.h>
 #include "minishell.h"
 
 #define MSH_READBUFLEN 2048
+
+/*
+**	Sub function: free_buf_return
+**
+**	Free save and buf and return ret.
+*/
+
+int			free_buf_return(char *buf, char *save, int ret)
+{
+	if (buf)
+		msh_free_setnull((void *)&buf);
+	free(save);
+	return (ret);
+}
 
 /*
 **	Sub function: joinbuf
@@ -49,27 +64,26 @@ static int	joinbuf(char **save, char *buf, ssize_t len)
 int			msh_read_and_exec_cmd(t_mshinfo *mshinfo)
 {
 	ssize_t		ret;
-	char		buf[MSH_READBUFLEN];
-	static char	*save;
+	char		*buf;
+	char		*save;
 
-	if (!save && !(save = ft_strdup("")))
-		return (msh_puterr("minishell", NULL, -1));
+	if (!(save = ft_strdup("")))
+		return (msh_puterr(MSH_NAME, NULL, -1));
+	if (!(buf = (char *)malloc(sizeof(char) * MSH_READBUFLEN)))
+		return (free_buf_return(NULL, save, msh_puterr(MSH_NAME, NULL, -1)));
 	mshinfo->n_proc = 0;
-	while ((ret = read(mshinfo->fd_cmdsrc, buf, MSH_READBUFLEN)) >= 0)
+	while ((ret = read(mshinfo->fd_std[0], buf, MSH_READBUFLEN)) >= 0)
 	{
-		if (ret == 0)
-		{
-			if (ft_strlen(save) == 0)
-				return (1);
-			else if (mshinfo->fd_cmdsrc == mshinfo->fd_std[0])
-				continue ;
-			if ((ret = joinbuf(&save, "\n", 1)) < 0)
-				return (ret);
-		}
+		if (ret == 0 && ft_strlen(save) == 0)
+			return (free_buf_return(buf, save, 1));
 		if (joinbuf(&save, buf, ret) < 0)
-			return (-1);
-		if (msh_parse_and_exec_cmd(mshinfo, &save) != 0)
-			return (0);
+			return (free_buf_return(buf, save, -1));
+		if ((ret = msh_syntaxcheck(save)) < 0)
+			return (free_buf_return(buf, save, 0));
+		else if (ret == 0)
+			ft_putstr_fd("  \b\b", FD_STDERR);
+		else if (msh_parse_and_exec_cmd(mshinfo, &save) != 0)
+			return (free_buf_return(buf, save, 0));
 	}
-	return (msh_puterr("minishell", NULL, -1));
+	return (free_buf_return(buf, save, msh_puterr(MSH_NAME, NULL, -1)));
 }
