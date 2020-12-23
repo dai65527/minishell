@@ -6,12 +6,10 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:37:15 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/23 22:05:38 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/24 07:25:01 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <fcntl.h>
-#include <signal.h>
 #include <errno.h>
 #include "minishell.h"
 
