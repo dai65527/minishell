@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 13:02:21 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/23 12:15:18 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/23 15:45:20 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +81,8 @@ int			msh_read_and_exec_cmd(t_mshinfo *mshinfo)
 		if ((ret = msh_syntaxcheck(save)) < 0)
 			return (free_buf_return(buf, save, 0));
 		else if (ret == 0)
-			continue ;
-		if (msh_parse_and_exec_cmd(mshinfo, &save) != 0)
+			ft_putstr_fd("  \b\b", FD_STDERR);
+		else if (msh_parse_and_exec_cmd(mshinfo, &save) != 0)
 			return (free_buf_return(buf, save, 0));
 	}
 	return (free_buf_return(buf, save, msh_puterr(MSH_NAME, NULL, -1)));
