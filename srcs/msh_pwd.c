@@ -3,20 +3,31 @@
 /*                                                        :::      ::::::::   */
 /*   msh_pwd.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 20:36:14 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/20 20:57:47 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/24 02:04:36 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <unistd.h>
+#include <limits.h>
+
+#define CMD "pwd"
 
 int				msh_pwd(t_mshinfo *mshinfo, char **argv, int flg_forked)
 {
-	(void)mshinfo;
+	char buf[PATH_MAX];
+
 	(void)flg_forked;
-	ft_putstr_fd(argv[0], FD_STDOUT);
-	ft_putstr_fd(" called\n", FD_STDOUT);
+	(void)argv[0];
+	if (!getcwd(buf, PATH_MAX))
+	{
+		mshinfo->ret_last_cmd = 1;
+		return (msh_puterr(MSH_NAME, CMD, -1));
+	}
+	ft_putendl_fd(buf, FD_STDOUT);
+	mshinfo->ret_last_cmd = 0;
 	return (0);
 }
