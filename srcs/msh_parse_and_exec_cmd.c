@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include <stdlib.h>
+#include <signal.h>
+#include <errno.h>
 #include "minishell.h"
 
 /*
@@ -116,6 +118,10 @@ int				msh_parse_and_exec_cmd(t_mshinfo *mshinfo, char **save)
 	pid_t	pid;
 	int		flg_gonext;
 
+	if (signal(SIGQUIT, msh_sighandle_putquit) == SIG_ERR)
+		return (msh_puterr("minishell", NULL, errno));
+	if (signal(SIGINT, msh_sighandle_putendl) == SIG_ERR)
+		return (msh_puterr("minishell", NULL, errno));
 	while (1)
 	{
 		flg_gonext = 1;
