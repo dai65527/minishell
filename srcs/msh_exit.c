@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 20:36:14 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/24 10:30:14 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/24 21:30:13 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,20 +67,24 @@ static int		exit_get_returnval(char **argv, int *errcode)
 	return (ft_atoi(argv[1]));
 }
 
-int				msh_exit(t_mshinfo *mshinfo, char **argv)
+int				msh_exit(t_mshinfo *mshinfo, char **argv, int flg_forked)
 {
 	int		ret;
 	int		errcode;
 
 	errcode = 0;
 	ret = exit_get_returnval(argv, &errcode);
-	if (errcode)
-		msh_exit_puterr(argv, errcode);
 	if (mshinfo->has_pipe || errcode == MSH_EXIT_ERR_TMARG)
 	{
+		if (errcode)
+			msh_exit_puterr(argv, errcode);
 		mshinfo->ret_last_cmd = (unsigned char)ret;
 		return (0);
 	}
+	if (!flg_forked)
+		ft_putstr_fd("exit\n", FD_STDERR);
+	if (errcode)
+		msh_exit_puterr(argv, errcode);
 	msh_mshinfo_free(mshinfo);
 	exit((unsigned char)ret);
 }

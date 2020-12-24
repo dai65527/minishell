@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/24 15:11:19 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/24 21:28:11 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,7 +180,7 @@ int				msh_env(t_mshinfo *mshinfo, char **argv, int flg_forked);
 ** exit
 */
 
-int				msh_exit(t_mshinfo *mshinfo, char **argv);
+int				msh_exit(t_mshinfo *mshinfo, char **argv, int flg_forked);
 
 /*
 ** exec_exceutable
