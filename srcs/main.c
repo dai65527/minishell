@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:37:15 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/23 07:35:56 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/24 10:43:49 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ int		main(int argc, char **argv, char **envp)
 		return (ret);
 	if (!(mshinfo.envlst = msh_parse_envp(envp)))
 		return (errno);
+	ft_putendl_fd(MSH_WELCOME_MSG, FD_STDERR);
 	ret = msh_loop(&mshinfo);
 	msh_mshinfo_free(&mshinfo);
 	return (ret);
