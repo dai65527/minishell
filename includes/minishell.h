@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/23 12:05:47 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/24 10:06:34 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ typedef struct	s_mshinfo
 	int			n_proc;
 	int			fd_std[3];
 	int			ret_last_cmd;
+	int			has_pipe;
 }				t_mshinfo;
 
 /*
@@ -167,7 +168,7 @@ int				msh_env(t_mshinfo *mshinfo, char **argv, int flg_forked);
 ** exit
 */
 
-int				msh_exit(t_mshinfo *mshinfo, char **argv, int flg_forked);
+int				msh_exit(t_mshinfo *mshinfo, char **argv);
 
 /*
 ** exec_exceutable
