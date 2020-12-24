@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 10:05:38 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/23 22:10:48 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/24 08:36:55 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,7 @@ int				msh_parse_and_exec_cmd(t_mshinfo *mshinfo, char **save)
 	while (1)
 	{
 		flg_gonext = 1;
+		mshinfo->has_pipe = 0;
 		if ((pid = parse_and_exec(mshinfo, save, &flg_gonext)) == 0)
 			return (0);
 		msh_resetfd(mshinfo->fd_std);

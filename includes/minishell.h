@@ -44,6 +44,7 @@ typedef struct	s_mshinfo
 	int			n_proc;
 	int			fd_std[3];
 	int			ret_last_cmd;
+	int			has_pipe;
 }				t_mshinfo;
 
 /*
@@ -177,7 +178,7 @@ int				msh_env(t_mshinfo *mshinfo, char **argv, int flg_forked);
 ** exit
 */
 
-int				msh_exit(t_mshinfo *mshinfo, char **argv, int flg_forked);
+int				msh_exit(t_mshinfo *mshinfo, char **argv);
 
 /*
 ** exec_exceutable
