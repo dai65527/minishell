@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/24 21:28:11 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/25 00:54:42 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,7 +156,7 @@ int				msh_cd(t_mshinfo *mshinfo, char **argv, int flg_forked);
 ** pwd
 */
 
-int				msh_pwd(t_mshinfo *mshinfo, char **argv, int flg_forked);
+int				msh_pwd(t_mshinfo *mshinfo, int flg_forked);
 
 /*
 ** export
