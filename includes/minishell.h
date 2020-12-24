@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/24 10:48:03 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/24 11:16:43 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,30 +17,7 @@
 # include <sys/types.h>
 
 # define MSH_PROMPT	"minishell $ "
-
 # define MSH_NAME "minishell"
-
-# define MSH_WELCOME_MSG "\n\
-              _       _      __         ____   ____ \n\
-   ____ ___  (_)___  (_)____/ /_  ___  / / /  / __ \\\n\
-  / __ `__ \\/ / __ \\/ / ___/ __ \\/ _ \\/ / /  / / / /\n\
- / / / / / / / / / / (__  ) / / /  __/ / /  / /_/ / \n\
-/_/ /_/ /_/_/_/ /_/_/____/_/ /_/\\___/_/_/  /_____/  \n\
-                               by Dhasegaw & Dnakano\n\
-                                                    \n\
-              ____----------- _____\n\
-\\~~~~~~~~~~/~_--~~~------~~~~~     \\\n\
- `---`\\  _-~      |                   \\\n\
-   _-~  <_         |                     \\[]\n\
- / ___     ~~--[""] |      ________-------'_\n\
-> /~` \\    |-.   `\\~~.~~~~~                _ ~ - _\n\
- ~|  ||\\%  |       |    ~  ._                ~ _   ~ ._\n\
-   `_//|_%  \\      |          ~  .              ~-_   /\n\
-          `--__     |    _-____  /\\               ~-_ \\/.\n\
-               ~--_ /  ,/ -~-_ \\ \\/      ___________---~/\n\
-                   ~~-/._<   \\ \\`~~~~~~~|_42_|     ##--~/\n\
-                         \\    ) |`------##---~~~~-~  ) )\n\
-                          ~-_/_/                  ~~ ~~\n"
 
 /*
 **	Struct: s_mshinfo (t_mshinfo)
@@ -84,6 +61,7 @@ typedef struct	s_keyval
 ** minishell core
 */
 
+void			msh_putwelcome(void);
 int				msh_loop(t_mshinfo *mshinfo);
 int				msh_read_and_exec_cmd(t_mshinfo *mshinfo);
 int				msh_syntaxcheck(const char *save);
