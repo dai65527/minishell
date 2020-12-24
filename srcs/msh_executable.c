@@ -6,17 +6,15 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 20:13:33 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/21 16:49:16 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/24 07:26:41 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <fcntl.h>
 #include <unistd.h>
-#include <stdlib.h>
 #include <limits.h>
+#include <stdlib.h>
 #include <errno.h>
 #include "minishell.h"
-#include <stdio.h>
 
 #define BUFSIZE 2048
 

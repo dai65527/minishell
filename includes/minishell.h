@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/24 10:06:34 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/23 22:10:22 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,16 @@ void			msh_free_set(char **dest, char *src);
 void			msh_free_argvp(void ***argvp);
 int				msh_puterr(char *str1, char *str2, int ret);
 void			*msh_puterr_return_null(char *str1, char *str2);
+
+/*
+** signal handling
+*/
+
+int				msh_initsignal(void);
+void			msh_sighandle_putprompt(int sig);
+void			msh_sighandle_putendl(int sig);
+void			msh_sighandle_donothing(int sig);
+void			msh_sighandle_putquit(int sig);
 
 /*
 ** file discripter utils
