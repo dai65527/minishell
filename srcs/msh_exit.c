@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 20:36:14 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/24 10:11:03 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/24 10:30:14 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,5 +82,5 @@ int				msh_exit(t_mshinfo *mshinfo, char **argv)
 		return (0);
 	}
 	msh_mshinfo_free(mshinfo);
-	exit ((unsigned char)ret);
+	exit((unsigned char)ret);
 }
