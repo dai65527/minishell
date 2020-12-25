@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/10 18:21:28 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/22 15:24:12 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/26 07:47:31 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ static int	find_cmd_from_pathdir(char *cmd, char *dname, char *path)
 		return (0);
 	while ((dent = readdir(dp)))
 	{
-		if (!ft_strncmp(dent->d_name, cmd, PATH_MAX))
+		if (!msh_strcmp_inlower(dent->d_name, cmd))
 		{
 			if (ft_strlcpy(path, dname, PATH_MAX) >= PATH_MAX
 				|| ft_strlcat(path, "/", PATH_MAX) >= PATH_MAX
