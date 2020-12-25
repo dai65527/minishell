@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/24 20:18:34 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/25 11:11:10 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,8 @@ ssize_t			msh_msg_return_val(char *msg, int fd, ssize_t ret);
 int				msh_mshinfo_init(t_mshinfo *mshinfo);
 void			msh_mshinfo_free(t_mshinfo *mshinfo);
 t_list			*msh_parse_envp(char **envp);
+int				msh_env_isvalid(const char *key);
+int				msh_env_cmpkey(void *env1, void *env2);
 char			**msh_split_cmd_to_argv(t_mshinfo *mshinfo,
 										char *cmd, int *argc);
 void			msh_free_set(char **dest, char *src);
@@ -179,7 +181,7 @@ int				msh_env(t_mshinfo *mshinfo, char **argv, int flg_forked);
 ** exit
 */
 
-int				msh_exit(t_mshinfo *mshinfo, char **argv);
+int				msh_exit(t_mshinfo *mshinfo, char **argv, int flg_forked);
 
 /*
 ** exec_exceutable
