@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 20:36:14 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/25 01:59:04 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/25 12:33:29 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,14 +31,9 @@ int				msh_pwd(t_mshinfo *mshinfo, int flg_forked)
 	int		i;
 
 	i = 1;
+	buf = getcwd(NULL, 0);
 	if (!(buf = (char*)malloc(PATH_MAX * i)))
 		return (err_return_val(mshinfo, flg_forked));
-	while (!getcwd(buf, PATH_MAX * i))
-	{
-		msh_free_set(&buf, (char*)malloc(PATH_MAX * ++i));
-		if (!buf)
-			return (err_return_val(mshinfo, flg_forked));
-	}
 	ft_putendl_fd(buf, FD_STDOUT);
 	msh_free_setnull((void**)&buf);
 	mshinfo->ret_last_cmd = 0;
