@@ -6,20 +6,12 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 20:36:14 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/24 15:29:05 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/25 16:01:41 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include "minishell.h"
-
-void			unset_puterr(const char *envkey)
-{
-	ft_putstr_fd(MSH_NAME, FD_STDERR);
-	ft_putstr_fd(": unset: `", FD_STDERR);
-	ft_putstr_fd((char *)envkey, FD_STDERR);
-	ft_putstr_fd("': not a valid identifier\n", FD_STDERR);
-}
 
 int				msh_unset(t_mshinfo *mshinfo, char **argv, int flg_forked)
 {
@@ -32,10 +24,7 @@ int				msh_unset(t_mshinfo *mshinfo, char **argv, int flg_forked)
 	while (argv[i])
 	{
 		if (!msh_env_isvalid(argv[i]))
-		{
-			unset_puterr(argv[i]);
-			ret = 1;
-		}
+			ret = msh_putenverr("unset", argv[i], 1);
 		else if (!mshinfo->has_pipe)
 		{
 			env.key = argv[i];

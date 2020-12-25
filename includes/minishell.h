@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/24 21:28:11 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/25 16:01:03 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,10 +79,6 @@ void			msh_wait(t_mshinfo *mshinfo, pid_t pid);
 ** msh_get_next_cmd
 */
 
-int				msh_get_next_argv(t_mshinfo *mshinfo, char **cmd, char **save);
-int				msh_gnc_find_argv_from_save(t_mshinfo *mshinfo, char **save);
-int				msh_gnc_expand_env(t_mshinfo *mshinfo, char **cmd);
-void			msh_expand_env_to_str(char *str_new, char *str, t_list *envlst);
 int				msh_isenv(char *s, char *envkey, size_t slen);
 int				msh_isescaped(char *s, size_t len_from_start);
 
@@ -123,6 +119,7 @@ void			msh_free_set(char **dest, char *src);
 void			msh_free_argvp(void ***argvp);
 int				msh_puterr(char *str1, char *str2, int ret);
 void			*msh_puterr_return_null(char *str1, char *str2);
+int				msh_putenverr(char *cmdname, char *envkey, int ret);
 
 /*
 ** signal handling
@@ -197,6 +194,7 @@ char			**msh_make_envp(t_list *envlst);
 */
 
 void			msh_keyval_free(void *keyval);
+void			*msh_keyval_dup(void *src_keyval);
 
 /*
 ** *ptrをfreeして、*ptr=NULLする便利関数
