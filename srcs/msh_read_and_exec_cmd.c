@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msh_read_and_exec_cmd.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 13:02:21 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/23 15:45:20 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/25 15:48:36 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,9 @@ int			msh_read_and_exec_cmd(t_mshinfo *mshinfo)
 	if (!(buf = (char *)malloc(sizeof(char) * MSH_READBUFLEN)))
 		return (free_buf_return(NULL, save, msh_puterr(MSH_NAME, NULL, -1)));
 	mshinfo->n_proc = 0;
-	while ((ret = read(mshinfo->fd_std[0], buf, MSH_READBUFLEN)) >= 0)
+	while ((ret = read(mshinfo->fd_std[0], buf, MSH_READBUFLEN - 1)) >= 0)
 	{
+		buf[ret] = '\0';
 		if (ret == 0 && ft_strlen(save) == 0)
 			return (free_buf_return(buf, save, 1));
 		if (joinbuf(&save, buf, ret) < 0)

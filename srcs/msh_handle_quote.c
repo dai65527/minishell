@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msh_handle_quote.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 01:56:20 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/20 22:10:15 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/25 16:29:15 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,11 @@ static ssize_t	get_env_quate(t_mshinfo *mshinfo, char *save,
 	while (msh_check_operator(save, len, "$<>|\'\""))
 		len++;
 	if (!(key = ft_substr(save, begin, len - begin)))
-		ft_putendl_fd("msh_put_errmsg", 2);
+		return (-1);
 	msh_free_set(content,
-		ft_strjoin(*content, msh_get_value_from_envlst(mshinfo, &key)));
+		ft_strjoin(*content, msh_get_value_from_envlst(mshinfo, &key, 1)));
 	if (!*content)
-		ft_putendl_fd("msh_put_errmsg", 2);
+		return (-1);
 	return (len - (begin - 1));
 }
 
