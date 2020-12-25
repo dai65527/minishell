@@ -3,20 +3,38 @@
 /*                                                        :::      ::::::::   */
 /*   msh_pwd.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 20:36:14 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/20 20:57:47 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/26 01:04:01 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <unistd.h>
+#include <limits.h>
+#include <stdlib.h>
 
-int				msh_pwd(t_mshinfo *mshinfo, char **argv, int flg_forked)
+#define CMD "pwd"
+
+static int		err_return_val(t_mshinfo *mshinfo, int flg_forked)
 {
-	(void)mshinfo;
-	(void)flg_forked;
-	ft_putstr_fd(argv[0], FD_STDOUT);
-	ft_putstr_fd(" called\n", FD_STDOUT);
+	mshinfo->ret_last_cmd = 1;
+	if (flg_forked)
+		exit(msh_puterr(MSH_NAME, CMD, -1));
+	return (msh_puterr(MSH_NAME, CMD, -1));
+}
+
+int				msh_pwd(t_mshinfo *mshinfo, int flg_forked)
+{
+	char	*buf;
+
+	if (!(buf = getcwd(NULL, 0)))
+		return (err_return_val(mshinfo, flg_forked));
+	ft_putendl_fd(buf, FD_STDOUT);
+	msh_free_setnull((void**)&buf);
+	mshinfo->ret_last_cmd = 0;
+	if (flg_forked)
+		exit(0);
 	return (0);
 }
