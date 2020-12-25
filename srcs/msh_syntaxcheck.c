@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/23 08:44:34 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/23 12:13:28 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/24 23:13:28 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static ssize_t	check_quote(const char *save, size_t len, uint32_t *flg)
 		len++;
 	}
 	*flg = 0;
-	return (len - begin);
+	return (++len - begin);
 }
 
 static ssize_t	check_redirect(const char *save, size_t len, uint32_t *flg)
