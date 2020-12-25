@@ -6,28 +6,20 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/25 16:36:02 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/25 17:29:31 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/25 18:15:23 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include "minishell.h"
 
-static size_t	getkeylen(char *envstr)
-{
-	size_t	keylen;
-
-	keylen = 0;
-	while (envstr[keylen] != '=' && envstr[keylen])
-		keylen++;
-	return (keylen);
-}
-
 static int		arg_isvalid(char *arg)
 {
+	char		*p;
 	size_t		keylen;
 
-	if (!(keylen = getkeylen(arg)))
+	p = ft_strchr(arg, '=');
+	if (!(keylen = p ? p - arg : ft_strlen(arg)))
 		return (msh_putenverr("export", arg, 0));
 	if (keylen == ft_strlen(arg))
 	{
@@ -40,10 +32,12 @@ static int		arg_isvalid(char *arg)
 
 static t_keyval	*create_newenv(char *arg)
 {
+	char		*p;
 	t_keyval	*newenv;
 	size_t		keylen;
 
-	keylen = getkeylen(arg);
+	p = ft_strchr(arg, '=');
+	keylen = p ? p - arg : ft_strlen(arg);
 	if (!(newenv = (t_keyval *)malloc(sizeof(t_keyval))))
 		return (msh_puterr_return_null(MSH_NAME, "env"));
 	if (!(newenv->key = ft_substr(arg, 0, keylen)))
@@ -90,8 +84,7 @@ static int		add_new_env(t_mshinfo *mshinfo, t_keyval *newenv)
 	return (0);
 }
 
-int				msh_export_new_env(t_mshinfo *mshinfo, char **argv,
-															int flg_forked)
+int				msh_export_new_env(t_mshinfo *mshinfo, char **argv)
 {
 	t_keyval	*newenv;
 	int			ret;
@@ -99,7 +92,7 @@ int				msh_export_new_env(t_mshinfo *mshinfo, char **argv,
 	ret = 0;
 	while (*(++argv))
 	{
-		if (!(arg_isvalid(*argv)) || flg_forked)
+		if (!(arg_isvalid(*argv)) || mshinfo->has_pipe)
 		{
 			ret = 1;
 			continue ;
