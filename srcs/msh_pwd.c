@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 20:36:14 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/25 20:13:05 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/26 01:04:01 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,7 @@ static int		err_return_val(t_mshinfo *mshinfo, int flg_forked)
 int				msh_pwd(t_mshinfo *mshinfo, int flg_forked)
 {
 	char	*buf;
-	int		i;
 
-	i = 1;
 	if (!(buf = getcwd(NULL, 0)))
 		return (err_return_val(mshinfo, flg_forked));
 	ft_putendl_fd(buf, FD_STDOUT);
