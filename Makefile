@@ -6,7 +6,7 @@
 #    By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/21 08:47:29 by dnakano           #+#    #+#              #
-#    Updated: 2020/12/25 16:04:28 by dnakano          ###   ########.fr        #
+#    Updated: 2020/12/25 17:14:36 by dnakano          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -49,6 +49,7 @@ SRCNAME			:=	main.c \
 					msh_wait.c \
 					msh_exit.c \
 					msh_export.c \
+					msh_export_new_env.c \
 					msh_keyval_free.c \
 					msh_keyval_dup.c \
 					msh_make_envp.c \

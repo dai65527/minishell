@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/25 16:01:03 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/25 17:13:52 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,6 +160,8 @@ int				msh_pwd(t_mshinfo *mshinfo, char **argv, int flg_forked);
 */
 
 int				msh_export(t_mshinfo *mshinfo, char **argv, int flg_forked);
+int				msh_export_new_env(t_mshinfo *mshinfo, char **argv,
+															int flg_forked);
 
 /*
 ** unset
