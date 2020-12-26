@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/25 22:16:05 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/26 07:43:18 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,7 @@ void			msh_free_argvp(void ***argvp);
 int				msh_puterr(char *str1, char *str2, int ret);
 void			*msh_puterr_return_null(char *str1, char *str2);
 int				msh_putenverr(char *cmdname, char *envkey, int ret);
+int				msh_strcmp_inlower(const char *s1, const char *s2);
 
 /*
 ** signal handling

@@ -6,7 +6,7 @@
 #    By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/21 08:47:29 by dnakano           #+#    #+#              #
-#    Updated: 2020/12/25 17:14:36 by dnakano          ###   ########.fr        #
+#    Updated: 2020/12/26 07:44:34 by dnakano          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -61,6 +61,7 @@ SRCNAME			:=	main.c \
 					msh_isspace.c \
 					msh_store_argv.c \
 					msh_resetfd.c \
+					msh_strcmp_inlower.c \
 					msh_free_setnull.c \
 					msh_free_funcs.c
 SRCDIR			:=	./srcs
