@@ -6,21 +6,24 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 01:56:20 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/26 18:28:56 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/26 21:59:38 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 static ssize_t	handle_special_var(t_mshinfo *mshinfo, char *save,
-									char ***content, ssize_t *len)
+									char ***content, ssize_t len)
 {
 	char	*val;
+	ssize_t	begin;
 
-	if (save[*len] != '?')
+	begin = len;
+	if (!ft_strchr("?$", save[len]))
 		return (0);
-	val = ft_itoa(mshinfo->ret_last_cmd);
-	if (!val)
+	if (save[len] == '?' && (!(val = ft_itoa(mshinfo->ret_last_cmd))))
+		return (-1);
+	if (save[len] == '$' && (!(val = ft_strdup("$$"))))
 		return (-1);
 	if (!**content)
 		**content = ft_strdup(val);
@@ -29,8 +32,7 @@ static ssize_t	handle_special_var(t_mshinfo *mshinfo, char *save,
 	msh_free_setnull((void**)&val);
 	if (!**content)
 		return (-1);
-	++(*len);
-	return (1);
+	return (2);
 }
 
 /*
@@ -44,14 +46,14 @@ static ssize_t	get_env_quate(t_mshinfo *mshinfo, char *save,
 	ssize_t ret;
 	char	*key;
 
-	if ((ret = msh_handle_dollars(mshinfo, save, len)))
+	if ((ret = msh_handle_dollars(mshinfo, save, len, &content)))
 		return (ret);
 	begin = ++len;
-	if ((ret = handle_special_var(mshinfo, save, &content, &len)) < 0)
+	if ((ret = handle_special_var(mshinfo, save, &content, len)) < 0)
 		return (-1);
 	if (ret)
-		return (len - (begin - 1));
-	while (msh_check_operator(save, len, "$<>|\'\""))
+		return (ret);
+	while (msh_check_operator(save, len, "$<>|\'\" \t"))
 		len++;
 	if (!(key = ft_substr(save, begin, len - begin)))
 		return (-1);
@@ -68,8 +70,7 @@ static ssize_t	get_env_quate(t_mshinfo *mshinfo, char *save,
 
 static ssize_t	get_argv_quote(t_mshinfo *mshinfo, char *save, ssize_t len)
 {
-	ssize_t	ret;
-	ssize_t	begin[2];
+	ssize_t	begin[3];
 	char	*content[2];
 
 	if (!(content[0] = ft_strdup("")))
@@ -77,7 +78,7 @@ static ssize_t	get_argv_quote(t_mshinfo *mshinfo, char *save, ssize_t len)
 	begin[0] = len;
 	while (msh_check_operator(save, len, "\""))
 	{
-		ret = 0;
+		begin[2] = 0;
 		begin[1] = len;
 		while (msh_check_operator(save, len, "$\""))
 			len++;
@@ -85,11 +86,12 @@ static ssize_t	get_argv_quote(t_mshinfo *mshinfo, char *save, ssize_t len)
 			return (-1);
 		msh_free_set(&content[0], ft_strjoin(content[0], content[1]));
 		msh_free_setnull((void**)&content[1]);
-		if (save[len] == '$'
-			&& ((ret = get_env_quate(mshinfo, save, len, &content[0])) < 0))
+		if (save[len] == '$' && ((begin[2] = get_env_quate(mshinfo,
+			save, len, &content[0])) < 0))
 			return (-1);
-		len += ret;
+		len += begin[2];
 	}
+	msh_free_set(&content[0], msh_strdup_skip_bslash(content[0]));
 	if (msh_content_arglst(mshinfo, content[0]))
 		return (-1);
 	return (len - begin[0]);

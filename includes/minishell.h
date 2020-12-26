@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/25 16:28:17 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/26 21:35:46 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,8 @@ ssize_t			msh_store_argv_redirect(t_mshinfo *mshinfo, char *save,
 ssize_t			msh_get_argv(t_mshinfo *mshinfo, char *save, ssize_t len);
 int				msh_content_arglst(t_mshinfo *mshinfo, char *content);
 int				msh_check_operator(char *save, ssize_t len, char *operator);
-ssize_t			msh_handle_dollars(t_mshinfo *mshinfo, char *save, ssize_t len);
+ssize_t			msh_handle_dollars(t_mshinfo *mshinfo, char *save, ssize_t len,
+									char ***content);
 ssize_t			msh_handle_redirect(t_mshinfo *mshinfo,
 										char *save, ssize_t len);
 ssize_t			msh_handle_pipe(char *save, ssize_t len);
