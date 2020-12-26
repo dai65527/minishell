@@ -6,11 +6,22 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 23:45:09 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/25 16:28:56 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/26 16:08:32 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static int		store_content(char ***content, char *val)
+{
+	if (!**content)
+		**content = ft_strdup(val);
+	else
+		msh_free_set(*content, ft_strjoin(**content, val));
+	if (!**content)
+		return (-1);
+	return (0);	
+}
 
 static ssize_t	msh_get_env(t_mshinfo *mshinfo, char *save,
 							ssize_t len, char **content)
@@ -25,17 +36,14 @@ static ssize_t	msh_get_env(t_mshinfo *mshinfo, char *save,
 	while (msh_check_operator(save, len, "><| \t\'\"\n;"))
 	{
 		begin = ++len;
+		// if (save[len] == '?')
 		while (msh_check_operator(save, len, "$><| \t\'\"\n;"))
 			len++;
 		if (!(key = ft_substr(save, begin, len - begin)))
 			return (-1);
 		if (!(val = msh_get_value_from_envlst(mshinfo, &key, 0)))
 			return (len - (begin - 1)); 
-		if (!*content)
-			*content = ft_strdup(val);
-		else
-			msh_free_set(content, ft_strjoin(*content, val));
-		if (!*content)
+		if (store_content(&content, val))
 			return (-1);
 	}
 	return (len - (begin - 1));
