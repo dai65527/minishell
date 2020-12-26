@@ -6,34 +6,11 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 01:56:20 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/26 21:59:38 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/27 03:08:57 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-static ssize_t	handle_special_var(t_mshinfo *mshinfo, char *save,
-									char ***content, ssize_t len)
-{
-	char	*val;
-	ssize_t	begin;
-
-	begin = len;
-	if (!ft_strchr("?$", save[len]))
-		return (0);
-	if (save[len] == '?' && (!(val = ft_itoa(mshinfo->ret_last_cmd))))
-		return (-1);
-	if (save[len] == '$' && (!(val = ft_strdup("$$"))))
-		return (-1);
-	if (!**content)
-		**content = ft_strdup(val);
-	else
-		msh_free_set(*content, ft_strjoin(**content, val));
-	msh_free_setnull((void**)&val);
-	if (!**content)
-		return (-1);
-	return (2);
-}
 
 /*
 ** get env in quatation
@@ -45,11 +22,12 @@ static ssize_t	get_env_quate(t_mshinfo *mshinfo, char *save,
 	ssize_t	begin;
 	ssize_t ret;
 	char	*key;
+	char	*val;
 
 	if ((ret = msh_handle_dollars(mshinfo, save, len, &content)))
 		return (ret);
 	begin = ++len;
-	if ((ret = handle_special_var(mshinfo, save, &content, len)) < 0)
+	if ((ret = msh_handle_special_var(mshinfo, save, &content, len)) < 0)
 		return (-1);
 	if (ret)
 		return (ret);
@@ -57,8 +35,9 @@ static ssize_t	get_env_quate(t_mshinfo *mshinfo, char *save,
 		len++;
 	if (!(key = ft_substr(save, begin, len - begin)))
 		return (-1);
-	msh_free_set(content,
-		ft_strjoin(*content, msh_get_value_from_envlst(mshinfo, &key, 1)));
+	val = msh_get_value_from_envlst(mshinfo, &key, 1);
+	msh_free_set(content, ft_strjoin(*content, val));
+	msh_free_setnull((void**)&val);
 	if (!*content)
 		return (-1);
 	return (len - (begin - 1));
