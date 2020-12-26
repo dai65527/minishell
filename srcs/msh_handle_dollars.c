@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 23:50:03 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/26 16:27:27 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/26 17:29:15 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,6 @@ ssize_t		msh_handle_dollars(t_mshinfo *mshinfo, char *save, ssize_t len)
 	char	*content;
 
 	content = NULL;
-	// if (!ft_strncmp("$?", &save[len], 2)
-	// 	&& !(content = ft_strdup(ft_itoa(mshinfo->ret_last_cmd))))
-	// 	return (-1);
 	if ((!ft_strncmp("$ ", &save[len], 2) || !ft_strncmp("$\t", save, 2))
 			&& !msh_isescaped(save, len) && (!(content = ft_strdup("$"))))
 		return (-1);

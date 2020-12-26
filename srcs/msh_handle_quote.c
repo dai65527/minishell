@@ -6,11 +6,32 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 01:56:20 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/25 16:29:15 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/26 18:28:56 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static ssize_t	handle_special_var(t_mshinfo *mshinfo, char *save,
+									char ***content, ssize_t *len)
+{
+	char	*val;
+
+	if (save[*len] != '?')
+		return (0);
+	val = ft_itoa(mshinfo->ret_last_cmd);
+	if (!val)
+		return (-1);
+	if (!**content)
+		**content = ft_strdup(val);
+	else
+		msh_free_set(*content, ft_strjoin(**content, val));
+	msh_free_setnull((void**)&val);
+	if (!**content)
+		return (-1);
+	++(*len);
+	return (1);
+}
 
 /*
 ** get env in quatation
@@ -20,11 +41,16 @@ static ssize_t	get_env_quate(t_mshinfo *mshinfo, char *save,
 									ssize_t len, char **content)
 {
 	ssize_t	begin;
+	ssize_t ret;
 	char	*key;
 
-	if (msh_handle_dollars(mshinfo, save, len))
-		return (2);
+	if ((ret = msh_handle_dollars(mshinfo, save, len)))
+		return (ret);
 	begin = ++len;
+	if ((ret = handle_special_var(mshinfo, save, &content, &len)) < 0)
+		return (-1);
+	if (ret)
+		return (len - (begin - 1));
 	while (msh_check_operator(save, len, "$<>|\'\""))
 		len++;
 	if (!(key = ft_substr(save, begin, len - begin)))
