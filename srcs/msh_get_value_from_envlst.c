@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 02:49:51 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/25 16:24:11 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/26 14:51:20 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,20 @@ char			*msh_get_value_from_envlst(t_mshinfo *mshinfo, char **key,
 {
 	t_list		*head;
 	t_keyval	*env;
+	char		*invalid_key;
 
 	if (!*key)
 	{
 		msh_free_setnull((void**)key);
 		return (NULL);
+	}
+	if (!(ft_isalpha(*key[0]) || *key[0] == '_'))
+	{
+		if (!(invalid_key = ft_strdup("$")))
+			return (NULL);
+		msh_free_set(&invalid_key, ft_strjoin(invalid_key, *key));
+		msh_free_setnull((void**)key);
+		return (invalid_key);
 	}
 	head = mshinfo->envlst;
 	while (head)
