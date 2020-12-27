@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 01:56:20 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/27 14:50:50 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/27 15:20:13 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,18 +15,6 @@
 /*
 ** get env in quatation
 */
-
-ssize_t			msh_store_val_content(char *val, char **content)
-{
-	if (*content && val)
-		msh_free_set(content, ft_strjoin(*content, val));
-	else if (val)
-		*content = ft_strdup(val);
-	if (!*content)
-		return (-1);
-	msh_free_setnull((void**)&val);
-	return (0);
-}
 
 static ssize_t	get_env_quate(t_mshinfo *mshinfo, char *save,
 									ssize_t len, char **content)
@@ -75,7 +63,7 @@ static ssize_t	get_argv_quote(t_mshinfo *mshinfo, char *save, ssize_t len,
 			len++;
 		if (!(val = ft_substr(save, begin[1], len - begin[1])))
 			return (-1);
-		if (msh_store_val_content(val, content))
+		if (msh_store_val_content(&val, content))
 			return (-1);
 		if (save[len] == '$' && ((begin[2] = get_env_quate(mshinfo,
 			save, len, &content[0])) < 0))
@@ -108,7 +96,7 @@ ssize_t			msh_handle_quote(t_mshinfo *mshinfo, char *save, ssize_t len,
 			len++;
 		if (!(val = ft_substr(save, begin, len++ - begin)))
 			return (-1);
-		if (msh_store_val_content(val, content))
+		if (msh_store_val_content(&val, content))
 			return (-1);
 		return (len - (begin - 1));
 	}

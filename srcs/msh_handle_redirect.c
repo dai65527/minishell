@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msh_handle_redirect.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 02:18:04 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/22 16:00:09 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/27 16:02:47 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,7 @@ static ssize_t	store_argv_redirect(t_mshinfo *mshinfo, char *save,
 	{
 		while (save[len] && msh_isspace(save[len]))
 			len++;
-		if ((ret = msh_handle_quote(mshinfo, save, len)) != 0)
-			return (ret > 0 ? len + ret - begin : -1);
-		else if ((ret = msh_get_argv(mshinfo, save, len)) != 0)
+		if ((ret = msh_get_argv(mshinfo, save, len)) != 0)
 			return (ret > 0 ? len + ret - begin : -1);
 		while (save[len] && msh_isspace(save[len]))
 			len++;

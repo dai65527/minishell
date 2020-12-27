@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 01:36:14 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/27 12:25:27 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/27 16:03:06 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ ssize_t			msh_store_argv(t_mshinfo *mshinfo, char *save, int *flg)
 		while (save[len] && msh_isspace(save[len]))
 			len++;
 		if (((ret = msh_handle_redirect(mshinfo, save, len)) != 0)
-			// || ((ret = msh_handle_quote(mshinfo, save, len)) != 0)
 			|| ((ret = msh_get_argv(mshinfo, save, len)) != 0))
 		{
 			if (ret < 0)

@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 10:05:38 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/25 14:49:40 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/27 16:02:12 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ static pid_t	parse_and_exec(t_mshinfo *mshinfo, char **save, int *flg_gonext)
 		if (!(argv = arglst_to_argv(&mshinfo->arglst)))
 			return (-1);
 		else if (argv[0] == NULL)
-			 break ;
+			break ;
 		if (ret == 1 || ret == 2)
 			break ;
 		if (msh_create_pipe(mshinfo, argv) < 0)
