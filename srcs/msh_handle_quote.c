@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 01:56:20 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/20 22:10:15 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/27 20:45:00 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,17 +88,17 @@ ssize_t			msh_handle_quote(t_mshinfo *mshinfo, char *save, ssize_t len)
 		while (msh_check_operator(save, len, "\'"))
 			len++;
 		if (save[len] != '\'')
-			return (msh_msg_return_val("syntax error", 2, -1));
+			return (msh_puterr(MSH_NAME, "malloc", -1));
 		if (msh_content_arglst(mshinfo, ft_substr(save, begin, len++ - begin)))
-			return (msh_msg_return_val("malloc error", 2, -1));
+			return (msh_puterr(MSH_NAME, "malloc", -1));
 		return (len - (begin - 1));
 	}
 	ret = 0;
 	begin = ++len;
 	if ((ret = get_argv_quote(mshinfo, save, len)) < 0)
-		return (msh_msg_return_val("malloc error", 2, -1));
+		return (msh_puterr(MSH_NAME, "malloc", -1));
 	len += ret;
 	if (save[len++] != '\"')
-		return (msh_msg_return_val("syntax error", 2, -1));
+		return (msh_put_syntaxerr('\"'));
 	return (len - (begin - 1));
 }

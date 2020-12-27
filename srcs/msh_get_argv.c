@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 23:45:09 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/21 08:53:46 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/27 20:41:16 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,13 @@ ssize_t			msh_get_argv(t_mshinfo *mshinfo, char *save, ssize_t len)
 	if (begin == len && save[len] != '$')
 		return (0);
 	if (!(content = ft_substr(save, begin, len - begin)))
-		return (msh_msg_return_val("malloc error", 2, -1));
+		return (msh_puterr(MSH_NAME, "malloc", -1));
 	if (save[len] == '$'
 		&& ((ret = msh_get_env(mshinfo, save, len, &content)) < 0))
-		return (msh_msg_return_val("malloc error", 2, -1));
+		return (msh_puterr(MSH_NAME, "malloc", -1));
 	len += ret;
 	msh_free_set(&content, msh_strdup_skip_bslash(content));
 	if (msh_content_arglst(mshinfo, content))
-		return (msh_msg_return_val("malloc error", 2, -1));
+		return (msh_puterr(MSH_NAME, "malloc", -1));
 	return (len - begin);
 }
