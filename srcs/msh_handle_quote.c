@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 01:56:20 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/27 03:08:57 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/27 12:19:40 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static ssize_t	get_env_quate(t_mshinfo *mshinfo, char *save,
 	char	*key;
 	char	*val;
 
-	if ((ret = msh_handle_dollars(mshinfo, save, len, &content)))
+	if ((ret = msh_handle_dollars(save, len, &content)))
 		return (ret);
 	begin = ++len;
 	if ((ret = msh_handle_special_var(mshinfo, save, &content, len)) < 0)
@@ -82,10 +82,12 @@ static ssize_t	get_argv_quote(t_mshinfo *mshinfo, char *save, ssize_t len)
 ** for double call func to store argv
 */
 
-ssize_t			msh_handle_quote(t_mshinfo *mshinfo, char *save, ssize_t len)
+ssize_t			msh_handle_quote(t_mshinfo *mshinfo, char *save, ssize_t len,
+								char **content)
 {
 	ssize_t ret;
 	ssize_t	begin;
+	char	*val;
 
 	if (!ft_strchr("\'\"", save[len]))
 		return (0);
@@ -96,8 +98,15 @@ ssize_t			msh_handle_quote(t_mshinfo *mshinfo, char *save, ssize_t len)
 			len++;
 		if (save[len] != '\'')
 			return (msh_msg_return_val("syntax error", 2, -1));
-		if (msh_content_arglst(mshinfo, ft_substr(save, begin, len++ - begin)))
-			return (msh_msg_return_val("malloc error", 2, -1));
+		if (!(val = ft_substr(save, begin, len++ - begin)))
+			return (-1);
+		if (*content && val)
+			msh_free_set(content, ft_strjoin(*content, val));
+		else if (val)
+			*content = ft_strdup(val);
+		msh_free_setnull((void**)&val);
+		// if (msh_content_arglst(mshinfo, ft_substr(save, begin, len++ - begin)))
+		// 	return (msh_msg_return_val("malloc error", 2, -1));
 		return (len - (begin - 1));
 	}
 	ret = 0;

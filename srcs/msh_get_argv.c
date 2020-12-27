@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 23:45:09 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/27 03:32:20 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/27 12:34:42 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,15 +63,15 @@ ssize_t			msh_get_argv(t_mshinfo *mshinfo, char *save, ssize_t len)
 	content[0] = NULL;
 	content[1] = NULL;
 	begin[0] = len;
-	while (msh_check_operator(save, len, "><|\'\"\n;"))
+	while (msh_check_operator(save, len, "><|\n;"))
 	{
-		while (msh_check_operator(save, len, "><| \t\'\"\n;"))
+		while (msh_check_operator(save, len, "><| \t\n;"))
 		{
 			ret = 0;
 			begin[1] = len;
 			while (msh_check_operator(save, len, "$><| \t\'\"\n;"))
 				len++;
-			if (begin[1] == len && save[len] != '$')
+			if (begin[1] == len && !ft_strchr("$\'\"", save[len]))
 				return (0);
 			if (begin[1] != len && !(content[1] = ft_substr(save, begin[1], len - begin[1])))
 				return (msh_msg_return_val("malloc error", 2, -1));
@@ -82,6 +82,9 @@ ssize_t			msh_get_argv(t_mshinfo *mshinfo, char *save, ssize_t len)
 			msh_free_setnull((void**)&content[1]);
 			if (save[len] == '$'
 				&& ((ret = msh_get_env(mshinfo, save, len, &content[0])) < 0))
+				return (msh_msg_return_val("malloc error", 2, -1));
+			len += ret;
+			if ((ret = msh_handle_quote(mshinfo, save, len, &content[0])) < 0)
 				return (msh_msg_return_val("malloc error", 2, -1));
 			len += ret;
 		}

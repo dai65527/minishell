@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/27 03:30:22 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/27 12:18:03 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,8 +103,8 @@ ssize_t			msh_handle_special_var(t_mshinfo *mshinfo, char *save,
 ssize_t			msh_handle_redirect(t_mshinfo *mshinfo,
 										char *save, ssize_t len);
 ssize_t			msh_handle_pipe(char *save, ssize_t len);
-ssize_t			msh_handle_quote(t_mshinfo *mshinfo,
-										char *save, ssize_t len);
+ssize_t			msh_handle_quote(t_mshinfo *mshinfo, char *save, ssize_t len,
+									char **content);
 char			*msh_get_value_from_envlst(t_mshinfo *mshinfo, char **key,
 											int flg_quote);
 char			*msh_strdup_skip_bslash(char *s);
