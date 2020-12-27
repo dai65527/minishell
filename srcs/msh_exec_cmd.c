@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msh_exec_cmd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/25 09:42:10 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/24 21:28:19 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/25 00:55:48 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int			msh_exec_cmd(t_mshinfo *mshinfo, char **argv, int flg_forked)
 	else if (!ft_strncmp(argv[0], "cd", ft_strlen("cd") + 1))
 		return (msh_cd(mshinfo, argv, flg_forked));
 	else if (!ft_strncmp(argv[0], "pwd", ft_strlen("pwd") + 1))
-		return (msh_pwd(mshinfo, argv, flg_forked));
+		return (msh_pwd(mshinfo, flg_forked));
 	else if (!ft_strncmp(argv[0], "export", ft_strlen("export") + 1))
 		return (msh_export(mshinfo, argv, flg_forked));
 	else if (!ft_strncmp(argv[0], "unset", ft_strlen("unset") + 1))

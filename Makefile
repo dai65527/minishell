@@ -6,7 +6,7 @@
 #    By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/21 08:47:29 by dnakano           #+#    #+#              #
-#    Updated: 2020/12/24 15:12:43 by dnakano          ###   ########.fr        #
+#    Updated: 2020/12/25 17:14:36 by dnakano          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,13 +42,16 @@ SRCNAME			:=	main.c \
 					msh_env.c \
 					msh_unset.c \
 					msh_env_isvalid.c \
+					msh_putenverr.c \
 					msh_env_cmpkey.c \
 					msh_executable.c \
 					msh_find_and_copy_path.c \
 					msh_wait.c \
 					msh_exit.c \
 					msh_export.c \
+					msh_export_new_env.c \
 					msh_keyval_free.c \
+					msh_keyval_dup.c \
 					msh_make_envp.c \
 					msh_content_arglst.c \
 					msh_get_argv.c \
