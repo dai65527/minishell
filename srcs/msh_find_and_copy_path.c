@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/10 18:21:28 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/22 15:24:12 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/26 19:31:06 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,18 +55,21 @@ static int	find_cmd_from_pathdir(char *cmd, char *dname, char *path)
 		return (0);
 	while ((dent = readdir(dp)))
 	{
-		if (!ft_strncmp(dent->d_name, cmd, PATH_MAX))
+		if (!msh_strcmp_inlower(dent->d_name, cmd))
 		{
 			if (ft_strlcpy(path, dname, PATH_MAX) >= PATH_MAX
 				|| ft_strlcat(path, "/", PATH_MAX) >= PATH_MAX
 				|| ft_strlcat(path, cmd, PATH_MAX) >= PATH_MAX)
 			{
+				closedir(dp);
 				errno = ENAMETOOLONG;
 				return (-1);
 			}
+			closedir(dp);
 			return (1);
 		}
 	}
+	closedir(dp);
 	return (0);
 }
 
@@ -104,7 +107,7 @@ int			msh_find_and_copy_path(char **argv, t_mshinfo *mshinfo, char *path)
 		if (ft_strlcpy(path, argv[0], PATH_MAX) >= PATH_MAX)
 		{
 			errno = ENAMETOOLONG;
-			return (-1);
+			return (msh_puterr(MSH_NAME, argv[0], -1));
 		}
 	}
 	else
@@ -117,8 +120,9 @@ int			msh_find_and_copy_path(char **argv, t_mshinfo *mshinfo, char *path)
 				ft_putstr_fd("minishell: ", FD_STDERR);
 				ft_putstr_fd(argv[0], FD_STDERR);
 				ft_putstr_fd(": command not found\n", FD_STDERR);
+				return (-1);
 			}
-			return (-1);
+			return (msh_puterr(MSH_NAME, argv[0], -1));
 		}
 	}
 	return (0);
