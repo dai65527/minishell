@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/26 07:43:18 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/27 20:53:31 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ typedef struct	s_mshinfo
 	int			fd_std[3];
 	int			ret_last_cmd;
 	int			has_pipe;
+	int			flg_errinparse;
 }				t_mshinfo;
 
 /*
