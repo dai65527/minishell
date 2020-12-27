@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/27 20:23:33 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/27 20:53:31 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,7 @@ void			msh_free_argvp(void ***argvp);
 int				msh_puterr(char *str1, char *str2, int ret);
 void			*msh_puterr_return_null(char *str1, char *str2);
 int				msh_putenverr(char *cmdname, char *envkey, int ret);
+int				msh_strcmp_inlower(const char *s1, const char *s2);
 
 /*
 ** signal handling
