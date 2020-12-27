@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/08 14:29:20 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/24 20:37:02 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/27 20:50:59 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ int			msh_create_redirect(char *fname, int redirect_fd,
 	if (pipe(pipe_fd) < 0)
 		return (close_end(file_fd, NULL, msh_puterr(MSH_NAME, "pipe", -1)));
 	if ((pid = fork()) < 0)
-		return (close_end(file_fd, pipe_fd,	msh_puterr(MSH_NAME, "fork", -1)));
+		return (close_end(file_fd, pipe_fd, msh_puterr(MSH_NAME, "fork", -1)));
 	else if (pid == 0)
 	{
 		if (flg_redirect == 2)
