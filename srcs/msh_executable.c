@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 20:13:33 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/24 07:26:41 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/28 13:09:15 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static int		execute(t_mshinfo *mshinfo, char **argv, const char *path)
 	if (!(envp = msh_make_envp(mshinfo->envlst)))
 		exit(errno);
 	execve(path, argv, envp);
-	exit(msh_puterr("minishell", argv[0], errno));
+	exit(msh_puterr(MSH_NAME, argv[0], errno));
 }
 
 int				msh_executable(t_mshinfo *mshinfo, char **argv, int flg_forked)
@@ -41,7 +41,10 @@ int				msh_executable(t_mshinfo *mshinfo, char **argv, int flg_forked)
 	if (flg_forked)
 		execute(mshinfo, argv, path);
 	if ((pid = fork()) < 0)
-		return (msh_puterr("minishell", "fork", errno));
+	{
+		mshinfo->ret_last_cmd = 1;
+		return (msh_puterr(MSH_NAME, "fork", 0));
+	}
 	else if (pid == 0)
 		execute(mshinfo, argv, path);
 	mshinfo->n_proc++;
