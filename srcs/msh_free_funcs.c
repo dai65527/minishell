@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 02:32:31 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/25 14:32:19 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/28 13:02:15 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,6 @@ void	msh_free_argvp(void ***argvp)
 		msh_free_setnull(&((*argvp)[i]));
 		i++;
 	}
-	if (!argvp[0])
-		msh_free_setnull(&((*argvp)[0]));
 	msh_free_setnull((void **)argvp);
 	*argvp = NULL;
 }

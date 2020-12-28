@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 01:56:20 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/27 15:20:13 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/28 13:10:28 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 ** get env in quatation
 */
 
-static ssize_t	get_env_quate(t_mshinfo *mshinfo, char *save,
+static ssize_t	get_env_quote(t_mshinfo *mshinfo, char *save,
 									ssize_t len, char **content)
 {
 	ssize_t	begin;
@@ -24,7 +24,7 @@ static ssize_t	get_env_quate(t_mshinfo *mshinfo, char *save,
 	char	*key;
 	char	*val;
 
-	if ((ret = msh_handle_dollars(save, len, &content)))
+	if ((ret = msh_handle_dollars(save, len, &content, 1)))
 		return (ret);
 	begin = ++len;
 	if ((ret = msh_handle_special_var(mshinfo, save, &content, len)) < 0)
@@ -50,14 +50,15 @@ static ssize_t	get_env_quate(t_mshinfo *mshinfo, char *save,
 static ssize_t	get_argv_quote(t_mshinfo *mshinfo, char *save, ssize_t len,
 								char **content)
 {
-	ssize_t	begin[3];
+	ssize_t	begin[2];
+	ssize_t	ret;
 	char	*val;
 
 	val = NULL;
 	begin[0] = len;
 	while (msh_check_operator(save, len, "\""))
 	{
-		begin[2] = 0;
+		ret = 0;
 		begin[1] = len;
 		while (msh_check_operator(save, len, "$\""))
 			len++;
@@ -65,10 +66,10 @@ static ssize_t	get_argv_quote(t_mshinfo *mshinfo, char *save, ssize_t len,
 			return (-1);
 		if (msh_store_val_content(&val, content))
 			return (-1);
-		if (save[len] == '$' && ((begin[2] = get_env_quate(mshinfo,
+		if (save[len] == '$' && ((ret = get_env_quote(mshinfo,
 			save, len, &content[0])) < 0))
 			return (-1);
-		len += begin[2];
+		len += ret;
 	}
 	return (len - begin[0]);
 }

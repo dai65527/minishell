@@ -6,11 +6,15 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/27 15:56:30 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/27 15:58:15 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/28 13:16:23 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+/*
+** store val into content
+*/
 
 static int		store_content(char ***content, char **val)
 {
@@ -24,6 +28,10 @@ static int		store_content(char ***content, char **val)
 	return (0);
 }
 
+/*
+** get env without quote context
+*/
+
 ssize_t			msh_get_env(t_mshinfo *mshinfo, char *save,
 							ssize_t len, char **content)
 {
@@ -32,7 +40,7 @@ ssize_t			msh_get_env(t_mshinfo *mshinfo, char *save,
 	char	*key;
 	char	*val;
 
-	if ((ret = msh_handle_dollars(save, len, &content)) != 0)
+	if ((ret = msh_handle_dollars(save, len, &content, 0)) != 0)
 		return (ret);
 	begin = ++len;
 	if ((ret = msh_handle_special_var(mshinfo, save, &content, len)) < 0)

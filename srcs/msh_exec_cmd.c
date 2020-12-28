@@ -6,11 +6,24 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/25 09:42:10 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/27 16:08:50 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/28 13:02:10 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <stdlib.h>
+
+/*
+** handling empty argv
+*/
+
+static int	emptyargv(t_mshinfo *mshinfo, int flg_forked)
+{
+	if (flg_forked)
+		exit(0);
+	mshinfo->ret_last_cmd = 0;
+	return (0);
+}
 
 /*
 ** msh_exec_cmd
@@ -33,6 +46,8 @@
 
 int			msh_exec_cmd(t_mshinfo *mshinfo, char **argv, int flg_forked)
 {
+	if (!argv[0])
+		return (emptyargv(mshinfo, flg_forked));
 	if (!msh_strcmp_inlower(argv[0], "echo"))
 		return (msh_echo(mshinfo, argv, flg_forked));
 	else if (!ft_strncmp(argv[0], "cd", 3))

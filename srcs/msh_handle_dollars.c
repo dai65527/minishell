@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 23:50:03 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/27 03:28:56 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/28 13:26:00 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 #include "libft.h"
 
 /*
-** handle specail case for '$'
+** handle specail env variables of "$?" and "$$"
+** We don't have to handle $$ as it's not directed in assginment
+** but this func cope with $$ to avoid unwilling behavior of other funcs.
 */
 
 ssize_t			msh_handle_special_var(t_mshinfo *mshinfo, char *save,
@@ -40,19 +42,22 @@ ssize_t			msh_handle_special_var(t_mshinfo *mshinfo, char *save,
 	return (2);
 }
 
-ssize_t			msh_handle_dollars(char *save, ssize_t len, char ***content)
+/*
+** handling $ special cases for avoiding unwilling behavior of other funcs
+*/
+
+ssize_t			msh_handle_dollars(char *save, ssize_t len, char ***content,
+									int flg_quote)
 {
 	char	*val;
 	ssize_t	ret;
 
-	if (save[len] != '$')
-		return (0);
 	ret = 0;
 	val = NULL;
 	if ((!ft_strncmp("$ ", &save[len], 2) || !ft_strncmp("$\t", &save[len], 2)
 	|| !ft_strncmp("$", &save[len], 2)))
 		ret = 2;
-	else if (!ft_strncmp("$\"", &save[len], 2)
+	else if ((flg_quote && !ft_strncmp("$\"", &save[len], 2))
 	|| !ft_strncmp("$\n", &save[len], 2) || !ft_strncmp("$;", &save[len], 2))
 		ret = 1;
 	if (!ret)
@@ -63,6 +68,8 @@ ssize_t			msh_handle_dollars(char *save, ssize_t len, char ***content)
 	{
 		msh_free_set(*content, ft_strjoin(**content, val));
 		msh_free_setnull((void**)&val);
+		if (!**content)
+			return (-1);
 	}
 	else
 		**content = val;

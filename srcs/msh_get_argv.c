@@ -6,14 +6,14 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 23:45:09 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/27 15:57:30 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/28 13:15:19 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 /*
-** get argv and handle '$'
+** init prams for msh_get_argv
 */
 
 static void		init_params(char *content[2], ssize_t begin[2], ssize_t len)
@@ -23,7 +23,11 @@ static void		init_params(char *content[2], ssize_t begin[2], ssize_t len)
 	begin[0] = len;
 }
 
-static ssize_t	sub_get_argv(char *save, ssize_t begin[2],
+/*
+** store plain argv into content[0]
+*/
+
+static ssize_t	store_plain_argv(char *save, ssize_t begin[2],
 								char *content[2], ssize_t *len)
 {
 	while (msh_check_operator(save, *len, "$><| \t\'\"\n;"))
@@ -35,6 +39,10 @@ static ssize_t	sub_get_argv(char *save, ssize_t begin[2],
 		return (-1);
 	return (0);
 }
+
+/*
+** call funcs handling env and quote
+*/
 
 static ssize_t	handle_env_quote(t_mshinfo *mshinfo, char *save, ssize_t len,
 								char **content)
@@ -54,6 +62,10 @@ static ssize_t	handle_env_quote(t_mshinfo *mshinfo, char *save, ssize_t len,
 	return (len - begin);
 }
 
+/*
+** store content into arglst
+*/
+
 static ssize_t	store_arglst(t_mshinfo *mshinfo, char **content)
 {
 	if (*content)
@@ -65,6 +77,10 @@ static ssize_t	store_arglst(t_mshinfo *mshinfo, char **content)
 	}
 	return (0);
 }
+
+/*
+** get plain argv and call funcs hadling env and quotes
+*/
 
 ssize_t			msh_get_argv(t_mshinfo *mshinfo, char *save, ssize_t len)
 {
@@ -79,7 +95,7 @@ ssize_t			msh_get_argv(t_mshinfo *mshinfo, char *save, ssize_t len)
 		{
 			ret = 0;
 			begin[1] = len;
-			if (sub_get_argv(save, begin, content, &len))
+			if (store_plain_argv(save, begin, content, &len))
 				return (msh_msg_return_val("malloc error", 2, -1));
 			if (msh_store_val_content(&content[1], &content[0]))
 				return (msh_msg_return_val("malloc error", 2, -1));
