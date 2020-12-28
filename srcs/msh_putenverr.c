@@ -1,27 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh_wait.c                                         :+:      :+:    :+:   */
+/*   msh_putenverr.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/20 21:01:44 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/28 18:21:40 by dnakano          ###   ########.fr       */
+/*   Created: 2020/12/25 15:55:20 by dnakano           #+#    #+#             */
+/*   Updated: 2020/12/25 16:00:53 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <sys/wait.h>
 #include "minishell.h"
 
-void		msh_wait(t_mshinfo *mshinfo, pid_t pid)
+int			msh_putenverr(char *cmdname, char *envkey, int ret)
 {
-	int		status;
-
-	while (mshinfo->n_proc > 0)
-	{
-		if (wait(&status) == pid)
-			mshinfo->ret_last_cmd = WIFSIGNALED(status) ?
-				(t_uchar)WTERMSIG(status) + 128 : (t_uchar)WEXITSTATUS(status);
-		mshinfo->n_proc--;
-	}
+	ft_putstr_fd(MSH_NAME, FD_STDERR);
+	ft_putstr_fd(": ", FD_STDERR);
+	ft_putstr_fd(cmdname, FD_STDERR);
+	ft_putstr_fd(": `", FD_STDERR);
+	ft_putstr_fd(envkey, FD_STDERR);
+	ft_putstr_fd("': not a valid identifier\n", FD_STDERR);
+	return (ret);
 }

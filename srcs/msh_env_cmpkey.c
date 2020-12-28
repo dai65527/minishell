@@ -1,27 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh_wait.c                                         :+:      :+:    :+:   */
+/*   msh_env_cmpkey.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/20 21:01:44 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/28 18:21:40 by dnakano          ###   ########.fr       */
+/*   Created: 2020/12/24 15:03:44 by dnakano           #+#    #+#             */
+/*   Updated: 2020/12/24 15:10:47 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <sys/wait.h>
+/*
+**	Function: msh_env_cmpkey.c
+**
+**	Compare key of envlst by ft_strcmp to 1st argument and return the result.
+*/
+
 #include "minishell.h"
 
-void		msh_wait(t_mshinfo *mshinfo, pid_t pid)
+int			msh_env_cmpkey(void *env1, void *env2)
 {
-	int		status;
-
-	while (mshinfo->n_proc > 0)
-	{
-		if (wait(&status) == pid)
-			mshinfo->ret_last_cmd = WIFSIGNALED(status) ?
-				(t_uchar)WTERMSIG(status) + 128 : (t_uchar)WEXITSTATUS(status);
-		mshinfo->n_proc--;
-	}
+	return (ft_strncmp(((t_keyval *)env1)->key, ((t_keyval *)env2)->key,
+				ft_strlen(env1) + 1));
 }

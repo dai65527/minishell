@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/24 11:16:43 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/27 20:53:31 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ typedef struct	s_mshinfo
 	int			n_proc;
 	int			fd_std[3];
 	int			ret_last_cmd;
+	int			has_pipe;
+	int			flg_errinparse;
 }				t_mshinfo;
 
 /*
@@ -78,10 +80,6 @@ void			msh_wait(t_mshinfo *mshinfo, pid_t pid);
 ** msh_get_next_cmd
 */
 
-int				msh_get_next_argv(t_mshinfo *mshinfo, char **cmd, char **save);
-int				msh_gnc_find_argv_from_save(t_mshinfo *mshinfo, char **save);
-int				msh_gnc_expand_env(t_mshinfo *mshinfo, char **cmd);
-void			msh_expand_env_to_str(char *str_new, char *str, t_list *envlst);
 int				msh_isenv(char *s, char *envkey, size_t slen);
 int				msh_isescaped(char *s, size_t len_from_start);
 
@@ -114,12 +112,26 @@ ssize_t			msh_msg_return_val(char *msg, int fd, ssize_t ret);
 int				msh_mshinfo_init(t_mshinfo *mshinfo);
 void			msh_mshinfo_free(t_mshinfo *mshinfo);
 t_list			*msh_parse_envp(char **envp);
+int				msh_env_isvalid(const char *key);
+int				msh_env_cmpkey(void *env1, void *env2);
 char			**msh_split_cmd_to_argv(t_mshinfo *mshinfo,
 										char *cmd, int *argc);
 void			msh_free_set(char **dest, char *src);
 void			msh_free_argvp(void ***argvp);
 int				msh_puterr(char *str1, char *str2, int ret);
 void			*msh_puterr_return_null(char *str1, char *str2);
+int				msh_putenverr(char *cmdname, char *envkey, int ret);
+int				msh_strcmp_inlower(const char *s1, const char *s2);
+
+/*
+** signal handling
+*/
+
+int				msh_initsignal(void);
+void			msh_sighandle_putprompt(int sig);
+void			msh_sighandle_putendl(int sig);
+void			msh_sighandle_donothing(int sig);
+void			msh_sighandle_putquit(int sig);
 
 /*
 ** file discripter utils
@@ -143,13 +155,14 @@ int				msh_cd(t_mshinfo *mshinfo, char **argv, int flg_forked);
 ** pwd
 */
 
-int				msh_pwd(t_mshinfo *mshinfo, char **argv, int flg_forked);
+int				msh_pwd(t_mshinfo *mshinfo, int flg_forked);
 
 /*
 ** export
 */
 
 int				msh_export(t_mshinfo *mshinfo, char **argv, int flg_forked);
+int				msh_export_new_env(t_mshinfo *mshinfo, char **argv);
 
 /*
 ** unset
@@ -184,6 +197,7 @@ char			**msh_make_envp(t_list *envlst);
 */
 
 void			msh_keyval_free(void *keyval);
+void			*msh_keyval_dup(void *src_keyval);
 
 /*
 ** *ptrをfreeして、*ptr=NULLする便利関数

@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/10 10:49:56 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/21 20:49:19 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/28 13:04:37 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ pid_t		msh_create_pipe(t_mshinfo *mshinfo, char **argv)
 	{
 		close(pipe_fd[0]);
 		close(pipe_fd[1]);
-		return (-1);
+		mshinfo->flg_errinparse = 1;
+		return (msh_puterr(MSH_NAME, "fork", -1));
 	}
 	else if (pid == 0)
 	{
@@ -44,6 +45,7 @@ pid_t		msh_create_pipe(t_mshinfo *mshinfo, char **argv)
 	dup2(pipe_fd[0], STDIN_FILENO);
 	close(pipe_fd[0]);
 	close(pipe_fd[1]);
+	mshinfo->has_pipe = 1;
 	mshinfo->n_proc++;
 	return (pid);
 }

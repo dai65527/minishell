@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/04 12:53:58 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/21 21:07:06 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/28 13:21:52 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static char	**make_envp_errend(char **envp, int n)
 	while (i < n)
 		free(envp[i++]);
 	free(envp);
-	msh_puterr("minishell", NULL, 0);
+	msh_puterr(MSH_NAME, NULL, 0);
 	return (NULL);
 }
 
@@ -35,7 +35,7 @@ char		**msh_make_envp(t_list *envlst)
 
 	size = ft_lstsize(envlst);
 	if (!(envp = (char **)malloc(sizeof(char *) * (size + 1))))
-		return (msh_puterr_return_null("minishell", NULL));
+		return (msh_puterr_return_null(MSH_NAME, NULL));
 	i = 0;
 	while (i < size)
 	{

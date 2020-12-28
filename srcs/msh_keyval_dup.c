@@ -1,27 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh_wait.c                                         :+:      :+:    :+:   */
+/*   msh_keyval_dup.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/20 21:01:44 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/28 18:21:40 by dnakano          ###   ########.fr       */
+/*   Created: 2020/12/25 12:22:06 by dnakano           #+#    #+#             */
+/*   Updated: 2020/12/25 18:05:22 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <sys/wait.h>
+#include <stdlib.h>
 #include "minishell.h"
 
-void		msh_wait(t_mshinfo *mshinfo, pid_t pid)
+void		*msh_keyval_dup(void *src_keyval)
 {
-	int		status;
+	t_keyval	*src;
+	t_keyval	*dst;
 
-	while (mshinfo->n_proc > 0)
+	src = (t_keyval *)src_keyval;
+	if (!(dst = (t_keyval *)malloc(sizeof(t_keyval))))
+		return (NULL);
+	if (!(dst->key = ft_strdup(src->key)))
 	{
-		if (wait(&status) == pid)
-			mshinfo->ret_last_cmd = WIFSIGNALED(status) ?
-				(t_uchar)WTERMSIG(status) + 128 : (t_uchar)WEXITSTATUS(status);
-		mshinfo->n_proc--;
+		free(dst);
+		return (NULL);
 	}
+	if (!(dst->val = ft_strdup(src->val)))
+	{
+		free(dst->key);
+		free(dst);
+		return (NULL);
+	}
+	return ((void *)dst);
 }

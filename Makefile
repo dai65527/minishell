@@ -6,7 +6,7 @@
 #    By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/21 08:47:29 by dnakano           #+#    #+#              #
-#    Updated: 2020/12/24 11:14:10 by dnakano          ###   ########.fr        #
+#    Updated: 2020/12/26 07:44:34 by dnakano          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,6 +20,7 @@ SRCNAME			:=	main.c \
 					msh_mshinfo_free.c \
 					msh_parse_envp.c \
 					msh_putwelcome.c \
+					msh_signalhandler.c \
 					msh_puterr.c \
 					msh_loop.c \
 					msh_read_and_exec_cmd.c \
@@ -41,12 +42,17 @@ SRCNAME			:=	main.c \
 					msh_echo.c \
 					msh_env.c \
 					msh_unset.c \
+					msh_env_isvalid.c \
+					msh_putenverr.c \
+					msh_env_cmpkey.c \
 					msh_executable.c \
 					msh_find_and_copy_path.c \
 					msh_wait.c \
 					msh_exit.c \
 					msh_export.c \
+					msh_export_new_env.c \
 					msh_keyval_free.c \
+					msh_keyval_dup.c \
 					msh_make_envp.c \
 					msh_content_arglst.c \
 					msh_get_argv.c \
@@ -56,6 +62,7 @@ SRCNAME			:=	main.c \
 					msh_isspace.c \
 					msh_store_argv.c \
 					msh_resetfd.c \
+					msh_strcmp_inlower.c \
 					msh_free_setnull.c \
 					msh_free_funcs.c
 SRCDIR			:=	./srcs
