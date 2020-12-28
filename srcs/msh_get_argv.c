@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 23:45:09 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/28 13:15:19 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/28 16:33:02 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,15 +96,15 @@ ssize_t			msh_get_argv(t_mshinfo *mshinfo, char *save, ssize_t len)
 			ret = 0;
 			begin[1] = len;
 			if (store_plain_argv(save, begin, content, &len))
-				return (msh_msg_return_val("malloc error", 2, -1));
+				return (msh_puterr(MSH_NAME, "malloc", -1));
 			if (msh_store_val_content(&content[1], &content[0]))
-				return (msh_msg_return_val("malloc error", 2, -1));
+				return (msh_puterr(MSH_NAME, "malloc", -1));
 			if ((ret = handle_env_quote(mshinfo, save, len, &content[0])) < 0)
 				return (-1);
 			len += ret;
 		}
 		if (store_arglst(mshinfo, &content[0]))
-			return (msh_msg_return_val("malloc error", 2, -1));
+			return (msh_puterr(MSH_NAME, "malloc", -1));
 		while (save[len] && msh_isspace(save[len]))
 			len++;
 	}

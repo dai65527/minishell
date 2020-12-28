@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/28 13:11:16 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/28 16:30:32 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ typedef struct	s_mshinfo
 	int			fd_std[3];
 	int			ret_last_cmd;
 	int			has_pipe;
+	int			flg_errinparse;
 }				t_mshinfo;
 
 /*

@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 01:56:20 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/28 13:10:28 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/28 16:34:36 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ ssize_t			msh_handle_quote(t_mshinfo *mshinfo, char *save, ssize_t len,
 	ret = 0;
 	begin = ++len;
 	if ((ret = get_argv_quote(mshinfo, save, len, content)) < 0)
-		return (msh_msg_return_val("malloc error", 2, -1));
+		return (msh_puterr(MSH_NAME, "malloc", -1));
 	len += ret;
 	return (++len - (begin - 1));
 }

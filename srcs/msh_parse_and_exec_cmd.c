@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 10:05:38 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/28 13:19:44 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/28 16:41:09 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ static pid_t	parse_and_exec(t_mshinfo *mshinfo, char **save, int *flg_gonext)
 
 	while (1)
 	{
+		mshinfo->flg_errinparse = 0;
 		if ((ret = msh_parse_to_arglst(mshinfo, save)) == 0)
 			return (0);
 		else if (ret < 0)
@@ -88,13 +89,13 @@ static pid_t	parse_and_exec(t_mshinfo *mshinfo, char **save, int *flg_gonext)
 			return (-1);
 		if (ret == 1 || ret == 2)
 			break ;
-		if (msh_create_pipe(mshinfo, argv) < 0)
-			return (-1);
+		if (!mshinfo->flg_errinparse)
+			if (msh_create_pipe(mshinfo, argv) < 0)
+				return (-1);
 		msh_free_argvp((void ***)(&argv));
 	}
-	if (ret == 2)
-		*flg_gonext = 0;
-	pid = msh_exec_cmd(mshinfo, argv, 0);
+	*flg_gonext = (ret == 2) ? 0 : 1;
+	pid = mshinfo->flg_errinparse ? 0 : msh_exec_cmd(mshinfo, argv, 0);
 	msh_free_argvp((void ***)(&argv));
 	return (pid ? pid : -1);
 }
