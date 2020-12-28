@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/24 15:59:01 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/23 22:05:33 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/28 13:21:18 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int		msh_loop(t_mshinfo *mshinfo)
 	while (1)
 	{
 		if (msh_initsignal() < 0)
-			return ((msh_puterr("minishell", NULL, errno)));
+			return ((msh_puterr(MSH_NAME, NULL, errno)));
 		ft_putstr_fd(MSH_PROMPT, FD_STDERR);
 		if ((ret = msh_read_and_exec_cmd(mshinfo)) != 0)
 			break ;
