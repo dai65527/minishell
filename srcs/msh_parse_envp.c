@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 08:49:16 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/21 17:14:23 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/28 13:21:52 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static t_keyval	*get_env(char *envstr)
 	t_keyval	*env;
 
 	if (!(env = (t_keyval *)malloc(sizeof(t_keyval))))
-		return (msh_puterr_return_null("minishell", NULL));
+		return (msh_puterr_return_null(MSH_NAME, NULL));
 	keylen = 0;
 	while (envstr[keylen] != '\0' && envstr[keylen] != '=')
 		keylen++;

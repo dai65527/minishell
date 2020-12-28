@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 10:05:38 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/28 13:18:01 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/28 13:21:52 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static char		**arglst_to_argv(t_list **arglst)
 	if (!(argv = (char **)malloc(sizeof(char *) * (lstsize + 1))))
 	{
 		ft_lstclear(arglst, free);
-		return (msh_puterr_return_null("minishell", NULL));
+		return (msh_puterr_return_null(MSH_NAME, NULL));
 	}
 	i = 0;
 	while (i < lstsize)
@@ -40,7 +40,7 @@ static char		**arglst_to_argv(t_list **arglst)
 		{
 			msh_free_argvp((void ***)(&argv));
 			ft_lstclear(arglst, free);
-			return (msh_puterr_return_null("minishell", NULL));
+			return (msh_puterr_return_null(MSH_NAME, NULL));
 		}
 		i++;
 	}
@@ -118,9 +118,9 @@ int				msh_parse_and_exec_cmd(t_mshinfo *mshinfo, char **save)
 	int		flg_gonext;
 
 	if (signal(SIGQUIT, msh_sighandle_putquit) == SIG_ERR)
-		return (msh_puterr("minishell", NULL, errno));
+		return (msh_puterr(MSH_NAME, NULL, errno));
 	if (signal(SIGINT, msh_sighandle_putendl) == SIG_ERR)
-		return (msh_puterr("minishell", NULL, errno));
+		return (msh_puterr(MSH_NAME, NULL, errno));
 	while (1)
 	{
 		flg_gonext = 1;

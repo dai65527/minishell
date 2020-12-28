@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/24 19:38:44 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/24 20:20:02 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/28 13:21:52 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,17 +24,17 @@
 int		msh_mshinfo_init(t_mshinfo *mshinfo)
 {
 	if ((mshinfo->fd_std[0] = dup(FD_STDIN)) < 0)
-		return (msh_puterr("minishell", NULL, errno));
+		return (msh_puterr(MSH_NAME, NULL, errno));
 	if ((mshinfo->fd_std[1] = dup(FD_STDOUT)) < 0)
 	{
 		close(mshinfo->fd_std[0]);
-		return (msh_puterr("minishell", NULL, errno));
+		return (msh_puterr(MSH_NAME, NULL, errno));
 	}
 	if ((mshinfo->fd_std[2] = dup(FD_STDERR)) < 0)
 	{
 		close(mshinfo->fd_std[0]);
 		close(mshinfo->fd_std[1]);
-		return (msh_puterr("minishell", NULL, errno));
+		return (msh_puterr(MSH_NAME, NULL, errno));
 	}
 	mshinfo->envlst = NULL;
 	mshinfo->arglst = NULL;
