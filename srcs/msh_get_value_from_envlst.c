@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 02:49:51 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/27 03:04:43 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/28 19:10:08 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ char			*msh_get_value_from_envlst(t_mshinfo *mshinfo, char **key,
 	char		*invalid_key;
 	char		*val;
 
+	val = NULL;
 	if (!*key || !**key)
 		return (return_val_free_key(NULL, &key));
 	if (get_invalid_key(&key, &invalid_key))
@@ -52,13 +53,12 @@ char			*msh_get_value_from_envlst(t_mshinfo *mshinfo, char **key,
 		if (!ft_strncmp(env->key, *key, ft_strlen(*key) + 1))
 		{
 			if (!(val = ft_strdup(env->val)))
-				return (NULL);
+				return (return_val_free_key(NULL, &key));
 			return (return_val_free_key(val, &key));
 		}
 		head = head->next;
 	}
-	msh_free_setnull((void**)key);
-	if (flg_quote)
-		return ("");
-	return (NULL);
+	if (flg_quote && !(val = ft_strdup("")))
+		return (return_val_free_key(NULL, &key));
+	return (return_val_free_key(val, &key));
 }
