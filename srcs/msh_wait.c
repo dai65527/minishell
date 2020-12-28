@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 21:01:44 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/28 17:31:05 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/28 18:21:40 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void		msh_wait(t_mshinfo *mshinfo, pid_t pid)
 	{
 		if (wait(&status) == pid)
 			mshinfo->ret_last_cmd = WIFSIGNALED(status) ?
-				(t_uchar)WSTOPSIG(status) + 128 : (t_uchar)WEXITSTATUS(status);
+				(t_uchar)WTERMSIG(status) + 128 : (t_uchar)WEXITSTATUS(status);
 		mshinfo->n_proc--;
 	}
 }
