@@ -17,7 +17,6 @@
 # include <sys/types.h>
 
 # define MSH_PROMPT	"minishell $ "
-
 # define MSH_NAME "minishell"
 
 /*
@@ -64,6 +63,7 @@ typedef struct	s_keyval
 ** minishell core
 */
 
+void			msh_putwelcome(void);
 int				msh_loop(t_mshinfo *mshinfo);
 int				msh_read_and_exec_cmd(t_mshinfo *mshinfo);
 int				msh_syntaxcheck(const char *save);

@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/23 13:31:15 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/23 22:11:28 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/28 13:21:52 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,8 +76,8 @@ void		msh_sighandle_putquit(int sig)
 int			msh_initsignal(void)
 {
 	if (signal(SIGINT, msh_sighandle_putprompt) == SIG_ERR)
-		return (msh_puterr("minishell", NULL, -1));
+		return (msh_puterr(MSH_NAME, NULL, -1));
 	if (signal(SIGQUIT, msh_sighandle_donothing) == SIG_ERR)
-		return (msh_puterr("minishell", NULL, -1));
+		return (msh_puterr(MSH_NAME, NULL, -1));
 	return (0);
 }

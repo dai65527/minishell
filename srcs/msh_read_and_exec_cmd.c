@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 13:02:21 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/25 15:48:36 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/28 18:56:19 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static int	joinbuf(char **save, char *buf, ssize_t len)
 
 	save_len = ft_strlen(*save);
 	if (!(save_new = (char *)malloc(sizeof(char) * (save_len + len + 1))))
-		return (msh_puterr("minishell", NULL, errno));
+		return (msh_puterr(MSH_NAME, NULL, errno));
 	ft_strlcpy(save_new, *save, save_len + 1);
 	ft_strlcat(save_new, buf, len + save_len + 1);
 	free(*save);
