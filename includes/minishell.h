@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/28 16:30:32 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/28 23:13:52 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,8 @@ int				msh_read_and_exec_cmd(t_mshinfo *mshinfo);
 int				msh_syntaxcheck(const char *save);
 ssize_t			msh_put_syntaxerr(const char token);
 pid_t			msh_parse_and_exec_cmd(t_mshinfo *mshinfo, char **save);
-int				msh_parse_to_arglst(t_mshinfo *mshinfo, char **save);
+int				msh_parse_to_arglst(t_mshinfo *mshinfo, char **save,
+									int *flg_gonext);
 int				msh_exec_cmd(t_mshinfo *mshinfo, char **argv, int flg_forked);
 pid_t			msh_create_pipe(t_mshinfo *mshinfo, char **argv);
 int				msh_create_redirect(char *fname, int redirect_fd,
@@ -88,7 +89,7 @@ int				msh_isescaped(char *s, size_t len_from_start);
 */
 
 ssize_t			msh_store_argv(t_mshinfo *mshinfo, char *save,
-								int *flg_continue);
+								int *flg_continue, int *flg_gonext);
 ssize_t			msh_store_argv_redirect(t_mshinfo *mshinfo, char *save,
 										ssize_t len);
 ssize_t			msh_get_argv(t_mshinfo *mshinfo, char *save, ssize_t len);

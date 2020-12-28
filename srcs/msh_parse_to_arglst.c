@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msh_parse_to_arglst.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 16:44:56 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/24 07:27:29 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/28 23:10:42 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,8 @@ t_list				*ft_lstget(t_list *lst, int index)
 **	flg == 3 -> pipe
 */
 
-int					msh_parse_to_arglst(t_mshinfo *mshinfo, char **save)
+int					msh_parse_to_arglst(t_mshinfo *mshinfo, char **save,
+										int *flg_gonext)
 {
 	int		flg;
 	ssize_t	argvlen;
@@ -52,7 +53,7 @@ int					msh_parse_to_arglst(t_mshinfo *mshinfo, char **save)
 
 	head = *save;
 	flg = 0;
-	argvlen = msh_store_argv(mshinfo, *save, &flg);
+	argvlen = msh_store_argv(mshinfo, *save, &flg, flg_gonext);
 	if (argvlen < 0)
 		return (-1);
 	if (flg == 0)
