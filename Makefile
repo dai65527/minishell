@@ -19,6 +19,7 @@ SRCNAME			:=	main.c \
 					msh_mshinfo_init.c \
 					msh_mshinfo_free.c \
 					msh_parse_envp.c \
+					msh_putwelcome.c \
 					msh_signalhandler.c \
 					msh_puterr.c \
 					msh_loop.c \
