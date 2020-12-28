@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msh_parse_and_exec_cmd.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 10:05:38 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/28 13:21:52 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/28 18:56:08 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 
 /*
 **	Function: arglst_to_argv
-**
 **	Convert arglst(linked list of argv) argv.
 */
 
@@ -86,7 +85,7 @@ static pid_t	parse_and_exec(t_mshinfo *mshinfo, char **save, int *flg_gonext)
 			return (0);
 		else if (ret < 0)
 			return (-1);
-		if (!(argv = arglst_to_argv(&mshinfo->arglst)) || !argv[0])
+		if (!(argv = arglst_to_argv(&mshinfo->arglst)))
 			return (-1);
 		if (ret == 1 || ret == 2)
 			break ;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msh_handle_quote.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 01:56:20 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/27 20:45:00 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/28 19:25:53 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,38 +16,64 @@
 ** get env in quatation
 */
 
-static ssize_t	get_env_quate(t_mshinfo *mshinfo, char *save,
+static ssize_t	get_env_quote(t_mshinfo *mshinfo, char *save,
 									ssize_t len, char **content)
 {
 	ssize_t	begin;
+	ssize_t ret;
 	char	*key;
+	char	*val;
 
-	if (msh_handle_dollars(mshinfo, save, len))
-		return (2);
+	if ((ret = msh_handle_dollars(save, len, &content, 1)))
+		return (ret);
 	begin = ++len;
-	while (msh_check_operator(save, len, "$<>|\'\""))
+	if ((ret = msh_handle_special_var(mshinfo, save, &content, len)) < 0)
+		return (-1);
+	if (ret)
+		return (ret);
+	while (msh_check_operator(save, len, "$<>|\'\" \t"))
 		len++;
 	if (!(key = ft_substr(save, begin, len - begin)))
-		ft_putendl_fd("msh_put_errmsg", 2);
-	msh_free_set(content,
-		ft_strjoin(*content, msh_get_value_from_envlst(mshinfo, &key)));
+		return (-1);
+	val = msh_get_value_from_envlst(mshinfo, &key, 1);
+	msh_free_set(content, ft_strjoin(*content, val));
+	msh_free_setnull((void**)&val);
 	if (!*content)
-		ft_putendl_fd("msh_put_errmsg", 2);
+		return (-1);
 	return (len - (begin - 1));
+}
+
+/*
+** function handling "" case
+*/
+
+static ssize_t	handle_empty_quote(ssize_t len, ssize_t begin, char **content)
+{
+	char	*val;
+
+	val = NULL;
+	if (!(len - begin))
+	{
+		if (!(val = ft_strdup("")))
+			return (-1);
+		if (msh_store_val_content(&val, content))
+			return (-1);
+	}
+	return (0);
 }
 
 /*
 ** get argv in double quotation
 */
 
-static ssize_t	get_argv_quote(t_mshinfo *mshinfo, char *save, ssize_t len)
+static ssize_t	get_argv_quote(t_mshinfo *mshinfo, char *save, ssize_t len,
+								char **content)
 {
-	ssize_t	ret;
 	ssize_t	begin[2];
-	char	*content[2];
+	ssize_t	ret;
+	char	*val;
 
-	if (!(content[0] = ft_strdup("")))
-		return (-1);
+	val = NULL;
 	begin[0] = len;
 	while (msh_check_operator(save, len, "\""))
 	{
@@ -55,16 +81,16 @@ static ssize_t	get_argv_quote(t_mshinfo *mshinfo, char *save, ssize_t len)
 		begin[1] = len;
 		while (msh_check_operator(save, len, "$\""))
 			len++;
-		if (!(content[1] = ft_substr(save, begin[1], len - begin[1])))
+		if (!(val = ft_substr(save, begin[1], len - begin[1])))
 			return (-1);
-		msh_free_set(&content[0], ft_strjoin(content[0], content[1]));
-		msh_free_setnull((void**)&content[1]);
-		if (save[len] == '$'
-			&& ((ret = get_env_quate(mshinfo, save, len, &content[0])) < 0))
+		if (msh_store_val_content(&val, content))
+			return (-1);
+		if (save[len] == '$' && ((ret = get_env_quote(mshinfo,
+			save, len, &content[0])) < 0))
 			return (-1);
 		len += ret;
 	}
-	if (msh_content_arglst(mshinfo, content[0]))
+	if (handle_empty_quote(len, begin[0], content))
 		return (-1);
 	return (len - begin[0]);
 }
@@ -75,11 +101,14 @@ static ssize_t	get_argv_quote(t_mshinfo *mshinfo, char *save, ssize_t len)
 ** for double call func to store argv
 */
 
-ssize_t			msh_handle_quote(t_mshinfo *mshinfo, char *save, ssize_t len)
+ssize_t			msh_handle_quote(t_mshinfo *mshinfo, char *save, ssize_t len,
+								char **content)
 {
 	ssize_t ret;
 	ssize_t	begin;
+	char	*val;
 
+	val = NULL;
 	if (!ft_strchr("\'\"", save[len]))
 		return (0);
 	if (save[len] == '\'')
@@ -87,18 +116,16 @@ ssize_t			msh_handle_quote(t_mshinfo *mshinfo, char *save, ssize_t len)
 		begin = ++len;
 		while (msh_check_operator(save, len, "\'"))
 			len++;
-		if (save[len] != '\'')
-			return (msh_puterr(MSH_NAME, "malloc", -1));
-		if (msh_content_arglst(mshinfo, ft_substr(save, begin, len++ - begin)))
-			return (msh_puterr(MSH_NAME, "malloc", -1));
+		if (!(val = ft_substr(save, begin, len++ - begin)))
+			return (-1);
+		if (msh_store_val_content(&val, content))
+			return (-1);
 		return (len - (begin - 1));
 	}
 	ret = 0;
 	begin = ++len;
-	if ((ret = get_argv_quote(mshinfo, save, len)) < 0)
+	if ((ret = get_argv_quote(mshinfo, save, len, content)) < 0)
 		return (msh_puterr(MSH_NAME, "malloc", -1));
 	len += ret;
-	if (save[len++] != '\"')
-		return (msh_put_syntaxerr('\"'));
-	return (len - (begin - 1));
+	return (++len - (begin - 1));
 }

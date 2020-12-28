@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+         #
+#    By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/21 08:47:29 by dnakano           #+#    #+#              #
-#    Updated: 2020/12/26 07:44:34 by dnakano          ###   ########.fr        #
+#    Updated: 2020/12/27 16:07:45 by dhasegaw         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -64,7 +64,10 @@ SRCNAME			:=	main.c \
 					msh_resetfd.c \
 					msh_strcmp_inlower.c \
 					msh_free_setnull.c \
-					msh_free_funcs.c
+					msh_free_funcs.c \
+					msh_store_val_content.c \
+					msh_get_env.c
+					
 SRCDIR			:=	./srcs
 SRCS			:=	$(addprefix $(SRCDIR)/,$(SRCNAME))
 OBJNAME			:=	$(SRCNAME:%.c=%.o)

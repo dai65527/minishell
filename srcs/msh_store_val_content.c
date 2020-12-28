@@ -1,34 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh_free_funcs.c                                   :+:      :+:    :+:   */
+/*   msh_store_val_content.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/12 02:32:31 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/28 13:02:15 by dhasegaw         ###   ########.fr       */
+/*   Created: 2020/12/27 14:52:36 by dhasegaw          #+#    #+#             */
+/*   Updated: 2020/12/27 15:19:58 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
 #include "minishell.h"
 
-void	msh_free_set(char **dest, char *src)
+ssize_t			msh_store_val_content(char **val, char **content)
 {
-	free(*dest);
-	*dest = src;
-}
-
-void	msh_free_argvp(void ***argvp)
-{
-	int i;
-
-	i = 0;
-	while ((*argvp)[i])
-	{
-		msh_free_setnull(&((*argvp)[i]));
-		i++;
-	}
-	msh_free_setnull((void **)argvp);
-	*argvp = NULL;
+	if (*content && *val)
+		msh_free_set(content, ft_strjoin(*content, *val));
+	else if (*val)
+		*content = ft_strdup(*val);
+	else
+		return (0);
+	if (!*content)
+		return (-1);
+	msh_free_setnull((void**)val);
+	return (0);
 }

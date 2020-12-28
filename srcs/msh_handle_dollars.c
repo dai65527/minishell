@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 23:50:03 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/17 02:15:35 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/28 13:26:00 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,32 +14,64 @@
 #include "libft.h"
 
 /*
-** handle specail case for '$'
+** handle specail env variables of "$?" and "$$"
+** We don't have to handle $$ as it's not directed in assginment
+** but this func cope with $$ to avoid unwilling behavior of other funcs.
 */
 
-ssize_t		msh_handle_dollars(t_mshinfo *mshinfo, char *save, ssize_t len)
+ssize_t			msh_handle_special_var(t_mshinfo *mshinfo, char *save,
+									char ***content, ssize_t len)
 {
-	t_list	*new;
-	char	*content;
+	char	*val;
+	ssize_t	begin;
 
-	content = NULL;
-	if (!ft_strncmp("$?", &save[len], 2)
-		&& !(content = ft_strdup(ft_itoa(mshinfo->ret_last_cmd))))
+	begin = len;
+	if (!ft_strchr("?$", save[len]))
+		return (0);
+	if (save[len] == '?' && (!(val = ft_itoa(mshinfo->ret_last_cmd))))
 		return (-1);
-	else if ((!ft_strncmp("$ ", &save[len], 2) || !ft_strncmp("$\t", save, 2))
-			&& !msh_isescaped(save, len) && (!(content = ft_strdup("$"))))
+	if (save[len] == '$' && (!(val = ft_strdup("$$"))))
 		return (-1);
-	else if (!ft_strncmp("$$", &save[len], 2) && !(content = ft_strdup("")))
+	if (!**content)
+		**content = ft_strdup(val);
+	else
+		msh_free_set(*content, ft_strjoin(**content, val));
+	msh_free_setnull((void**)&val);
+	if (!**content)
 		return (-1);
-	else if ((!ft_strncmp("$", &save[len], 2) || !ft_strncmp("$\"",
-			&save[len], 2)) && !(content = ft_strdup("$")))
+	return (2);
+}
+
+/*
+** handling $ special cases for avoiding unwilling behavior of other funcs
+*/
+
+ssize_t			msh_handle_dollars(char *save, ssize_t len, char ***content,
+									int flg_quote)
+{
+	char	*val;
+	ssize_t	ret;
+
+	ret = 0;
+	val = NULL;
+	if ((!ft_strncmp("$ ", &save[len], 2) || !ft_strncmp("$\t", &save[len], 2)
+	|| !ft_strncmp("$", &save[len], 2)))
+		ret = 2;
+	else if ((flg_quote && !ft_strncmp("$\"", &save[len], 2))
+	|| !ft_strncmp("$\n", &save[len], 2) || !ft_strncmp("$;", &save[len], 2))
+		ret = 1;
+	if (!ret)
+		return (0);
+	if (ret && !(val = ft_strdup("$")))
 		return (-1);
-	if (content)
+	if (**content)
 	{
-		if (!(new = ft_lstnew(content)))
+		msh_free_set(*content, ft_strjoin(**content, val));
+		msh_free_setnull((void**)&val);
+		if (!**content)
 			return (-1);
-		ft_lstadd_back(&mshinfo->arglst, new);
-		return (2);
 	}
-	return (0);
+	else
+		**content = val;
+	return (ret);
 }

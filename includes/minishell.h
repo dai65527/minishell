@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/27 20:53:31 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/28 16:30:32 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,16 +94,23 @@ ssize_t			msh_store_argv_redirect(t_mshinfo *mshinfo, char *save,
 ssize_t			msh_get_argv(t_mshinfo *mshinfo, char *save, ssize_t len);
 int				msh_content_arglst(t_mshinfo *mshinfo, char *content);
 int				msh_check_operator(char *save, ssize_t len, char *operator);
-ssize_t			msh_handle_dollars(t_mshinfo *mshinfo, char *save, ssize_t len);
+ssize_t			msh_handle_dollars(char *save, ssize_t len, char ***content,
+									int flg_quote);
+ssize_t			msh_handle_special_var(t_mshinfo *mshinfo, char *save,
+									char ***content, ssize_t len);
 ssize_t			msh_handle_redirect(t_mshinfo *mshinfo,
 										char *save, ssize_t len);
 ssize_t			msh_handle_pipe(char *save, ssize_t len);
-ssize_t			msh_handle_quote(t_mshinfo *mshinfo,
-										char *save, ssize_t len);
-char			*msh_get_value_from_envlst(t_mshinfo *mshinfo, char **key);
+ssize_t			msh_handle_quote(t_mshinfo *mshinfo, char *save, ssize_t len,
+									char **content);
+char			*msh_get_value_from_envlst(t_mshinfo *mshinfo, char **key,
+											int flg_quote);
 char			*msh_strdup_skip_bslash(char *s);
 t_list			*ft_lstget(t_list *lst, int index);
 ssize_t			msh_msg_return_val(char *msg, int fd, ssize_t ret);
+ssize_t			msh_store_val_content(char **val, char **content);
+ssize_t			msh_get_env(t_mshinfo *mshinfo, char *save,
+							ssize_t len, char **content);
 
 /*
 ** minishell utils
