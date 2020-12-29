@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 23:45:09 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/28 16:33:02 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/29 00:38:35 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,6 @@ static ssize_t	store_arglst(t_mshinfo *mshinfo, char **content)
 {
 	if (*content)
 	{
-		msh_free_set(content, msh_strdup_skip_bslash(*content));
 		if (msh_content_arglst(mshinfo, ft_strdup(*content)))
 			return (-1);
 		msh_free_setnull((void**)content);
@@ -97,7 +96,7 @@ ssize_t			msh_get_argv(t_mshinfo *mshinfo, char *save, ssize_t len)
 			begin[1] = len;
 			if (store_plain_argv(save, begin, content, &len))
 				return (msh_puterr(MSH_NAME, "malloc", -1));
-			if (msh_store_val_content(&content[1], &content[0]))
+			if (msh_store_val_content(&content[1], &content[0], 0))
 				return (msh_puterr(MSH_NAME, "malloc", -1));
 			if ((ret = handle_env_quote(mshinfo, save, len, &content[0])) < 0)
 				return (-1);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/29 10:51:47 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/29 11:47:25 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ char			*msh_get_value_from_envlst(t_mshinfo *mshinfo, char **key,
 char			*msh_strdup_skip_bslash(char *s);
 t_list			*ft_lstget(t_list *lst, int index);
 ssize_t			msh_msg_return_val(char *msg, int fd, ssize_t ret);
-ssize_t			msh_store_val_content(char **val, char **content);
+ssize_t			msh_store_val_content(char **val, char **content, int flg_quote);
 ssize_t			msh_get_env(t_mshinfo *mshinfo, char *save,
 							ssize_t len, char **content);
 

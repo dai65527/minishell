@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 01:56:20 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/28 19:25:53 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/29 14:35:03 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 /*
 ** get env in quatation
+** \ in env should be handled in the same way of without quote
 */
 
 static ssize_t	get_env_quote(t_mshinfo *mshinfo, char *save,
@@ -31,14 +32,12 @@ static ssize_t	get_env_quote(t_mshinfo *mshinfo, char *save,
 		return (-1);
 	if (ret)
 		return (ret);
-	while (msh_check_operator(save, len, "$<>|\'\" \t"))
+	while (msh_check_operator(save, len, "$<>|\'\" \\\t"))
 		len++;
 	if (!(key = ft_substr(save, begin, len - begin)))
 		return (-1);
 	val = msh_get_value_from_envlst(mshinfo, &key, 1);
-	msh_free_set(content, ft_strjoin(*content, val));
-	msh_free_setnull((void**)&val);
-	if (!*content)
+	if (msh_store_val_content(&val, content, 1))
 		return (-1);
 	return (len - (begin - 1));
 }
@@ -56,7 +55,7 @@ static ssize_t	handle_empty_quote(ssize_t len, ssize_t begin, char **content)
 	{
 		if (!(val = ft_strdup("")))
 			return (-1);
-		if (msh_store_val_content(&val, content))
+		if (msh_store_val_content(&val, content, 1))
 			return (-1);
 	}
 	return (0);
@@ -83,7 +82,7 @@ static ssize_t	get_argv_quote(t_mshinfo *mshinfo, char *save, ssize_t len,
 			len++;
 		if (!(val = ft_substr(save, begin[1], len - begin[1])))
 			return (-1);
-		if (msh_store_val_content(&val, content))
+		if (msh_store_val_content(&val, content, 2))
 			return (-1);
 		if (save[len] == '$' && ((ret = get_env_quote(mshinfo,
 			save, len, &content[0])) < 0))
@@ -114,11 +113,11 @@ ssize_t			msh_handle_quote(t_mshinfo *mshinfo, char *save, ssize_t len,
 	if (save[len] == '\'')
 	{
 		begin = ++len;
-		while (msh_check_operator(save, len, "\'"))
+		while (save[len] && save[len] != '\'')
 			len++;
 		if (!(val = ft_substr(save, begin, len++ - begin)))
 			return (-1);
-		if (msh_store_val_content(&val, content))
+		if (msh_store_val_content(&val, content, 1))
 			return (-1);
 		return (len - (begin - 1));
 	}
