@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/24 15:03:44 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/24 15:10:47 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/29 19:35:22 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,5 +21,5 @@
 int			msh_env_cmpkey(void *env1, void *env2)
 {
 	return (ft_strncmp(((t_keyval *)env1)->key, ((t_keyval *)env2)->key,
-				ft_strlen(env1) + 1));
+				ft_strlen(((t_keyval *)env1)->key) + 1));
 }
