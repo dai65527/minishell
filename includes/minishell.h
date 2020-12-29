@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/29 11:47:25 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/29 15:17:57 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,8 @@ void			msh_putwelcome(void);
 int				msh_loop(t_mshinfo *mshinfo);
 int				msh_read_and_exec_cmd(t_mshinfo *mshinfo);
 pid_t			msh_parse_and_exec_cmd(t_mshinfo *mshinfo, char **save);
-int				msh_parse_to_arglst(t_mshinfo *mshinfo, char **save);
+int				msh_parse_to_arglst(t_mshinfo *mshinfo, char **save,
+									int *flg_gonext);
 int				msh_exec_cmd(t_mshinfo *mshinfo, char **argv, int flg_forked);
 pid_t			msh_create_pipe(t_mshinfo *mshinfo, char **argv);
 int				msh_create_redirect(char *fname, int redirect_fd,
@@ -95,7 +96,7 @@ ssize_t			msh_syntaxcheck_flag(const char *save, size_t len,
 */
 
 ssize_t			msh_store_argv(t_mshinfo *mshinfo, char *save,
-								int *flg_continue);
+								int *flg_continue, int *flg_gonext);
 ssize_t			msh_store_argv_redirect(t_mshinfo *mshinfo, char *save,
 										ssize_t len);
 ssize_t			msh_get_argv(t_mshinfo *mshinfo, char *save, ssize_t len);
