@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 16:44:56 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/29 21:05:02 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/29 23:59:23 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,7 @@ int					msh_parse_to_arglst(t_mshinfo *mshinfo, char **save)
 	int		flg;
 	ssize_t	argvlen;
 	char	*new_save;
-	char	*head;
 
-	head = *save;
 	flg = 0;
 	argvlen = msh_store_argv(mshinfo, *save, &flg);
 	if (argvlen < 0)
