@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 16:44:56 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/24 07:27:29 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/29 15:45:23 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,13 @@ t_list				*ft_lstget(t_list *lst, int index)
 **	1: ready to exec command
 **  2: ready to exec command and seve still have command
 **	3: ready to exec piped command
+**	4: empty command
 ** flg
 **	flg == 0 -> continue
 **	flg == 1 -> \n end
 **	flg == 2 -> ; end
 **	flg == 3 -> pipe
+**	flg == 4 -> empty command
 */
 
 int					msh_parse_to_arglst(t_mshinfo *mshinfo, char **save)
@@ -55,7 +57,7 @@ int					msh_parse_to_arglst(t_mshinfo *mshinfo, char **save)
 	argvlen = msh_store_argv(mshinfo, *save, &flg);
 	if (argvlen < 0)
 		return (-1);
-	if (flg == 0)
+	if (flg == 0 || flg == 4)
 		return (flg);
 	new_save = ft_substr(*save, argvlen + 1, ft_strlen(*save) - argvlen - 1);
 	if (!new_save)
