@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 13:02:21 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/29 09:35:45 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/29 17:11:53 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,13 @@ static int	joinbuf(char **save, char *buf, ssize_t len)
 	ssize_t		save_len;
 	char		*save_new;
 
+	if (g_flg_termed)
+	{
+		msh_free_set(save, ft_strdup(""));
+		if (!*save)
+			return (msh_puterr(MSH_NAME, NULL, errno));
+		g_flg_termed = 0;
+	}
 	save_len = ft_strlen(*save);
 	if (!(save_new = (char *)malloc(sizeof(char) * (save_len + len + 1))))
 		return (msh_puterr(MSH_NAME, NULL, errno));
