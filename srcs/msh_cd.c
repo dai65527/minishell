@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 20:36:14 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/25 23:27:20 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/29 16:09:32 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,27 +51,55 @@ static int		cd_err(char *dirname, int ret)
 	return (ret);
 }
 
-static int		change_env(t_mshinfo *mshinfo)
+static int		change_add_env(t_mshinfo *mshinfo, char *old, char *present)
 {
-	t_list		*envlst;
-	t_keyval	*env;
+	t_keyval	*newenv_old;
+	t_keyval	*newenv_present;
+
+	msh_free_set(&old, ft_strjoin("OLDPWD=", old));
+	if (!old)
+		return (-1);
+	if (!(newenv_old = msh_create_newenv(old)))
+		return (-1);
+	if (!msh_change_env_val(mshinfo->envlst, newenv_old))
+		if (msh_add_new_env(mshinfo, newenv_old))
+			return (-1);
+	msh_free_set(&present, ft_strjoin("PWD=", present));
+	if (!present)
+		return (-1);
+	if (!(newenv_present = msh_create_newenv(present)))
+		return (-1);
+	if (!msh_change_env_val(mshinfo->envlst, newenv_old))
+		if (msh_add_new_env(mshinfo, newenv_present))
+			return (-1);
+	return (0);
+}
+
+static int		modify_env(t_mshinfo *mshinfo)
+{
+	// t_list		*envlst;
+	// t_keyval	*env;
 	char		*old;
 	char		*present;
 
-	envlst = mshinfo->envlst;
-	if (!(old = ft_strdup(get_env(mshinfo, "PWD"))))
+	// envlst = mshinfo->envlst;
+	old = get_env(mshinfo, "PWD") ?
+		ft_strdup(get_env(mshinfo, "PWD")) : ft_strdup("");
+	if (!old)
 		return (-1);
 	if (!(present = getcwd(NULL, 0)))
 		return (-1);
-	while (envlst)
-	{
-		env = envlst->content;
-		if (!ft_strncmp("OLDPWD", env->key, ft_strlen("OLDPWD") + 1))
-			msh_free_set(&(env->val), old);
-		else if (!ft_strncmp("PWD", env->key, ft_strlen("PWD") + 1))
-			msh_free_set(&(env->val), present);
-		envlst = envlst->next;
-	}
+	if (change_add_env(mshinfo, old, present))
+		return (-1);
+	// while (!flg && envlst)
+	// {
+	// 	env = envlst->content;
+	// 	if (flg % 2 && !ft_strncmp("OLDPWD", env->key, ft_strlen("OLDPWD") + 1))
+	// 		msh_free_set(&(env->val), old);
+	// 	else if (flg >= 2 && !ft_strncmp("PWD", env->key, ft_strlen("PWD") + 1))
+	// 		msh_free_set(&(env->val), present);
+	// 	envlst = envlst->next;
+	// }
 	return (0);
 }
 
@@ -89,7 +117,7 @@ int				msh_cd(t_mshinfo *mshinfo, char **argv, int flg_forked)
 	}
 	else if ((chdir(argv[1])) < 0)
 		ret = -1;
-	if (change_env(mshinfo) < 0)
+	if (modify_env(mshinfo) < 0)
 		ret = -1;
 	if (ret < 0)
 	{

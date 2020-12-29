@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   msh_export_new_env.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/25 16:36:02 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/25 18:15:23 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/29 15:55:56 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include "minishell.h"
 
-static int		arg_isvalid(char *arg)
+static int	arg_isvalid(char *arg)
 {
 	char		*p;
 	size_t		keylen;
@@ -30,7 +30,7 @@ static int		arg_isvalid(char *arg)
 	return (1);
 }
 
-static t_keyval	*create_newenv(char *arg)
+t_keyval	*msh_create_newenv(char *arg)
 {
 	char		*p;
 	t_keyval	*newenv;
@@ -54,7 +54,7 @@ static t_keyval	*create_newenv(char *arg)
 	return (newenv);
 }
 
-static int		change_env_val(t_list *envlst, t_keyval *newenv)
+int			msh_change_env_val(t_list *envlst, t_keyval *newenv)
 {
 	while (envlst)
 	{
@@ -71,7 +71,7 @@ static int		change_env_val(t_list *envlst, t_keyval *newenv)
 	return (0);
 }
 
-static int		add_new_env(t_mshinfo *mshinfo, t_keyval *newenv)
+int			msh_add_new_env(t_mshinfo *mshinfo, t_keyval *newenv)
 {
 	t_list		*newelem;
 
@@ -84,7 +84,7 @@ static int		add_new_env(t_mshinfo *mshinfo, t_keyval *newenv)
 	return (0);
 }
 
-int				msh_export_new_env(t_mshinfo *mshinfo, char **argv)
+int			msh_export_new_env(t_mshinfo *mshinfo, char **argv)
 {
 	t_keyval	*newenv;
 	int			ret;
@@ -97,7 +97,7 @@ int				msh_export_new_env(t_mshinfo *mshinfo, char **argv)
 			ret = 1;
 			continue ;
 		}
-		if (!(newenv = create_newenv(*argv)))
+		if (!(newenv = msh_create_newenv(*argv)))
 			return (1);
 		if (!msh_env_isvalid(newenv->key))
 		{
@@ -105,9 +105,9 @@ int				msh_export_new_env(t_mshinfo *mshinfo, char **argv)
 			ret = msh_putenverr("export", *argv, 1);
 			continue ;
 		}
-		if (change_env_val(mshinfo->envlst, newenv))
+		if (msh_change_env_val(mshinfo->envlst, newenv))
 			continue ;
-		if (add_new_env(mshinfo, newenv))
+		if (msh_add_new_env(mshinfo, newenv))
 			return (1);
 	}
 	return (ret);
