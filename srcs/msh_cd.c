@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 20:36:14 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/29 16:35:06 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/29 17:32:32 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,26 +51,24 @@ static int		cd_err(char *dirname, int ret)
 	return (ret);
 }
 
-static int		change_add_env(t_mshinfo *mshinfo, char *old, char *present)
+static int		change_add_env(t_mshinfo *mshinfo, char *val, char *prefix)
 {
-	t_keyval	*newenv_old;
-	t_keyval	*newenv_present;
+	t_keyval	*newenv;
+	char		*tmp;
 
-	msh_free_set(&old, ft_strjoin("OLDPWD=", old));
-	if (!old)
+	if (!(tmp = ft_strdup(prefix)))
 		return (-1);
-	if (!(newenv_old = msh_create_newenv(old)))
+	msh_free_set(&tmp, ft_strjoin(tmp, val));
+	if (!tmp)
 		return (-1);
-	if (!msh_change_env_val(mshinfo->envlst, newenv_old))
-		if (msh_add_new_env(mshinfo, newenv_old))
-			return (-1);
-	msh_free_set(&present, ft_strjoin("PWD=", present));
-	if (!present)
+	if (!(newenv = msh_create_newenv(tmp)))
+	{
+		msh_free_setnull((void**)&tmp);
 		return (-1);
-	if (!(newenv_present = msh_create_newenv(present)))
-		return (-1);
-	if (!msh_change_env_val(mshinfo->envlst, newenv_old))
-		if (msh_add_new_env(mshinfo, newenv_present))
+	}
+	msh_free_setnull((void**)&tmp);
+	if (!msh_change_env_val(mshinfo->envlst, newenv))
+		if (msh_add_new_env(mshinfo, newenv))
 			return (-1);
 	return (0);
 }
@@ -86,8 +84,20 @@ static int		modify_env(t_mshinfo *mshinfo)
 		return (-1);
 	if (!(present = getcwd(NULL, 0)))
 		return (-1);
-	if (change_add_env(mshinfo, old, present))
+	if (change_add_env(mshinfo, old, "OLDPWD="))
+	{
+		msh_free_setnull((void**)&old);
+		msh_free_setnull((void**)&present);
 		return (-1);
+	}
+	if (change_add_env(mshinfo, present, "PWD="))
+	{
+		msh_free_setnull((void**)&old);
+		msh_free_setnull((void**)&present);
+		return (-1);
+	}
+	msh_free_setnull((void**)&old);
+	msh_free_setnull((void**)&present);
 	return (0);
 }
 
