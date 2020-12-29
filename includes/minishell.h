@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/29 16:17:58 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/29 17:42:05 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@
 **					- fd_std[1]: Standard output.
 **					- fd_std[2]: Standard error output.
 **	- ret_last_cmd:	Return variable of last command. (=$?)
+**	- has_pipe:		Flag if the command has piped process.
+**	- flg_errinparse:	Flag if any failures in parse.
 */
 
 typedef struct	s_mshinfo
@@ -51,7 +53,6 @@ typedef struct	s_mshinfo
 /*
 ** t_keyval (= struct s_keyval)
 ** Keyvalue data structure which is used to store enviromental variable.
-** 環境変数を格納するために使うキーバリュー型構造体。
 */
 
 typedef struct	s_keyval
@@ -126,16 +127,22 @@ ssize_t			msh_get_env(t_mshinfo *mshinfo, char *save,
 int				msh_mshinfo_init(t_mshinfo *mshinfo);
 void			msh_mshinfo_free(t_mshinfo *mshinfo);
 t_list			*msh_parse_envp(char **envp);
+int				msh_resetfd(int *fd_std);
 int				msh_env_isvalid(const char *key);
 int				msh_env_cmpkey(void *env1, void *env2);
 char			**msh_split_cmd_to_argv(t_mshinfo *mshinfo,
 										char *cmd, int *argc);
 void			msh_free_set(char **dest, char *src);
+void			msh_free_setnull(void **ptr);
 void			msh_free_argvp(void ***argvp);
 int				msh_puterr(char *str1, char *str2, int ret);
 void			*msh_puterr_return_null(char *str1, char *str2);
 int				msh_putenverr(char *cmdname, char *envkey, int ret);
 int				msh_strcmp_inlower(const char *s1, const char *s2);
+void			msh_keyval_free(void *keyval);
+void			*msh_keyval_dup(void *src_keyval);
+int				msh_isescaped(char *s, size_t len_from_start);
+int				msh_isspace(char c);
 
 /*
 ** signal handling
@@ -146,12 +153,6 @@ void			msh_sighandle_putprompt(int sig);
 void			msh_sighandle_putendl(int sig);
 void			msh_sighandle_donothing(int sig);
 void			msh_sighandle_putquit(int sig);
-
-/*
-** file discripter utils
-*/
-
-int				msh_resetfd(int *fd_std);
 
 /*
 ** echo
@@ -204,25 +205,5 @@ int				msh_executable(t_mshinfo *mshinfo, char **argv, int flg_forked);
 int				msh_find_and_copy_path(char **argv, t_mshinfo *mshinfo,
 																char *path);
 char			**msh_make_envp(t_list *envlst);
-
-/*
-** t_keyval utils
-** t_keyval用便利関数
-*/
-
-void			msh_keyval_free(void *keyval);
-void			*msh_keyval_dup(void *src_keyval);
-
-/*
-** *ptrをfreeして、*ptr=NULLする便利関数
-*/
-
-void			msh_free_setnull(void **ptr);
-
-/*
-** '\'によりエスケープされているかを判定する関数。
-*/
-int				msh_isescaped(char *s, size_t len_from_start);
-int				msh_isspace(char c);
 
 #endif
