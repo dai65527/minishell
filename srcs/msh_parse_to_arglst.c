@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 16:44:56 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/29 15:45:23 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/29 21:05:02 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,7 @@ t_list				*ft_lstget(t_list *lst, int index)
 }
 
 /*
-** saveから'\n' or ';'を探して、
-** その手前まで(=コマンド)を抽出し、cmdに格納する
-** flg == 1 -> continue
-** flg == 2 -> pipe
+** Find '\n' or ';' from save and store the string just before it to cmd.
 **
 ** return val
 **	-1: error

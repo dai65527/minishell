@@ -6,18 +6,13 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/24 19:15:46 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/22 16:43:50 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/29 21:05:41 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <errno.h>
 #include <string.h>
 #include "minishell.h"
-
-/*
-** to be modified (issue #8)
-** errnoとbashの返り値の関係が謎なので、調べてそれに応じて作り替える。
-*/
 
 /*
 ** Function: msh_puterr

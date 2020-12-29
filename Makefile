@@ -6,7 +6,7 @@
 #    By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/21 08:47:29 by dnakano           #+#    #+#              #
-#    Updated: 2020/12/29 10:48:04 by dnakano          ###   ########.fr        #
+#    Updated: 2020/12/29 20:51:13 by dnakano          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,6 @@ SRCNAME			:=	main.c \
 					msh_parse_to_arglst.c \
 					msh_handle_redirect.c \
 					msh_create_redirect.c \
-					msh_handle_pipe.c \
 					msh_create_pipe.c \
 					msh_handle_quote.c \
 					msh_exec_cmd.c \
