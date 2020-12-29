@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 20:36:14 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/24 21:30:13 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/29 12:54:02 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static void		msh_exit_puterr(char **argv, int errcode)
 	if (!errcode)
 		return ;
 	ft_strlcpy(buf, MSH_NAME, sizeof(buf));
-	ft_strlcat(buf, ": exit : ", sizeof(buf));
+	ft_strlcat(buf, ": exit: ", sizeof(buf));
 	if (errcode == MSH_EXIT_ERR_NAN && argv[1])
 	{
 		ft_strlcat(buf, argv[1], sizeof(buf));
