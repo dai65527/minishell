@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msh_store_argv.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 01:36:14 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/28 23:14:39 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/29 16:15:24 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,15 +34,13 @@ static int		setflg(char c)
 ** handle ikinari newline!
 */
 
-static ssize_t	check_newline(char *save, ssize_t len, int *flg,
-								int *flg_gonext)
+static ssize_t	check_newline(char *save, ssize_t len, int *flg)
 {
-	while (save[len] && ft_isspace(save[len]))
+	while (save[len] && msh_isspace(save[len]))
 		len++;
 	if (save[len] == '\n')
 	{
-		*flg = -1;
-		*flg_gonext = 1;
+		*flg = 4;
 		return (len);
 	}
 	return (0);
@@ -54,17 +52,17 @@ static ssize_t	check_newline(char *save, ssize_t len, int *flg,
 ** flg == 1 -> \n end
 ** flg == 2 -> ; end
 ** flg == 3 -> pipe
+** flg == 4 -> empty command
 */
 
-ssize_t			msh_store_argv(t_mshinfo *mshinfo, char *save, int *flg,
-								int *flg_gonext)
+ssize_t			msh_store_argv(t_mshinfo *mshinfo, char *save, int *flg)
 {
 	ssize_t	len;
 	ssize_t	ret;
 
 	len = 0;
-	ret = check_newline(save, len, flg, flg_gonext);
-	if (*flg == -1)
+	ret = check_newline(save, len, flg);
+	if (*flg == 4)
 		return (ret);
 	while (msh_check_operator(save, len, "\n;|"))
 	{

@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 10:05:38 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/29 15:17:50 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/29 15:45:48 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,9 +81,9 @@ static pid_t	parse_and_exec(t_mshinfo *mshinfo, char **save, int *flg_gonext)
 	while (1)
 	{
 		mshinfo->flg_errinparse = 0;
-		if ((ret = msh_parse_to_arglst(mshinfo, save, flg_gonext)) == 0)
+		if ((ret = msh_parse_to_arglst(mshinfo, save)) == 0)
 			return (0);
-		else if (ret < 0)
+		else if (ret < 0 || ret == 4)
 			return (-1);
 		if (!(argv = arglst_to_argv(&mshinfo->arglst)))
 			return (-1);
