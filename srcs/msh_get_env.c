@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/27 15:56:30 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/28 13:16:23 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/29 00:33:49 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,9 @@
 
 static int		store_content(char ***content, char **val)
 {
+	msh_free_set(val, msh_strdup_skip_bslash(*val));
+	if (!val)
+		return (-1);
 	if (!**content)
 		**content = ft_strdup(*val);
 	else
