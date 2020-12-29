@@ -6,12 +6,12 @@
 #    By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/21 08:47:29 by dnakano           #+#    #+#              #
-#    Updated: 2020/12/29 16:14:45 by dhasegaw         ###   ########.fr        #
+#    Updated: 2020/12/29 17:42:13 by dhasegaw         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC				:=	gcc
-CFLAGS			:=	-g -Wall -Werror -Wextra
+CFLAGS			:=	-Wall -Werror -Wextra
 NAME			:=	minishell
 OUTPUTDIR		:=	.
 OUTPUTS			:=	$(addprefix $(OUTPUTDIR)/,$(NAME))
