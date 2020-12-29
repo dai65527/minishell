@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 02:18:04 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/29 09:10:10 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/29 12:31:19 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ static ssize_t	store_argv_redirect(t_mshinfo *mshinfo, char *save,
 		while (save[len] && msh_isspace(save[len]))
 			len++;
 	}
-	mshinfo->flg_errinparse = 0;
 	return (-1);
 }
 
@@ -92,7 +91,8 @@ ssize_t			msh_handle_redirect(t_mshinfo *mshinfo, char *save, ssize_t len)
 		return (msh_put_syntaxerr(save));
 	len += ret;
 	last = ft_lstlast(mshinfo->arglst);
-	if ((ret = msh_create_redirect(last->content, fd, flg_redirect)) > 0)
+	if (!mshinfo->flg_errinparse &&
+			(ret = msh_create_redirect(last->content, fd, flg_redirect)) > 0)
 		mshinfo->n_proc++;
 	else if (ret < 0)
 		mshinfo->flg_errinparse = 1;
