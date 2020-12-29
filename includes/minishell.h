@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/29 21:14:27 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/29 20:53:19 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,6 +183,9 @@ int				msh_pwd(t_mshinfo *mshinfo, int flg_forked);
 
 int				msh_export(t_mshinfo *mshinfo, char **argv, int flg_forked);
 int				msh_export_new_env(t_mshinfo *mshinfo, char **argv);
+int				msh_add_new_env(t_mshinfo *mshinfo, t_keyval *newenv);
+int				msh_change_env_val(t_list *envlst, t_keyval *newenv);
+t_keyval		*msh_create_newenv(char *arg);
 
 /*
 ** unset

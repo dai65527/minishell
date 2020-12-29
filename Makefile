@@ -3,7 +3,7 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+         #
+#    By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/21 08:47:29 by dnakano           #+#    #+#              #
 #    Updated: 2020/12/29 20:51:13 by dnakano          ###   ########.fr        #

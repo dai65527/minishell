@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 20:36:14 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/25 23:27:20 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/29 21:27:15 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,33 +51,59 @@ static int		cd_err(char *dirname, int ret)
 	return (ret);
 }
 
-static int		change_env(t_mshinfo *mshinfo)
+static int		change_add_env(t_mshinfo *mshinfo, char *val, char *prefix)
 {
-	t_list		*envlst;
-	t_keyval	*env;
+	t_keyval	*newenv;
+	char		*tmp;
+
+	if (!(tmp = ft_strdup(prefix)))
+		return (-1);
+	msh_free_set(&tmp, ft_strjoin(tmp, val));
+	if (!tmp)
+		return (-1);
+	if (!(newenv = msh_create_newenv(tmp)))
+	{
+		msh_free_setnull((void**)&tmp);
+		return (-1);
+	}
+	msh_free_setnull((void**)&tmp);
+	if (!msh_change_env_val(mshinfo->envlst, newenv))
+		if (msh_add_new_env(mshinfo, newenv))
+			return (-1);
+	return (0);
+}
+
+static int		modify_env(t_mshinfo *mshinfo)
+{
 	char		*old;
 	char		*present;
 
-	envlst = mshinfo->envlst;
-	if (!(old = ft_strdup(get_env(mshinfo, "PWD"))))
+	if (!(old = get_env(mshinfo, "PWD")))
+		old = ft_strdup("");
+	else
+		old = ft_strdup(old);
+	if (!old)
 		return (-1);
 	if (!(present = getcwd(NULL, 0)))
-		return (-1);
-	while (envlst)
 	{
-		env = envlst->content;
-		if (!ft_strncmp("OLDPWD", env->key, ft_strlen("OLDPWD") + 1))
-			msh_free_set(&(env->val), old);
-		else if (!ft_strncmp("PWD", env->key, ft_strlen("PWD") + 1))
-			msh_free_set(&(env->val), present);
-		envlst = envlst->next;
+		msh_free_setnull((void**)&old);
+		return (-1);
 	}
+	if (change_add_env(mshinfo, old, "OLDPWD=")
+		|| change_add_env(mshinfo, present, "PWD="))
+	{
+		msh_free_setnull((void**)&old);
+		msh_free_setnull((void**)&present);
+		return (-1);
+	}
+	msh_free_setnull((void**)&old);
+	msh_free_setnull((void**)&present);
 	return (0);
 }
 
 int				msh_cd(t_mshinfo *mshinfo, char **argv, int flg_forked)
 {
-	int	ret;
+	int		ret;
 
 	ret = 0;
 	if (mshinfo->has_pipe)
@@ -87,9 +113,9 @@ int				msh_cd(t_mshinfo *mshinfo, char **argv, int flg_forked)
 		if ((chdir(get_env(mshinfo, "HOME"))) < 0)
 			ret = -1;
 	}
-	else if ((chdir(argv[1])) < 0)
+	else if (chdir(argv[1]) < 0)
 		ret = -1;
-	if (change_env(mshinfo) < 0)
+	if (!mshinfo->has_pipe && modify_env(mshinfo) < 0)
 		ret = -1;
 	if (ret < 0)
 	{

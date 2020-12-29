@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msh_env.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 20:36:14 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/24 12:19:57 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/29 16:21:32 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ int				msh_env(t_mshinfo *mshinfo, char **argv, int flg_forked)
 {
 	int		ret;
 
+	ret = 0;
 	if (argv[1])
 	{
 		ft_putstr_fd("minishell: env: too many arguments\n", FD_STDERR);
