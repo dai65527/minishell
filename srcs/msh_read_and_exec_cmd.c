@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msh_read_and_exec_cmd.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 13:02:21 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/28 18:56:19 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/29 09:35:45 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,15 @@
 #define MSH_READBUFLEN 2048
 
 /*
-**	Sub function: free_buf_return
+**	Sub function: free_save_return
 **
 **	Free save and buf and return ret.
 */
 
-int			free_buf_return(char *buf, char *save, int ret)
+int			free_save_return(char *save, int ret)
 {
-	if (buf)
-		msh_free_setnull((void *)&buf);
-	free(save);
+	if (save)
+		free(save);
 	return (ret);
 }
 
@@ -64,27 +63,28 @@ static int	joinbuf(char **save, char *buf, ssize_t len)
 int			msh_read_and_exec_cmd(t_mshinfo *mshinfo)
 {
 	ssize_t		ret;
-	char		*buf;
+	char		buf[MSH_READBUFLEN];
 	char		*save;
 
 	if (!(save = ft_strdup("")))
 		return (msh_puterr(MSH_NAME, NULL, -1));
-	if (!(buf = (char *)malloc(sizeof(char) * MSH_READBUFLEN)))
-		return (free_buf_return(NULL, save, msh_puterr(MSH_NAME, NULL, -1)));
 	mshinfo->n_proc = 0;
 	while ((ret = read(mshinfo->fd_std[0], buf, MSH_READBUFLEN - 1)) >= 0)
 	{
 		buf[ret] = '\0';
 		if (ret == 0 && ft_strlen(save) == 0)
-			return (free_buf_return(buf, save, 1));
+			return (free_save_return(save, 1));
 		if (joinbuf(&save, buf, ret) < 0)
-			return (free_buf_return(buf, save, -1));
+			return (free_save_return(save, -1));
 		if ((ret = msh_syntaxcheck(save)) < 0)
-			return (free_buf_return(buf, save, 0));
+		{
+			mshinfo->ret_last_cmd = 258;
+			return (free_save_return(save, 0));
+		}
 		else if (ret == 0)
 			ft_putstr_fd("  \b\b", FD_STDERR);
 		else if (msh_parse_and_exec_cmd(mshinfo, &save) != 0)
-			return (free_buf_return(buf, save, 0));
+			return (free_save_return(save, 0));
 	}
-	return (free_buf_return(buf, save, msh_puterr(MSH_NAME, NULL, -1)));
+	return (free_save_return(save, msh_puterr(MSH_NAME, "read", -1)));
 }
