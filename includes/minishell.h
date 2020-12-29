@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/29 08:30:25 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/29 10:51:47 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include "libft.h"
 # include <sys/types.h>
+# include <stdint.h>
 
 # define MSH_PROMPT	"minishell $ "
 # define MSH_NAME "minishell"
@@ -66,8 +67,6 @@ typedef struct	s_keyval
 void			msh_putwelcome(void);
 int				msh_loop(t_mshinfo *mshinfo);
 int				msh_read_and_exec_cmd(t_mshinfo *mshinfo);
-int				msh_syntaxcheck(const char *save);
-ssize_t			msh_put_syntaxerr(const char *token);
 pid_t			msh_parse_and_exec_cmd(t_mshinfo *mshinfo, char **save);
 int				msh_parse_to_arglst(t_mshinfo *mshinfo, char **save);
 int				msh_exec_cmd(t_mshinfo *mshinfo, char **argv, int flg_forked);
@@ -77,11 +76,19 @@ int				msh_create_redirect(char *fname, int redirect_fd,
 void			msh_wait(t_mshinfo *mshinfo, pid_t pid);
 
 /*
-** msh_get_next_cmd
+** syntax check
 */
 
-int				msh_isenv(char *s, char *envkey, size_t slen);
-int				msh_isescaped(char *s, size_t len_from_start);
+int				msh_syntaxcheck(const char *save);
+ssize_t			msh_put_syntaxerr(const char *token);
+ssize_t			msh_syntaxcheck_pipe(const char *save, size_t len,
+															uint32_t *flg);
+ssize_t			msh_syntaxcheck_redirect(const char *save, size_t len,
+															uint32_t *flg);
+ssize_t			msh_syntaxcheck_quote(const char *save, size_t len,
+															uint32_t *flg);
+ssize_t			msh_syntaxcheck_flag(const char *save, size_t len,
+															uint32_t *flg);
 
 /*
 ** msh_gnc_find_argv_from_save

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+         #
+#    By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/21 08:47:29 by dnakano           #+#    #+#              #
-#    Updated: 2020/12/27 16:07:45 by dhasegaw         ###   ########.fr        #
+#    Updated: 2020/12/29 10:48:04 by dnakano          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,6 +25,7 @@ SRCNAME			:=	main.c \
 					msh_loop.c \
 					msh_read_and_exec_cmd.c \
 					msh_syntaxcheck.c \
+					msh_syntaxcheck_checktoken.c \
 					msh_put_syntaxerr.c \
 					msh_parse_and_exec_cmd.c \
 					msh_get_value_from_envlst.c \
