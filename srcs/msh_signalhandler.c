@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/23 13:31:15 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/28 13:21:52 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/29 17:16:26 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ void		msh_sighandle_putendl(int sig)
 void		msh_sighandle_putprompt(int sig)
 {
 	(void)sig;
+	g_flg_termed = 1;
 	ft_putstr_fd("\b\b  \b\n", FD_STDERR);
 	ft_putstr_fd(MSH_PROMPT, FD_STDERR);
 }
@@ -50,6 +51,7 @@ void		msh_sighandle_putprompt(int sig)
 void		msh_sighandle_donothing(int sig)
 {
 	(void)sig;
+	g_flg_termed = 1;
 	ft_putstr_fd("\b\b  \b\b", FD_STDERR);
 }
 
@@ -75,6 +77,7 @@ void		msh_sighandle_putquit(int sig)
 
 int			msh_initsignal(void)
 {
+	g_flg_termed = 0;
 	if (signal(SIGINT, msh_sighandle_putprompt) == SIG_ERR)
 		return (msh_puterr(MSH_NAME, NULL, -1));
 	if (signal(SIGQUIT, msh_sighandle_donothing) == SIG_ERR)

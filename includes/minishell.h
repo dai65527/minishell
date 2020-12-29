@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/29 20:51:21 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/29 21:14:27 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,12 @@ typedef struct	s_keyval
 	char		*key;
 	char		*val;
 }				t_keyval;
+
+/*
+** global variables
+*/
+
+int				g_flg_termed;
 
 /*
 ** minishell core
