@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/29 16:44:17 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/29 20:53:19 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,12 @@ typedef struct	s_keyval
 	char		*key;
 	char		*val;
 }				t_keyval;
+
+/*
+** global variables
+*/
+
+int				g_flg_termed;
 
 /*
 ** minishell core
