@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/27 15:56:30 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/29 12:07:28 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/29 13:49:25 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ ssize_t			msh_get_env(t_mshinfo *mshinfo, char *save,
 		return (-1);
 	if (ret)
 		return (ret);
-	while (msh_check_operator(save, len, "$><| \t\'\"\n;"))
+	while (msh_check_operator(save, len, "$><| \\\t\'\"\n;"))
 		len++;
 	if (!(key = ft_substr(save, begin, len - begin)))
 		return (-1);
