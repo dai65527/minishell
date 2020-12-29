@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msh_parse_and_exec_cmd.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 10:05:38 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/28 18:56:08 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/29 12:40:39 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@ static pid_t	parse_and_exec(t_mshinfo *mshinfo, char **save, int *flg_gonext)
 	}
 	*flg_gonext = (ret == 2) ? 0 : 1;
 	pid = mshinfo->flg_errinparse ? 0 : msh_exec_cmd(mshinfo, argv, 0);
+	mshinfo->ret_last_cmd = mshinfo->flg_errinparse ? 1 : mshinfo->ret_last_cmd;
 	msh_free_argvp((void ***)(&argv));
 	return (pid ? pid : -1);
 }
