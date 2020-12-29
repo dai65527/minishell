@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 20:36:14 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/29 17:32:32 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/29 21:27:15 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,19 +78,19 @@ static int		modify_env(t_mshinfo *mshinfo)
 	char		*old;
 	char		*present;
 
-	old = get_env(mshinfo, "PWD") ?
-		ft_strdup(get_env(mshinfo, "PWD")) : ft_strdup("");
+	if (!(old = get_env(mshinfo, "PWD")))
+		old = ft_strdup("");
+	else
+		old = ft_strdup(old);
 	if (!old)
 		return (-1);
 	if (!(present = getcwd(NULL, 0)))
-		return (-1);
-	if (change_add_env(mshinfo, old, "OLDPWD="))
 	{
 		msh_free_setnull((void**)&old);
-		msh_free_setnull((void**)&present);
 		return (-1);
 	}
-	if (change_add_env(mshinfo, present, "PWD="))
+	if (change_add_env(mshinfo, old, "OLDPWD=")
+		|| change_add_env(mshinfo, present, "PWD="))
 	{
 		msh_free_setnull((void**)&old);
 		msh_free_setnull((void**)&present);
@@ -103,7 +103,7 @@ static int		modify_env(t_mshinfo *mshinfo)
 
 int				msh_cd(t_mshinfo *mshinfo, char **argv, int flg_forked)
 {
-	int	ret;
+	int		ret;
 
 	ret = 0;
 	if (mshinfo->has_pipe)
@@ -113,9 +113,9 @@ int				msh_cd(t_mshinfo *mshinfo, char **argv, int flg_forked)
 		if ((chdir(get_env(mshinfo, "HOME"))) < 0)
 			ret = -1;
 	}
-	else if ((chdir(argv[1])) < 0)
+	else if (chdir(argv[1]) < 0)
 		ret = -1;
-	if (modify_env(mshinfo) < 0)
+	if (!mshinfo->has_pipe && modify_env(mshinfo) < 0)
 		ret = -1;
 	if (ret < 0)
 	{
