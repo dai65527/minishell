@@ -6,23 +6,19 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 11:54:12 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/30 09:05:47 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/29 21:02:14 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 /*
-** '\'によりエスケープされているかを判定する関数。
+**	function: msh_isescaped
 **
-** 引数：
-** s: ある文字列中の、エスケープされているか判定したい文字
-** len_from_start: sが元の文字列のlen_from_start分の位置にある。
-**
-** 解説：
-** sの直前に'\'が何個あるかで、エスケープされているかがわかる。
-** 	奇数個： エスケープされている。
-** 	偶数個： エスケープされていない（直前の'\'自体がエスケープされている）
+**	check if the *s is escaped by '\'.
+**	len_from_start means pointer s is at len_from_start'th place from start of
+**	the string.
+**	*s is escaped if odd numbers of '\' is placed just before the *s.
 */
 
 int			msh_isescaped(char *s, size_t len_from_start)

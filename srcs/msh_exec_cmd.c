@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msh_exec_cmd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/25 09:42:10 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/28 13:02:10 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/29 20:49:09 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,25 +24,6 @@ static int	emptyargv(t_mshinfo *mshinfo, int flg_forked)
 	mshinfo->ret_last_cmd = 0;
 	return (0);
 }
-
-/*
-** msh_exec_cmd
-** 	minishellの各コマンドを実行するための関数
-**
-** 引数
-** 	mshinfo: minishellの情報
-** 	cmd: 実行するコマンド
-**
-** 変数
-** 	argc:	argvの個数（コマンド自体（"echo"など）も含む）
-** 	argv:	cmdからスペースやタブで区切られて生成される文字列配列を格納する
-** 			（コマンド自体（"echo"など）も含む）
-**
-** 関数
-** 	msh_split_cmd_to_argv:	その名の通りcmdをスペース、タブで分割してargvに格納する
-** 	msh_xxx:				コマンドを実行する。
-** 	msh_executable:			実行可能ファイル（executable）or shell scriptを実行する。
-*/
 
 int			msh_exec_cmd(t_mshinfo *mshinfo, char **argv, int flg_forked)
 {

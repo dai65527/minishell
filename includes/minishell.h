@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 18:38:24 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/29 17:42:05 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/29 20:51:21 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,6 @@ ssize_t			msh_handle_special_var(t_mshinfo *mshinfo, char *save,
 									char ***content, ssize_t len);
 ssize_t			msh_handle_redirect(t_mshinfo *mshinfo,
 										char *save, ssize_t len);
-ssize_t			msh_handle_pipe(char *save, ssize_t len);
 ssize_t			msh_handle_quote(t_mshinfo *mshinfo, char *save, ssize_t len,
 									char **content);
 char			*msh_get_value_from_envlst(t_mshinfo *mshinfo, char **key,
