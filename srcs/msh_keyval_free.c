@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/24 19:50:19 by dnakano           #+#    #+#             */
-/*   Updated: 2020/11/25 10:39:26 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/29 21:02:34 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 ** msh_keyval_free
 **
 ** free struct t_keyval.
-** t_keyval構造体のフリー用関数
 */
 
 void	msh_keyval_free(void *keyval)
