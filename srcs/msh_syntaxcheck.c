@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/23 08:44:34 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/29 09:25:11 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/29 10:33:55 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,13 +53,17 @@ static ssize_t	check_quote(const char *save, size_t len, uint32_t *flg)
 	token[1] = '\0';
 	while (msh_isspace(save[++len]))
 		;
-	while (save[len] != save[begin])
+	while (save[len] != save[begin] || (*flg & F_ESCAPED && save[begin] == '"'))
 	{
 		if (save[len] == '\0' || save[len] == '\n')
 		{
 			token[0] = save[len];
 			return (msh_put_syntaxerr(token));
 		}
+		else if (save[len] == '\\')
+			*flg = (*flg & F_ESCAPED) ? 0 : F_ESCAPED;
+		else
+			*flg = 0;
 		len++;
 	}
 	*flg = 0;
