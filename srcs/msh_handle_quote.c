@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 01:56:20 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/29 10:43:53 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/29 12:12:29 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static ssize_t	get_env_quote(t_mshinfo *mshinfo, char *save,
 	if (!(key = ft_substr(save, begin, len - begin)))
 		return (-1);
 	val = msh_get_value_from_envlst(mshinfo, &key, 1);
-	if (msh_store_val_content(&val, content, 0))
+	if (msh_store_val_content(&val, content, 1))
 		return (-1);
 	return (len - (begin - 1));
 }

@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/27 14:52:36 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/29 10:43:30 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/29 12:32:11 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,23 @@ static void		copy_handling_bslash(char *s, char *substr,
 				substr[i++] = s[j];
 			j++;
 		}
+		if (s[i] == '$' && cnt % 2)
+			i--;
 		substr[i++] = s[j];
 		j++;
 	}
 	substr[len] = 0;
+}
+
+/*
+** set prams for stdup_dquote
+*/
+
+static void		init_params(char *s, int *i, int *s_len, size_t *len)
+{
+	*i = -1;
+	*len = 0;
+	*s_len = (int)ft_strlen(s);
 }
 
 /*
@@ -54,9 +67,7 @@ static char		*strdup_dquote(char *s)
 	int		i;
 	char	*substr;
 
-	i = -1;
-	len = 0;
-	s_len = (int)ft_strlen(s);
+	init_params(s, &i, &s_len, &len);
 	while (++i < s_len)
 	{
 		cnt = 0;
@@ -67,6 +78,8 @@ static char		*strdup_dquote(char *s)
 				len++;
 			i++;
 		}
+		if (s[i] == '$' && cnt % 2)
+			len--;
 		len++;
 	}
 	if (!(substr = (char *)malloc(len + 1)))
