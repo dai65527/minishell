@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/20 20:36:14 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/29 16:09:32 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/29 16:35:06 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,12 +77,9 @@ static int		change_add_env(t_mshinfo *mshinfo, char *old, char *present)
 
 static int		modify_env(t_mshinfo *mshinfo)
 {
-	// t_list		*envlst;
-	// t_keyval	*env;
 	char		*old;
 	char		*present;
 
-	// envlst = mshinfo->envlst;
 	old = get_env(mshinfo, "PWD") ?
 		ft_strdup(get_env(mshinfo, "PWD")) : ft_strdup("");
 	if (!old)
@@ -91,15 +88,6 @@ static int		modify_env(t_mshinfo *mshinfo)
 		return (-1);
 	if (change_add_env(mshinfo, old, present))
 		return (-1);
-	// while (!flg && envlst)
-	// {
-	// 	env = envlst->content;
-	// 	if (flg % 2 && !ft_strncmp("OLDPWD", env->key, ft_strlen("OLDPWD") + 1))
-	// 		msh_free_set(&(env->val), old);
-	// 	else if (flg >= 2 && !ft_strncmp("PWD", env->key, ft_strlen("PWD") + 1))
-	// 		msh_free_set(&(env->val), present);
-	// 	envlst = envlst->next;
-	// }
 	return (0);
 }
 
