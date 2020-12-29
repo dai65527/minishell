@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msh_handle_redirect.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/12 02:18:04 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/28 16:34:48 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/29 09:10:10 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ ssize_t			msh_handle_redirect(t_mshinfo *mshinfo, char *save, ssize_t len)
 	flg_redirect = get_flg_redirect(save, len, begin, &fd);
 	len += (flg_redirect == 0) ? 2 : 1;
 	if ((ret = store_argv_redirect(mshinfo, save, len)) < 0)
-		msh_put_syntaxerr(*save);
+		return (msh_put_syntaxerr(save));
 	len += ret;
 	last = ft_lstlast(mshinfo->arglst);
 	if ((ret = msh_create_redirect(last->content, fd, flg_redirect)) > 0)
