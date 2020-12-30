@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msh_get_argv.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 23:45:09 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/29 00:38:35 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/30 13:34:27 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,24 +88,19 @@ ssize_t			msh_get_argv(t_mshinfo *mshinfo, char *save, ssize_t len)
 	char	*content[2];
 
 	init_params(content, begin, len);
-	while (msh_check_operator(save, len, "><|\n;"))
+	while (msh_check_operator(save, len, "><| \t\n;"))
 	{
-		while (msh_check_operator(save, len, "><| \t\n;"))
-		{
-			ret = 0;
-			begin[1] = len;
-			if (store_plain_argv(save, begin, content, &len))
-				return (msh_puterr(MSH_NAME, "malloc", -1));
-			if (msh_store_val_content(&content[1], &content[0], 0))
-				return (msh_puterr(MSH_NAME, "malloc", -1));
-			if ((ret = handle_env_quote(mshinfo, save, len, &content[0])) < 0)
-				return (-1);
-			len += ret;
-		}
-		if (store_arglst(mshinfo, &content[0]))
+		ret = 0;
+		begin[1] = len;
+		if (store_plain_argv(save, begin, content, &len))
 			return (msh_puterr(MSH_NAME, "malloc", -1));
-		while (save[len] && msh_isspace(save[len]))
-			len++;
+		if (msh_store_val_content(&content[1], &content[0], 0))
+			return (msh_puterr(MSH_NAME, "malloc", -1));
+		if ((ret = handle_env_quote(mshinfo, save, len, &content[0])) < 0)
+			return (-1);
+		len += ret;
 	}
+	if (store_arglst(mshinfo, &content[0]))
+		return (msh_puterr(MSH_NAME, "malloc", -1));
 	return (len - begin[0]);
 }
