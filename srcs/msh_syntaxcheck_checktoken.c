@@ -6,7 +6,7 @@
 /*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/29 10:39:07 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/29 10:40:34 by dnakano          ###   ########.fr       */
+/*   Updated: 2020/12/30 14:44:38 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,21 +45,16 @@ ssize_t	msh_syntaxcheck_flag(const char *save, size_t len, uint32_t *flg)
 ssize_t	msh_syntaxcheck_quote(const char *save, size_t len, uint32_t *flg)
 {
 	size_t	begin;
-	char	token[2];
 
 	if ((save[len] != '\'' && save[len] != '"') || (*flg & F_ESCAPED))
 		return (0);
 	begin = len;
-	token[1] = '\0';
 	while (msh_isspace(save[++len]))
 		;
 	while (save[len] != save[begin] || (*flg & F_ESCAPED && save[begin] == '"'))
 	{
 		if (save[len] == '\0' || save[len] == '\n')
-		{
-			token[0] = save[len];
-			return (msh_put_syntaxerr(token));
-		}
+			return (msh_put_syntaxerr(save + len));
 		else if (save[len] == '\\')
 			*flg = (*flg & F_ESCAPED) ? 0 : F_ESCAPED;
 		else
@@ -73,11 +68,9 @@ ssize_t	msh_syntaxcheck_quote(const char *save, size_t len, uint32_t *flg)
 ssize_t	msh_syntaxcheck_redirect(const char *save, size_t len, uint32_t *flg)
 {
 	size_t	begin;
-	char	token[2];
 
 	if ((save[len] != '<' && save[len] != '>') || (*flg & F_ESCAPED))
 		return (0);
-	token[1] = '\0';
 	begin = len;
 	if (!ft_strncmp(save + len, ">>", 2))
 		len++;
@@ -85,10 +78,7 @@ ssize_t	msh_syntaxcheck_redirect(const char *save, size_t len, uint32_t *flg)
 		;
 	if (save[len] == '>' || save[len] == '<' || save[len] == '|'
 			|| save[len] == '\0' || save[len] == '\n' || save[len] == ';')
-	{
-		token[0] = save[len];
-		return (msh_put_syntaxerr(token));
-	}
+		return (msh_put_syntaxerr(save + len));
 	*flg = 0;
 	return (len - begin);
 }
@@ -96,11 +86,9 @@ ssize_t	msh_syntaxcheck_redirect(const char *save, size_t len, uint32_t *flg)
 ssize_t	msh_syntaxcheck_pipe(const char *save, size_t len, uint32_t *flg)
 {
 	size_t	begin;
-	char	token[2];
 
 	if ((save[len] != '|') || (*flg & F_ESCAPED))
 		return (0);
-	token[1] = '\0';
 	begin = len;
 	if (*flg & F_FIRST)
 		return (msh_put_syntaxerr("|"));
@@ -108,10 +96,7 @@ ssize_t	msh_syntaxcheck_pipe(const char *save, size_t len, uint32_t *flg)
 		;
 	if (save[len] == '>' || save[len] == '<' || save[len] == '|'
 			|| save[len] == '\0' || save[len] == '\n' || save[len] == ';')
-	{
-		token[0] = save[len];
-		return (msh_put_syntaxerr(token));
-	}
+		return (msh_put_syntaxerr(save + len));
 	*flg = 0;
 	return (len - begin);
 }
