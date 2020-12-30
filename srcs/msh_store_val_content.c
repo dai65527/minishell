@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/27 14:52:36 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/29 12:32:11 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/30 11:52:14 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static void		copy_handling_bslash(char *s, char *substr,
 				substr[i++] = s[j];
 			j++;
 		}
-		if (s[i] == '$' && cnt % 2)
+		if ((s[i] == '$' || s[i] == '"') && cnt % 2)
 			i--;
 		substr[i++] = s[j];
 		j++;
@@ -78,7 +78,7 @@ static char		*strdup_dquote(char *s)
 				len++;
 			i++;
 		}
-		if (s[i] == '$' && cnt % 2)
+		if ((s[i] == '$' || s[i] == '"') && cnt % 2)
 			len--;
 		len++;
 	}
