@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msh_export_new_env.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/25 16:36:02 by dnakano           #+#    #+#             */
-/*   Updated: 2020/12/29 15:55:56 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/30 00:02:09 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static int	arg_isvalid(char *arg)
 	size_t		keylen;
 
 	p = ft_strchr(arg, '=');
-	if (!(keylen = p ? p - arg : ft_strlen(arg)))
+	if (!(keylen = p ? (size_t)(p - arg) : ft_strlen(arg)))
 		return (msh_putenverr("export", arg, 0));
 	if (keylen == ft_strlen(arg))
 	{
@@ -37,7 +37,7 @@ t_keyval	*msh_create_newenv(char *arg)
 	size_t		keylen;
 
 	p = ft_strchr(arg, '=');
-	keylen = p ? p - arg : ft_strlen(arg);
+	keylen = p ? (size_t)(p - arg) : ft_strlen(arg);
 	if (!(newenv = (t_keyval *)malloc(sizeof(t_keyval))))
 		return (msh_puterr_return_null(MSH_NAME, "env"));
 	if (!(newenv->key = ft_substr(arg, 0, keylen)))

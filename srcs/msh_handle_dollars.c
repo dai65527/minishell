@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msh_handle_dollars.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: dnakano <dnakano@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/16 23:50:03 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/28 13:26:00 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/29 23:58:27 by dnakano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,7 @@ ssize_t			msh_handle_special_var(t_mshinfo *mshinfo, char *save,
 									char ***content, ssize_t len)
 {
 	char	*val;
-	ssize_t	begin;
 
-	begin = len;
 	if (!ft_strchr("?$", save[len]))
 		return (0);
 	if (save[len] == '?' && (!(val = ft_itoa(mshinfo->ret_last_cmd))))
