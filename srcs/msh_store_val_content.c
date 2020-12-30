@@ -6,7 +6,7 @@
 /*   By: dhasegaw <dhasegaw@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/27 14:52:36 by dhasegaw          #+#    #+#             */
-/*   Updated: 2020/12/30 11:52:14 by dhasegaw         ###   ########.fr       */
+/*   Updated: 2020/12/30 12:26:22 by dhasegaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,26 +20,26 @@
 static void		copy_handling_bslash(char *s, char *substr,
 										size_t s_len, size_t len)
 {
-	size_t	i;
-	size_t	j;
+	size_t	sub_index;
+	size_t	s_index;
 	size_t	cnt;
 
-	i = 0;
-	j = 0;
-	while (i < len && j < s_len)
+	sub_index = 0;
+	s_index = 0;
+	while (sub_index < len && s_index < s_len)
 	{
 		cnt = 0;
-		while (s[j] && s[j] == '\\')
+		while (s[s_index] && s[s_index] == '\\')
 		{
 			cnt++;
 			if (cnt % 2)
-				substr[i++] = s[j];
-			j++;
+				substr[sub_index++] = s[s_index];
+			s_index++;
 		}
-		if ((s[i] == '$' || s[i] == '"') && cnt % 2)
-			i--;
-		substr[i++] = s[j];
-		j++;
+		if ((s[s_index] == '$' || s[s_index] == '"') && cnt % 2)
+			sub_index--;
+		substr[sub_index++] = s[s_index];
+		s_index++;
 	}
 	substr[len] = 0;
 }
